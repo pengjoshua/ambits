@@ -63,8 +63,16 @@ const zoomStyle = {
   transform: 'translate(-50%, -50%)'
 };
 
+const floatingLabelStyle = {
+  color: Colors.orange500
+};
+
+const floatingLabelFocusStyle = {
+  color: Colors.blue500
+};
+
 const zoomTextStyle = {
-  color: Colors.orange500,
+  color: Colors.lime600,
   top: '95%',
   left: '50%'
 };
@@ -441,7 +449,9 @@ class Map extends Component {
               id="zoom-to-area-text"
               value={this.state.textFieldValue}
               onChange={this.handleTextFieldChange.bind(this)}
-              floatingLabelText="Enter area"
+              floatingLabelText="Enter area or address"
+              floatingLabelStyle={floatingLabelStyle}
+              floatingLabelFocusStyle={floatingLabelFocusStyle}
               hintStyle={zoomTextStyle}
             />
           </form>
