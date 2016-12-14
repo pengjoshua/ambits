@@ -4,9 +4,17 @@ html {
   padding: 0px;
 }
 
-#map {
+/*#map {
   height: 100%;
   width: 100%;
+}*/
+
+#map {
+  bottom:0px;
+  height: 100%;
+  left: 362px;
+  position: absolute;
+  right: 0px;
 }
 
 body {
@@ -18,4 +26,27 @@ body {
 
 .hidden {
   display: none;
+}
+
+.options-box {
+  background: #fff;
+  border: 1px solid #999;
+  border-radius: 3px;
+  height: 100%;
+  line-height: 35px;
+  padding: 10px 10px 30px 10px;
+  text-align: left;
+  width: 340px;
+}
+
+.container {
+  height: 100%;
+  position: relative;
+}
+
+h1 {
+  color: #525454;
+  font-size: 22px;
+  margin: 0 0 10px 0;
+  text-align: center;
 }
