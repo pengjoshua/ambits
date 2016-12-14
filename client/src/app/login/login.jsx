@@ -22,7 +22,7 @@ class Login extends Component {
   handleLogin = () => {
     console.log('logging in')
     var returningUser = {
-      email: this.state.email,
+      email: this.state.email.toLowerCase(),
       password: this.state.password
     };
     loginCtrl.login(returningUser)
@@ -45,7 +45,7 @@ class Login extends Component {
 
   handleSignUp = () => {
     var newUser = {
-      email: this.state.email,
+      email: this.state.email.toLowerCase(),
       username: this.state.username,
       password: this.state.password
     };
@@ -71,9 +71,15 @@ class Login extends Component {
     if (this.state.submitError) {
       this.setState({ submitError: '' });
     }
-    this.setState({
-      [name]: e.target.value
-    });
+    if (name === 'email') {
+      this.setState({
+        [name]: e.target.value.toUpperCase();
+      });
+    } else {
+      this.setState({
+        [name]: e.target.value
+      });
+    }
   };
 
   toggleSignUp = () => {

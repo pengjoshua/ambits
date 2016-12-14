@@ -9,7 +9,7 @@ var createUser = Q.nbind(User.create, User);
 
 module.exports = {
   register: function (req, res, next) {
-    var email = req.body.email;
+    var email = req.body.email.toLowerCase();
     var username = req.body.username;
     var password = req.body.password;
 
@@ -49,7 +49,7 @@ module.exports = {
 
   },
   login: function (req, res, next) {
-    var email = req.body.email;
+    var email = req.body.email.toLowerCase();
     var password = req.body.password;
 
     if (!email || !password) {

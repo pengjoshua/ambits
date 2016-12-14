@@ -43,6 +43,7 @@ class Main extends Component {
     this.setState({
       isLoggedIn: false
     });
+    // TODO: Reset ambits arry when logged out
   }
 
   render() {
