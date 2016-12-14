@@ -57,7 +57,7 @@ module.exports = {
     } else {
       passport.authenticate('local', function (err, user, info) {
         var token;
-        if (err) {  
+        if (err) {
           res.status(400).json({
             message: "Incorrect username or password"
           });

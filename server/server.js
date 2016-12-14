@@ -100,5 +100,6 @@ app.get('/db', function(req, res, next) {
 
 // To use on Heroku, must use port provided by process.env:
 var port = (process.env.PORT || 3000);
-app.listen(port);
-console.log('Server is now listening at port ' + port);
+app.listen(port, function() {
+  console.log('Server is now listening at port ' + port)
+});
