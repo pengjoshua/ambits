@@ -7,7 +7,8 @@
     "example": "webpack-dev-server --config webpack-dev-server.config.js --progress --hot --inline --colors",
     "client-start": "webpack -d --watch",
     "start": "node server/server.js",
-    "test": "node server/server.js & mocha server/specs/; pkill -n node",
+    "//test": "node server/server.js & mocha server/specs/; pkill -n node",
+    "test": "mocha client/specs/",
     "build": "webpack --config webpack-production.config.js --progress --colors",
     "postinstall": "npm run build"
   },
@@ -27,6 +28,7 @@
     "jwt-simple": "^0.5.1",
     "load-google-maps-api": "0.0.2",
     "material-ui": "^0.16.5",
+    "moment": "^2.17.1",
     "mongoose": "^4.7.1",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",

@@ -5,10 +5,12 @@ import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'mat
 import FlatButton from 'material-ui/FlatButton';
 import Snackbar from 'material-ui/Snackbar';
 import {Link} from 'react-router';
+import {nextOccurance} from '../../utils/utils.js'
+import moment from 'moment'
 
 const notCheckedStyle = {
-  color: 'white', //TODO: not working colors... 
-  rippleColor: 'green', 
+  color: 'white', //TODO: not working colors...
+  rippleColor: 'green',
   backgroundColor:'green',
 };
 
@@ -34,6 +36,10 @@ const linkStyle = {
 class Ambit extends React.Component {
   constructor(props) {
     super(props);
+
+
+
+
     this.state = {
     };
   }
@@ -46,14 +52,21 @@ class Ambit extends React.Component {
           avatar = "http://www.19130fitness.com/wp-content/uploads/2015/07/crossfit-barbell.png"
           subtitle = {this.props.ambit.frequency}
         />
+        <CardTitle
+          title = { nextOccurance(this.props.ambit).toLocaleTimeString()
+          }
+          subtitle = {
+          moment(nextOccurance(this.props.ambit)).fromNow()
+          }
+        />
         <CardActions>
           <FlatButton
             label= {
               this.props.ambit.checkedIn ? "Checked In":"Check In!"
             }
-            onTouchTap={() => { 
-              this.props.handleCheckinAmbit(this.props.ambit); 
-              } 
+            onTouchTap={() => {
+              this.props.handleCheckinAmbit(this.props.ambit);
+              }
             }
             disabled = {this.props.ambit.checkedIn}
             style={this.props.ambit.checkedIn ? checkedStyle : notCheckedStyle}
@@ -62,7 +75,7 @@ class Ambit extends React.Component {
             label={<Link to='/display' style={linkStyle}>Stats</Link>}//send to the stats page of the ambit.
             style={statsStyle}
           />
-        </CardActions> 
+        </CardActions>
       </Card>
     );
   }
@@ -75,13 +88,3 @@ Ambit.propTypes = {
 };
 
 export default Ambit;
-
-
-
-
-
-
-
-
-
-
