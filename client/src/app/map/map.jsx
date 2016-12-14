@@ -5,13 +5,14 @@ import { Link } from 'react-router';
 import MarkerClusterer from 'node-js-marker-clusterer';
 import * as Utils from '../utils/utils.js';
 import * as Colors from '../../../dist/colors.js';
+import TextField from 'material-ui/TextField';
 
 
 const actionStyle = {
   color: 'white',
   backgroundColor: Colors.purple600,
   position: 'fixed',
-  top: '95%',
+  top: '85%',
   left: '50%',
   height:'40px',
   width:'160px',
@@ -22,7 +23,7 @@ const showMarkersStyle = {
   color: 'white',
   backgroundColor: Colors.indigo600,
   position: 'fixed',
-  top: '95%',
+  top: '85%',
   left: 'calc(50% - 165px)',
   height:'40px',
   width:'160px',
@@ -33,7 +34,7 @@ const hideMarkersStyle = {
   color: 'white',
   backgroundColor: Colors.deepPurple600,
   position: 'fixed',
-  top: '95%',
+  top: '85%',
   left: 'calc(50% + 165px)',
   height:'40px',
   width:'160px',
@@ -44,11 +45,28 @@ const drawingStyle = {
   color: 'white',
   backgroundColor: Colors.pink600,
   position: 'fixed',
-  top: '95%',
+  top: '85%',
   left: 'calc(50% + 330px)',
   height:'40px',
   width:'160px',
   transform: 'translate(-50%, -50%)'
+};
+
+const zoomStyle = {
+  color: 'white',
+  backgroundColor: Colors.purpleA200,
+  position: 'fixed',
+  top: '85%',
+  left: 'calc(50% - 330px)',
+  height:'40px',
+  width:'160px',
+  transform: 'translate(-50%, -50%)'
+};
+
+const zoomTextStyle = {
+  color: Colors.orange500,
+  top: '95%',
+  left: '50%'
 };
 
 const linkStyle = {
@@ -72,18 +90,19 @@ class Map extends Component {
     this.centerMarker = {};
     this.drawingManager = {};
     this.polygon = null;
+    this.state = {
+      textFieldValue: ''
+    }
   }
 
   componentWillMount() {
     Utils.getAllAmbits((res) => {
       this.ambits = this.ambits.concat(res);
       console.log('ambits', this.ambits);
-      console.log();
     });
   }
   
   componentDidMount() {
-
     loadGoogleMapsAPI({
       // key: "AIzaSyAHJfNJp8pbRxf_05L1TIm5ru-Dvcla-Nw",
       key: 'AIzaSyCwsH_IC4bKctVzu1KGpK4KBO9yPnxSjbc',
@@ -367,12 +386,65 @@ class Map extends Component {
     }
   }
 
+  // This function takes the input value in the find nearby area text input
+  // locates it, and then zooms into that area. This is so that the user can
+  // show all listings, then decide to focus on one area of the map.
+  zoomToArea() {
+    // Initialize the geocoder.
+    var geocoder = new google.maps.Geocoder();
+    // Get the address or place that the user entered.
+    // var address = document.getElementById('zoom-to-area-text').value;
+    var address = this.state.textFieldValue;
+    console.log('address', address);
+    // Make sure the address isn't blank.
+    if (address === '') {
+      window.alert('You must enter an area, or address.');
+    } else {
+      // Geocode the address/area entered to get the center. Then, center the map
+      // on it and zoom in
+      geocoder.geocode(
+      { 
+        address: address,
+        componentRestrictions: { locality: 'San Francisco' }
+      }, 
+      (results, status) => {
+        if (status === google.maps.GeocoderStatus.OK) {
+          this.map.setCenter(results[0].geometry.location);
+          this.map.setZoom(18);
+        } else {
+          window.alert('We could not find that location - try entering a more specific place.');
+        }
+      });
+    }
+  }
+
+  handleTextFieldChange(e) {
+    this.setState({
+      textFieldValue: e.target.value
+    });
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    this.zoomToArea();
+    this.setState({ textFieldValue: '' });
+  }
+
 
   render() {
     return (
       <div className="container">
         <div className="options-box">
           <div>
+          <form onSubmit={this.handleSubmit.bind(this)}>
+            <TextField
+              id="zoom-to-area-text"
+              value={this.state.textFieldValue}
+              onChange={this.handleTextFieldChange.bind(this)}
+              floatingLabelText="Enter area"
+              hintStyle={zoomTextStyle}
+            />
+          </form>
           </div>
         </div>
         <div id="map"></div> 
@@ -387,7 +459,7 @@ class Map extends Component {
           <RaisedButton 
             id="show-markers"
             onTouchTap={this.showMarkers.bind(this)}   
-            label="show markers"
+            label="Show markers"
             buttonStyle={showMarkersStyle}
             primary = {true}
             fullWidth={false}
@@ -395,7 +467,7 @@ class Map extends Component {
           <RaisedButton 
             id="hide-markers"
             onTouchTap={this.hideMarkers.bind(this)}   
-            label="hide markers"
+            label="Hide markers"
             buttonStyle={hideMarkersStyle}
             primary = {true}
             fullWidth={false}
@@ -403,8 +475,16 @@ class Map extends Component {
           <RaisedButton 
             id="toggle-drawing"
             onTouchTap={this.toggleDrawing.bind(this)}   
-            label="drawing tools"
+            label="Drawing tools"
             buttonStyle={drawingStyle}
+            primary = {true}
+            fullWidth={false}
+          ></RaisedButton>
+          <RaisedButton 
+            id="zoom-to-area"
+            onTouchTap={this.zoomToArea.bind(this)}   
+            label="Zoom"
+            buttonStyle={zoomStyle}
             primary = {true}
             fullWidth={false}
           ></RaisedButton>
