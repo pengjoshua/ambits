@@ -25,6 +25,7 @@
     "crypto": "0.0.3",
     "ejs": "^2.5.5",
     "express": "^4.14.0",
+    "google-maps-api": "^2.0.1",
     "jwt-simple": "^0.5.1",
     "load-google-maps-api": "0.0.2",
     "map-icons": "^3.0.3",

@@ -40,6 +40,17 @@ const hideMarkersStyle = {
   transform: 'translate(-50%, -50%)'
 };
 
+const drawingStyle = {
+  color: 'white',
+  backgroundColor: Colors.pink600,
+  position: 'fixed',
+  top: '95%',
+  left: 'calc(50% + 330px)',
+  height:'40px',
+  width:'160px',
+  transform: 'translate(-50%, -50%)'
+};
+
 const linkStyle = {
   color:'white',
   'textDecoration':'none'
@@ -56,9 +67,11 @@ class Map extends Component {
 
     this.markers = [];
     this.ambits = [];
-    this.mapInstance = {};
+    this.map = {};
     this.googleMaps = {};
     this.centerMarker = {};
+    this.drawingManager = {};
+    this.polygon = null;
   }
 
   componentWillMount() {
@@ -70,12 +83,15 @@ class Map extends Component {
   }
   
   componentDidMount() {
+
     loadGoogleMapsAPI({
-      key: "AIzaSyAHJfNJp8pbRxf_05L1TIm5ru-Dvcla-Nw",
+      // key: "AIzaSyAHJfNJp8pbRxf_05L1TIm5ru-Dvcla-Nw",
+      key: 'AIzaSyCwsH_IC4bKctVzu1KGpK4KBO9yPnxSjbc',
+      libraries: ['drawing','places','geometry'],
       v: '3.25'
     }).then((googleMaps) => {
       this.initMap(googleMaps);
-      var map = this.mapInstance; // new instance of googleMaps
+      var map = this.map; // new instance of googleMaps
 
       // googleMaps.event.addListener(map, 'drag', () => {
       //   var centerLatLng = map.getCenter();
@@ -86,6 +102,9 @@ class Map extends Component {
   }
 
   initMap(googleMaps) {
+    // This global polygon variable is to ensure only ONE polygon is rendered.
+    var polygon = null;
+    var markers = [];
     var styles = [
       {
         featureType: 'water',
@@ -186,13 +205,13 @@ class Map extends Component {
         draggable: true,
         id: i
       });
-      this.markers.push(marker);
+      markers.push(marker);
 
       var ctx = this;
       marker.addListener('click', function() {
         ctx.populateInfoWindow(this, largeInfowindow);
       });
-      bounds.extend(this.markers[i].position);
+      bounds.extend(markers[i].position);
 
       // Two event listeners - one for mouseover, one for mouseout,
       // to change the colors back and forth.
@@ -205,15 +224,61 @@ class Map extends Component {
     }
     map.fitBounds(bounds);
 
-    this.mapInstance = map;
+    var drawingManager = new googleMaps.drawing.DrawingManager({
+      drawingMode: googleMaps.drawing.OverlayType.POLYGON,
+      drawingControl: true,
+      drawingControlOptions: {
+        position: googleMaps.ControlPosition.TOP_LEFT,
+        drawingModes: [
+          googleMaps.drawing.OverlayType.POLYGON
+        ]
+      }
+    });
+
+    drawingManager.addListener('overlaycomplete', function(event) {
+      // First, check if there is an existing polygon.
+      // If there is, get rid of it and remove the markers
+      if (polygon) {
+        polygon.setMap(null);
+        hideListings(markers);
+      }
+      // Switching the drawing mode to the HAND (i.e., no longer drawing).
+      drawingManager.setDrawingMode(null);
+      // Creating a new editable polygon from the overlay.
+      polygon = event.overlay;
+      polygon.setEditable(true);
+      // Searching within the polygon.
+
+      // This function hides all markers outside the polygon,
+      // and shows only the ones within it. This is so that the
+      // user can specify an exact area of search.
+      function searchWithinPolygon() {
+        for (var i = 0; i < markers.length; i++) {
+          if (google.maps.geometry.poly.containsLocation(markers[i].position, polygon)) {
+            markers[i].setMap(map);
+          } else {
+            markers[i].setMap(null);
+          }
+        }
+      };
+      searchWithinPolygon();
+      // Make sure the search is re-done if the poly is changed.
+      polygon.getPath().addListener('set_at', searchWithinPolygon);
+      polygon.getPath().addListener('insert_at', searchWithinPolygon);
+    });
+
+    this.markers = markers;
+    this.polygon = polygon;
+    this.drawingManager = drawingManager;
+    this.map = map;
     this.centerMarker = marker;
     this.googleMaps = googleMaps;
   }
 
   getCoordinates() {
     Coords = {
-      latitude: this.mapInstance.getCenter().lat(),
-      longitude: this.mapInstance.getCenter().lng()
+      latitude: this.map.getCenter().lat(),
+      longitude: this.map.getCenter().lng()
     };
     console.log(Coords);
   }
@@ -257,7 +322,7 @@ class Map extends Component {
       // 50 meters of the markers position
       streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
       // Open the infowindow on the correct marker.
-      infowindow.open(this.mapInstance, marker);
+      infowindow.open(this.map, marker);
     }
   }
 
@@ -265,10 +330,10 @@ class Map extends Component {
     var bounds = new google.maps.LatLngBounds();
     // Extend the boundaries of the map for each marker and display the marker
     for (var i = 0; i < this.markers.length; i++) {
-      this.markers[i].setMap(this.mapInstance);
+      this.markers[i].setMap(this.map);
       bounds.extend(this.markers[i].position);
     }
-    this.mapInstance.fitBounds(bounds);
+    this.map.fitBounds(bounds);
   }
 
   // This function will loop through the markers and hide them all.
@@ -288,6 +353,20 @@ class Map extends Component {
       new google.maps.Size(21, 34));
     return markerImage;
   }
+
+  // This shows and hides (respectively) the drawing options.
+  toggleDrawing() {
+    if (this.drawingManager.map) {
+      this.drawingManager.setMap(null);
+      // In case the user drew anything, get rid of the polygon
+      if (this.polygon !== null) {
+        this.polygon.setMap(null);
+      }
+    } else {
+      this.drawingManager.setMap(this.map);
+    }
+  }
+
 
   render() {
     return (
@@ -318,6 +397,14 @@ class Map extends Component {
             onTouchTap={this.hideMarkers.bind(this)}   
             label="hide markers"
             buttonStyle={hideMarkersStyle}
+            primary = {true}
+            fullWidth={false}
+          ></RaisedButton>
+          <RaisedButton 
+            id="toggle-drawing"
+            onTouchTap={this.toggleDrawing.bind(this)}   
+            label="drawing tools"
+            buttonStyle={drawingStyle}
             primary = {true}
             fullWidth={false}
           ></RaisedButton>
