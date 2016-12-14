@@ -43,7 +43,7 @@ class Ambit extends React.Component {
       <Card style={cardStyle}>
         <CardHeader
           title = {this.props.ambit.name}
-          avatar = "http://www.19130fitness.com/wp-content/uploads/2015/07/crossfit-barbell.png"
+          avatar ={'https://dummyimage.com/100x100/000/fff&text=' + this.props.ambit.name[0].toUpperCase()}
           subtitle = {this.props.ambit.frequency}
         />
         <CardActions>
