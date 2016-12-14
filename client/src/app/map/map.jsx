@@ -16,7 +16,7 @@ const actionStyle = {
 
 const linkStyle = {
   color:'white',
-  'text-decoration':'none'
+  'textDecoration':'none'
 };
 
 var Coords = {
@@ -69,20 +69,20 @@ class Map extends Component {
 
   getCoordinates() {
     Coords = {
-      latitude: this.mapInstance.getCenter().lat(), 
-      longitude: this.mapInstance.getCenter().lng() 
-    }; 
+      latitude: this.mapInstance.getCenter().lat(),
+      longitude: this.mapInstance.getCenter().lng()
+    };
     console.log(Coords);
   }
 
   render() {
     return (
       <div>
-        <div id="map"> 
+        <div id="map">
         </div>
-        <RaisedButton 
-        
-        onTouchTap={this.getCoordinates.bind(this)}   
+        <RaisedButton
+
+        onTouchTap={this.getCoordinates.bind(this)}
         label ={<Link to='/schedule' style ={linkStyle} >Schedule for this Location</Link> }
         buttonStyle={actionStyle}
         primary = {true}
@@ -96,5 +96,3 @@ class Map extends Component {
 
 export { Coords }; //there is single-entry point to schedule and it is through maps.
 export default Map;
-
-
