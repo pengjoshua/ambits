@@ -7,8 +7,8 @@ import Snackbar from 'material-ui/Snackbar';
 import {Link} from 'react-router';
 
 const notCheckedStyle = {
-  color: 'white', //TODO: not working colors... 
-  rippleColor: 'green', 
+  color: 'white', //TODO: not working colors...
+  rippleColor: 'green',
   backgroundColor:'green',
 };
 
@@ -28,7 +28,7 @@ const cardStyle = {
 
 const linkStyle = {
   color:'white',
-  'text-decoration':'none'
+  'textDecoration':'none'
 };
 
 class Ambit extends React.Component {
@@ -51,9 +51,9 @@ class Ambit extends React.Component {
             label= {
               this.props.ambit.checkedIn ? "Checked In":"Check In!"
             }
-            onTouchTap={() => { 
-              this.props.handleCheckinAmbit(this.props.ambit); 
-              } 
+            onTouchTap={() => {
+              this.props.handleCheckinAmbit(this.props.ambit);
+              }
             }
             disabled = {this.props.ambit.checkedIn}
             style={this.props.ambit.checkedIn ? checkedStyle : notCheckedStyle}
@@ -62,7 +62,7 @@ class Ambit extends React.Component {
             label={<Link to='/display' style={linkStyle}>Stats</Link>}//send to the stats page of the ambit.
             style={statsStyle}
           />
-        </CardActions> 
+        </CardActions>
       </Card>
     );
   }
@@ -75,13 +75,3 @@ Ambit.propTypes = {
 };
 
 export default Ambit;
-
-
-
-
-
-
-
-
-
-
