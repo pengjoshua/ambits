@@ -5,6 +5,8 @@ import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'mat
 import FlatButton from 'material-ui/FlatButton';
 import Snackbar from 'material-ui/Snackbar';
 import {Link} from 'react-router';
+import {nextOccurance} from '../../utils/utils.js'
+import moment from 'moment'
 
 const notCheckedStyle = {
   color: 'white', //TODO: not working colors...
@@ -34,6 +36,10 @@ const linkStyle = {
 class Ambit extends React.Component {
   constructor(props) {
     super(props);
+
+
+
+
     this.state = {
     };
   }
@@ -45,6 +51,13 @@ class Ambit extends React.Component {
           title = {this.props.ambit.name}
           avatar = "http://www.19130fitness.com/wp-content/uploads/2015/07/crossfit-barbell.png"
           subtitle = {this.props.ambit.frequency}
+        />
+        <CardTitle
+          title = { nextOccurance(this.props.ambit).toLocaleTimeString()
+          }
+          subtitle = {
+          moment(nextOccurance(this.props.ambit)).fromNow()
+          }
         />
         <CardActions>
           <FlatButton
