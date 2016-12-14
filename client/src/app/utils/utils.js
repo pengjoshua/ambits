@@ -78,10 +78,7 @@ const decorateAmbits = function(ambits) {
 const url = '';
 
 const getToken = function() {
-  // TODO: get token
-  // const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1ODUwOGQ1MGI4NGRjYjQzMjk1ODY5MDgiLCJzYWx0IjoiNTUyM2I1Y2E0MWM1OWIwM2U5ZDJhMzQwMjdhNzE3ZDYiLCJlbWFpbCI6Im5pY2tAZ21haWwuY29tIiwidXNlcm5hbWUiOiJOaWNrIiwicGFzc3dvcmQiOiIyNzk4ZTZjZGFhZmQxZDI2NmQwNDM0NjU5ZDM1YjlhOTA1NmIyYWQ1NTY0ODJmOTFlYmUyMGIwZmIzNDBlZjczMThlODk4N2M3YjUzMjJkZTdkM2U5ZTI2YzA1YzEyZTdlY2Y1NjQ4YTAwZWQ5YmVlODQ4YmU4NTkwZTU0ODU4NSIsIl9fdiI6MH0.eggyflFIKKm8y9fh9-uzN4f6H4YQUvGmjBkhiek3K74';
-  const token = loginCtrl.getJwt();
-  return token;
+  return loginCtrl.getJwt();
 }
 
 //public functions:
