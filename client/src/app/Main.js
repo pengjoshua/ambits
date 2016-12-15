@@ -31,20 +31,23 @@ class Main extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      isLoggedIn: !!loginCtrl.getJwt()
+      isLoggedIn: !!loginCtrl.getJwt(),
+      username: ''
     };
   }
 
 
   handleLogout() {
+    let newAmbits = this.state.ambits;
     loginCtrl.logout();
     this.setState({
       isLoggedIn: false
     });
+    // TODO: Reset ambits arry when logged out
   }
 
   render() {
-    const logOutButton = this.state.isLoggedIn ? 
+    const logOutButton = this.state.isLoggedIn ?
       (<FlatButton label="Logout"
         onTouchTap={this.handleLogout.bind(this)}
        />
@@ -56,7 +59,7 @@ class Main extends Component {
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
         <div>
-          <AppBar 
+          <AppBar
             title='Ambitually'
             iconElementRight={logOutButton}
           />
