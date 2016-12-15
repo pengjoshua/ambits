@@ -57,6 +57,7 @@ export default class displayAmbit extends React.Component {
       dates.push(itemInfo);
     }
     var listItems = dates.map(function(info){
+      // TODO: set unique key on children
       return(
         <ListItem primaryText={info.status} secondaryText={info.date.toDateString()}/>
       )

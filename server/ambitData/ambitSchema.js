@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 
 var ambitSchema = new Schema({
   refId: {type: Number, index: true}, //a number used to keep track of the ambit
+  userId: String,
   name: String,
   coords: {
     latitude: Number,

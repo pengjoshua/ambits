@@ -66,6 +66,10 @@ export default class CheckinContainer extends React.Component {
     });
   }
 
+  componentWillReceiveProps() {
+    this.getAmbits()
+  }
+
   getAmbits() {
     Utils.getAllAmbits((data) => {
       this.setState({

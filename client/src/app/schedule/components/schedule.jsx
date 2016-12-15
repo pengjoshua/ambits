@@ -155,7 +155,7 @@ onSelectDaysInputSaturday(event, checked) {
 
   render() {
     return (
-      <div>
+      <div className="center" >
         <div>
           <AmbitNameInput
             onNameInput={this.onNameInput}
