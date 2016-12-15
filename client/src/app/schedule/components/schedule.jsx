@@ -25,7 +25,7 @@ export default class ScheduleContainer extends React.Component {
       weekdays: [false, false, false, false, false, false, false],
       //[Su,M,T,w,Th,F,Sa]
       startDate: null,
-      startTime:null,
+      startTime: null,
       checkIns:[]
     };
 
@@ -75,10 +75,9 @@ export default class ScheduleContainer extends React.Component {
 
   onScheduleAmbit() {
     var ambitState = this.state;
-    console.log(ambitState);
 
-    Utils.postAmbit(ambitState, function() {
-      console.log('posted!');
+    Utils.postAmbit(ambitState, function(res) {
+      console.log('posted!', res);
     });
   }
 
@@ -155,7 +154,7 @@ onSelectDaysInputSaturday(event, checked) {
 
   render() {
     return (
-      <div className="center" >
+      <div>
         <div>
           <AmbitNameInput
             onNameInput={this.onNameInput}
@@ -176,6 +175,11 @@ onSelectDaysInputSaturday(event, checked) {
         <SelectDays
             onSelectDays={this.onSelectDays}
             weekdays={this.state.weekdays}/>
+        </div>
+        <div>
+          <CommitButton
+            currentState = {this.state}
+            onScheduleAmbit = {this.onScheduleAmbit}/>
         </div>
         <div>
           <CommitButton
