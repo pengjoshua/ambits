@@ -32,14 +32,6 @@ body {
   line-height: 20px;
 }
 
-.hidden {
-  display: none;
-}
-
-.timemode, .destination, .area {
-  height: 50;
-}
-
 @keyframes blink {
   0% {
     opacity:1;
@@ -64,12 +56,14 @@ body {
 }
 
 #map {
+  z-index: 9990;
   height: 100%;
   width: 100%;
-  position: relative;
+  position: absolute;
 }
 
 #map:after {
+  z-index: 9990;
   width: 30px;
   height: 30px;
   display: block;
