@@ -28,7 +28,7 @@ export default class ScheduleContainer extends React.Component {
       startTime:null,
       checkIns:[]
     };
-    
+
     this.onNameInput = this.onNameInput.bind(this);
     this.onStartDateSet = this.onStartDateSet.bind(this);
     this.onSelectTime = this.onSelectTime.bind(this);
@@ -152,7 +152,7 @@ onSelectDaysInputSaturday(event, checked) {
 
   render() {
     return (
-      <div>
+      <div className="center" >
         <div>
           <AmbitNameInput
             onNameInput={this.onNameInput}
