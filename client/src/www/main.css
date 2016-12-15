@@ -32,22 +32,13 @@ body {
   line-height: 20px;
 }
 
-.radio {
-  font-size: 13px;
-}
-
 .hidden {
   display: none;
 }
 
-.within {
-  top: 500px;
+.timemode, .destination, .area {
+  height: 50;
 }
-
-.of {
-  top: 100px;
-}
-
 /*#map {
   bottom:0px;
   height: 100%;

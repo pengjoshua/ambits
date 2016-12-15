@@ -167,10 +167,10 @@ class Map extends Component {
       v: '3.25'
     }).then((googleMaps) => {
       this.initMap(googleMaps);
-      var map = this.map; // new instance of googleMaps
+      // var map = this.map; // new instance of googleMaps
 
-      // googleMaps.event.addListener(map, 'drag', () => {
-      //   var centerLatLng = map.getCenter();
+      // googleMaps.event.addListener(this.map, 'drag', () => {
+      //   var centerLatLng = this.map.getCenter();
       //   this.centerMarker.setPosition(centerLatLng);
       // });
 
@@ -298,7 +298,7 @@ class Map extends Component {
         this.setIcon(defaultIcon);
       });
     }
-    map.fitBounds(bounds);
+    // map.fitBounds(bounds);
 
     var drawingManager = new googleMaps.drawing.DrawingManager({
       drawingMode: googleMaps.drawing.OverlayType.POLYGON,
@@ -629,7 +629,7 @@ class Map extends Component {
     return (
       <div className="container">
         <div className="options-box">
-          <table>
+          <table className="timemode">
             <tbody>
               <tr>
                 <td>
@@ -655,7 +655,8 @@ class Map extends Component {
               </tr>
             </tbody>
           </table>
-          <table>
+
+          <table className="destination">
             <tbody>   
               <tr>
                 <td>
@@ -687,11 +688,11 @@ class Map extends Component {
             </tbody>
           </table>
 
-          <table>
+        <table className="area">
           <tbody>
             <tr>
               <td>
-                <form id="area" onSubmit={this.handleAreaSubmit.bind(this)}>
+                <form id="area-field" onSubmit={this.handleAreaSubmit.bind(this)}>
                   <TextField
                     id="zoom-to-area-text"
                     value={this.state.textFieldValue}
