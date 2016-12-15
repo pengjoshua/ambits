@@ -9,7 +9,7 @@ import Snackbar from 'material-ui/Snackbar';
 import {Router, Route, Link} from 'react-router';
 import RaisedButton from 'material-ui/RaisedButton';
 //import Controls from './controls.jsx';
-
+import {deleteAmbit} from '../../utils/utils.js'
 
 // styling
 const muiTheme = getMuiTheme({
@@ -78,6 +78,16 @@ export default class CheckinContainer extends React.Component {
     });
   }
 
+  handleDeleteAmbit(ambit) {
+    deleteAmbit(ambit, (res, err) => {
+      if (err) {
+        console.log('Failed to delete ambit', err);
+      } else {
+        console.log('Ambit deleted', res);
+      }
+    });
+  }
+
   handleCheckinAmbit(ambit) {
     this.setState({loading: true}); //loading...
     //validate checkin:
@@ -109,7 +119,8 @@ export default class CheckinContainer extends React.Component {
         <MuiThemeProvider muiTheme={muiTheme}>
           <div>
             <AmbitList ambits={this.state.ambits}
-            handleCheckinAmbit={this.handleCheckinAmbit}/>
+            handleCheckinAmbit={this.handleCheckinAmbit}
+            handleDeleteAmbit={this.handleDeleteAmbit.bind(this)}/>
 
             <RaisedButton
             // onTouchTap={this.handleCreateAmbit}
