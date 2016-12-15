@@ -96,12 +96,14 @@ const zoomTextStyle = {
 
 const selectTimeStyle = {
   position: "fixed",
+  top: '5%',
   left: "calc(1% + 0px)",
   width: 130
 };
 
 const selectModeStyle = {
   position: "fixed",
+  top: '5%',
   left: "calc(1% + 130px)",
   width: 130
 };
