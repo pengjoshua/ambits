@@ -10,9 +10,6 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import ActionGrade from 'material-ui/svg-icons/action/grade';
-import { Field, reduxForm } from 'redux-form'
-import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
-import ActionAndroid from 'material-ui/svg-icons/action/android';
 
 const modeMenu = [
   <MenuItem key={1} value={"WALKING"} primaryText="walk" />,
@@ -84,7 +81,7 @@ const zoomStyle = {
 };
 
 const floatingLabelStyle = {
-  color: Colors.lime600
+  color: Colors.orange500
 };
 
 const floatingLabelFocusStyle = {
@@ -99,14 +96,10 @@ const selectStyle = {
   width: 130
 };
 
-const radio = {
-  margin: 0,
-  width: 100
-};
-
-const go = {
-  margin: 12
-};
+targetOrigin: {
+  time: 'left',
+  mode: 'top',
+}
 
 const linkStyle = {
   color:'white',
@@ -133,8 +126,8 @@ class Map extends Component {
       textFieldValue: '',
       withinFieldValue: '',
       modeValue: '',
-      durationValue: '',
-      radio: {
+      durationValue: ''
+      targetOrigin: {
         time: '10',
         mode: 'WALKING',
       }
@@ -484,7 +477,6 @@ class Map extends Component {
       var destination = address;
       var mode = this.state.modeValue;
       console.log('mode within time', mode);
-      console.log('mode within time radio', this.state.radio.mode);
       // var mode = document.getElementById('mode').value;
       // Now that both the origins and destination are defined, get all the
       // info for the distances between them.
@@ -510,7 +502,6 @@ class Map extends Component {
   // if the distance is LESS than the value in the picker, show it on the map.
   displayMarkersWithinTime(response) {
     console.log('displaymarkers durationValue', this.state.durationValue);
-    console.log('mode within time time', this.state.radio.time);
     var maxDuration = this.state.durationValue;
     console.log('response', response);
     console.log('maxDuration', maxDuration);
@@ -597,168 +588,56 @@ class Map extends Component {
     // this.setState({ withinFieldValue: '' });
   }
 
-  setTime(time, selectedTime) {
-    const radio = this.state.radio;
-    radio[time] = selectedTime;
-    this.setState({
-      radio: radio,
-    });
-  };
-
-  setMode(mode, selectedMode) {
-    const radio = this.state.radio;
-    radio[mode] = selectedMode;
-    this.setState({
-      radio: radio,
-    });
-  };
-
 
   render() {
     return (
       <div className="container">
         <div className="options-box">
-        <table>
-          <tbody>
-            <tr>
-              <td>
-                <span className="text"> within </span>
-                  <SelectField
-                    value={this.state.durationValue}
-                    onChange={this.handleDurationChange.bind(this)}
-                    floatingLabelText="time"
-                    floatingLabelStyle={{ color: Colors.lime600.slice(1) }}
-                    style={selectStyle}
-                  >{durationMenu}
-                  </SelectField>
-                  <SelectField
-                    value={this.state.modeValue}
-                    onChange={this.handleModeChange.bind(this)}
-                    floatingLabelText="mode"
-                    floatingLabelStyle={{ color: Colors.lime600.slice(1) }}
-                    style={selectStyle}
-                  >{modeMenu}
-                  </SelectField>
-                  <span className="text"> of </span>
-                </td>
-                <td>
-                  <form id="within" onSubmit={this.handleWithinSubmit.bind(this)}>
-                    <TextField
-                      id="within-text"
-                      value={this.state.withinFieldValue}
-                      onChange={this.handleWithinFieldChange.bind(this)}
-                      floatingLabelText="destination"
-                      floatingLabelStyle={floatingLabelStyle}
-                      floatingLabelFocusStyle={floatingLabelFocusStyle}
-                      hintStyle={zoomTextStyle}
-                    />
-                  </form>
-                </td>
-                <td>
-                  <RaisedButton
-                    label="go"
-                    labelPosition="before"
-                    primary={true}
-                    icon={<ActionAndroid />}
-                    style={go}
-                    onClick={this.searchWithinTime.bind(this)} 
-                  />
-                </td>
-              </tr>
-              <tr>
-              <td>
-                <form id="area" onSubmit={this.handleAreaSubmit.bind(this)}>
-                  <TextField
-                    id="zoom-to-area-text"
-                    value={this.state.textFieldValue}
-                    onChange={this.handleTextFieldChange.bind(this)}
-                    floatingLabelText="Zoom in on area or address"
-                    floatingLabelStyle={floatingLabelStyle}
-                    floatingLabelFocusStyle={floatingLabelFocusStyle}
-                    hintStyle={zoomTextStyle}
-                  />
-                </form>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <table>
-          <tbody>
-            <tr>
-              <td>
-                <span className="text"> within </span>
-              </td>
-              <td>
-                <div className="radio" style={radio}>
-                  <span>Time</span>
-                  <RadioButton
-                    onClick={this.setTime.bind(this, 'time', '10')}
-                    label="10min" checked={this.state.radio.time === '10'}
-                  />
-                  <RadioButton
-                    onClick={this.setTime.bind(this, 'time', '15')}
-                    label="15min" checked={this.state.radio.time === '15'}
-                  />
-                  <RadioButton
-                    onClick={this.setTime.bind(this, 'time', '30')}
-                    label="30min" checked={this.state.radio.time === '30'}
-                  />
-                  <RadioButton
-                    onClick={this.setTime.bind(this, 'time', '60')}
-                    label="1hour" checked={this.state.radio.time === '60'}
-                  />
-                </div>
-              </td>
-              <td>
-                <div className="radio" style={radio}>
-                  <span>Mode</span>
-                  <RadioButton
-                    onClick={this.setMode.bind(this, 'mode', 'WALKING')}
-                    label="walk" checked={this.state.radio.mode === 'WALKING'}
-                  />
-                  <RadioButton
-                    onClick={this.setMode.bind(this, 'mode', 'BICYCLING')}
-                    label="bike" checked={this.state.radio.mode === 'BICYCLING'}
-                  />
-                  <RadioButton
-                    onClick={this.setMode.bind(this, 'mode', 'DRIVING')}
-                    label="drive" checked={this.state.radio.mode === 'DRIVING'}
-                  />
-                  <RadioButton
-                    onClick={this.setMode.bind(this, 'mode', 'TRANSIT')}
-                    label="transit" checked={this.state.radio.mode === 'TRANSIT'}
-                  />
-                </div>
-              </td>
-              <td>
-                <span className="text"> of </span>
-              </td>
-              <td>
-                <form id="within" onSubmit={this.handleWithinSubmit.bind(this)}>
-                  <TextField
-                    id="within-text"
-                    value={this.state.withinFieldValue}
-                    onChange={this.handleWithinFieldChange.bind(this)}
-                    floatingLabelText="destination"
-                    floatingLabelStyle={floatingLabelStyle}
-                    floatingLabelFocusStyle={floatingLabelFocusStyle}
-                    hintStyle={zoomTextStyle}
-                  />
-                </form>
-              </td>
-              <td>
-                <RaisedButton
-                  label="go"
-                  labelPosition="before"
-                  primary={true}
-                  icon={<ActionAndroid />}
-                  style={go}
-                  onClick={this.searchWithinTime.bind(this)} 
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>  
+          <form id="area" onSubmit={this.handleAreaSubmit.bind(this)}>
+            <TextField
+              id="zoom-to-area-text"
+              value={this.state.textFieldValue}
+              onChange={this.handleTextFieldChange.bind(this)}
+              floatingLabelText="Zoom in on area or address"
+              floatingLabelStyle={floatingLabelStyle}
+              floatingLabelFocusStyle={floatingLabelFocusStyle}
+              hintStyle={zoomTextStyle}
+            />
+          </form>
+          <span className="text"> Within </span>
+          <SelectField
+            value={this.state.durationValue}
+            onChange={this.handleDurationChange.bind(this)}
+            floatingLabelText="time"
+            floatingLabelStyle={{ color: Colors.lime600.slice(1) }}
+            floatingLabelFixed={false}
+            style={selectStyle}
+          >{durationMenu}
+          </SelectField>
+          <SelectField
+            value={this.state.modeValue}
+            onChange={this.handleModeChange.bind(this)}
+            floatingLabelText="mode"
+            floatingLabelStyle={{ color: Colors.lime600.slice(1) }}
+            floatingLabelFixed={false}
+            style={selectStyle}
+          >{modeMenu}
+          </SelectField>
+          <span className="text"> of </span>
+          <form id="within" onSubmit={this.handleWithinSubmit.bind(this)}>
+            <TextField
+              id="within-text"
+              value={this.state.withinFieldValue}
+              onChange={this.handleWithinFieldChange.bind(this)}
+              floatingLabelText="Enter destination"
+              floatingLabelStyle={floatingLabelStyle}
+              floatingLabelFocusStyle={floatingLabelFocusStyle}
+              hintStyle={zoomTextStyle}
+            />
+          </form>
+          <IconButton tooltip="Go" touch={true} onClick={this.searchWithinTime.bind(this)} tooltipPosition="top-center">
+            <ActionGrade />
+          </IconButton>
         </div>
         <div id="map"></div> 
           <RaisedButton 
