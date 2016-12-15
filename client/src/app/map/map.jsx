@@ -10,7 +10,6 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import ActionGrade from 'material-ui/svg-icons/action/grade';
-import { Field, reduxForm } from 'redux-form'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
 import ActionAndroid from 'material-ui/svg-icons/action/android';
 
