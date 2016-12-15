@@ -45,7 +45,10 @@ const config = {
         test: /\.jsx?$/, // All .js files
         loaders: ['babel-loader'],
         exclude: [nodeModulesPath],
-      },
+      },{
+        test: /\.ico$/,
+        loader: 'file-loader?name=[name].[ext]'
+      }
     ],
   },
 };
