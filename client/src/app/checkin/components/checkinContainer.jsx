@@ -92,6 +92,8 @@ export default class CheckinContainer extends React.Component {
       //update the database
       Utils.postCheckin(ambit.refId, () => {
         console.log('delivered');
+      }, function(err) {
+        console.log('err', err);
       });
     }, ()=>{
       //you can't cheat message:

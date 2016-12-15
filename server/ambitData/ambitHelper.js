@@ -52,7 +52,7 @@ module.exports.saveCheckIn = function(req, res, next) {
     .then(function(ambit) {
       var now = new Date;
       var today = now.toDateString();
-      var lastCheck = ambit.checkIns[ambit.checkIns.length - 1].toDateString();
+      var lastCheck = ambit.checkIns.length ? ambit.checkIns[ambit.checkIns.length -1].toDateString() : null;
       if (today !== lastCheck){
         ambit.checkIns.push( now );
         return ambit.save();
