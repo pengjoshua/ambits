@@ -13,6 +13,7 @@ import AppBar from 'material-ui/AppBar';
 import TextField from 'material-ui/TextField';
 import Login from './login/login.jsx';
 import * as loginCtrl from './login/loginCtrl';
+require('../www/favicon.ico'); //Tell webpack to load favicon.ico
 
 const styles = {
   container: {
