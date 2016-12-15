@@ -17,6 +17,10 @@ html {
   right: 0px;
 }*/
 
+.text {
+  font-size: 12px;
+}
+      
 #pano {
   width: 200px;
   height: 200px;

@@ -6,7 +6,24 @@ import MarkerClusterer from 'node-js-marker-clusterer';
 import * as Utils from '../utils/utils.js';
 import * as Colors from '../../../dist/colors.js';
 import TextField from 'material-ui/TextField';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
+import IconButton from 'material-ui/IconButton';
+import ActionGrade from 'material-ui/svg-icons/action/grade';
 
+const modeMenu = [
+  <MenuItem key={1} value={"WALKING"} primaryText="walk" />,
+  <MenuItem key={2} value={"BICYCLING"} primaryText="bike" />,
+  <MenuItem key={3} value={"DRIVING"} primaryText="drive" />,
+  <MenuItem key={4} value={"TRANSIT"} primaryText="transit ride" />
+];
+
+const durationMenu = [
+  <MenuItem key={1} value={"10"} primaryText="10 min" />,
+  <MenuItem key={2} value={"15"} primaryText="15 min" />,
+  <MenuItem key={3} value={"30"} primaryText="30 min" />,
+  <MenuItem key={4} value={"60"} primaryText="1 hour" />
+];
 
 const actionStyle = {
   color: 'white',
@@ -72,9 +89,11 @@ const floatingLabelFocusStyle = {
 };
 
 const zoomTextStyle = {
-  color: Colors.lime600,
-  top: '95%',
-  left: '50%'
+  color: Colors.lime600
+};
+
+const selectStyle = {
+  width: 130
 };
 
 const linkStyle = {
@@ -99,7 +118,10 @@ class Map extends Component {
     this.drawingManager = {};
     this.polygon = null;
     this.state = {
-      textFieldValue: ''
+      textFieldValue: '',
+      withinFieldValue: '',
+      modeValue: '',
+      durationValue: ''
     }
   }
 
@@ -403,7 +425,6 @@ class Map extends Component {
     // Get the address or place that the user entered.
     // var address = document.getElementById('zoom-to-area-text').value;
     var address = this.state.textFieldValue;
-    console.log('address', address);
     // Make sure the address isn't blank.
     if (address === '') {
       window.alert('You must enter an area, or address.');
@@ -426,16 +447,136 @@ class Map extends Component {
     }
   }
 
+  searchWithinTime() {
+    // Initialize the distance matrix service.
+    var distanceMatrixService = new google.maps.DistanceMatrixService;
+    // var address = document.getElementById('search-within-time-text').value;
+    var address = this.state.withinFieldValue;
+    console.log('address within time', address);
+    // Check to make sure the place entered isn't blank.
+    if (address == '') {
+      window.alert('You must enter an address.');
+    } else {
+      this.hideMarkers();
+      // Use the distance matrix service to calculate the duration of the
+      // routes between all our markers, and the destination address entered
+      // by the user. Then put all the origins into an origin matrix.
+      var origins = [];
+      for (var i = 0; i < this.markers.length; i++) {
+        origins[i] = this.markers[i].position;
+      }
+      var destination = address;
+      var mode = this.state.modeValue;
+      console.log('mode within time', mode);
+      // var mode = document.getElementById('mode').value;
+      // Now that both the origins and destination are defined, get all the
+      // info for the distances between them.
+
+
+      var ctx = this;
+      distanceMatrixService.getDistanceMatrix({
+        origins: origins,
+        destinations: [destination],
+        travelMode: google.maps.TravelMode[mode],
+        unitSystem: google.maps.UnitSystem.IMPERIAL,
+      }, (response, status) => {
+        if (status !== google.maps.DistanceMatrixStatus.OK) {
+          window.alert('Error was: ' + status);
+        } else {
+          ctx.displayMarkersWithinTime(response);
+        }
+      });
+    }
+  }
+
+  // This function will go through each of the results, and,
+  // if the distance is LESS than the value in the picker, show it on the map.
+  displayMarkersWithinTime(response) {
+    console.log('displaymarkers durationValue', this.state.durationValue);
+    var maxDuration = this.state.durationValue;
+    console.log('response', response);
+    console.log('maxDuration', maxDuration);
+    // var maxDuration = document.getElementById('max-duration').value;
+    var origins = response.originAddresses;
+    var destinations = response.destinationAddresses;
+    // Parse through the results, and get the distance and duration of each.
+    // Because there might be  multiple origins and destinations we have a nested loop
+    // Then, make sure at least 1 result was found.
+    var atLeastOne = false;
+    for (var i = 0; i < origins.length; i++) {
+      var results = response.rows[i].elements;
+      for (var j = 0; j < results.length; j++) {
+        var element = results[j];
+        if (element.status === "OK") {
+          // The distance is returned in feet, but the TEXT is in miles. If we wanted to switch
+          // the function to show markers within a user-entered DISTANCE, we would need the
+          // value for distance, but for now we only need the text.
+          var distanceText = element.distance.text;
+          // Duration value is given in seconds so we make it MINUTES. We need both the value
+          // and the text.
+          var duration = element.duration.value / 60;
+          var durationText = element.duration.text;
+          if (duration <= maxDuration) {
+            //the origin [i] should = the markers[i]
+            this.markers[i].setMap(this.map);
+            atLeastOne = true;
+            // Create a mini infowindow to open immediately and contain the
+            // distance and duration
+            var infowindow = new google.maps.InfoWindow({
+              content: durationText + ' away, ' + distanceText
+            });
+            infowindow.open(map, this.markers[i]);
+            // Put this in so that this small window closes if the user clicks
+            // the marker, when the big infowindow opens
+            this.markers[i].infowindow = infowindow;
+            google.maps.event.addListener(this.markers[i], 'click', function() {
+              this.infowindow.close();
+            });
+          }
+        }
+      }
+    }
+    if (!atLeastOne) {
+      window.alert('We could not find any locations within that distance!');
+    }
+  }
+
   handleTextFieldChange(e) {
     this.setState({
       textFieldValue: e.target.value
     });
   }
 
-  handleSubmit(e) {
+  handleWithinFieldChange(e) {
+    this.setState({
+      withinFieldValue: e.target.value
+    });
+  }
+
+  handleModeChange(e, index, value) {
+    this.setState({
+      modeValue: value
+    });
+    console.log('handleModeChange', this.state.modeValue)
+  }
+
+  handleDurationChange(e, index, value) {
+    this.setState({
+      durationValue: value
+    });
+    console.log('handleDurationChange', this.state.durationValue)
+  }
+
+  handleAreaSubmit(e) {
     e.preventDefault();
     this.zoomToArea();
     this.setState({ textFieldValue: '' });
+  }
+
+  handleWithinSubmit(e) {
+    e.preventDefault();
+    this.searchWithinTime();
+    // this.setState({ withinFieldValue: '' });
   }
 
 
@@ -443,19 +584,51 @@ class Map extends Component {
     return (
       <div className="container">
         <div className="options-box">
-          <div>
-          <form onSubmit={this.handleSubmit.bind(this)}>
+          <form id="area" onSubmit={this.handleAreaSubmit.bind(this)}>
             <TextField
               id="zoom-to-area-text"
               value={this.state.textFieldValue}
               onChange={this.handleTextFieldChange.bind(this)}
-              floatingLabelText="Enter area or address"
+              floatingLabelText="Zoom in on area or address"
               floatingLabelStyle={floatingLabelStyle}
               floatingLabelFocusStyle={floatingLabelFocusStyle}
               hintStyle={zoomTextStyle}
             />
           </form>
-          </div>
+          <span className="text"> Within </span>
+          <SelectField
+            value={this.state.durationValue}
+            onChange={this.handleDurationChange.bind(this)}
+            floatingLabelText="time"
+            floatingLabelStyle={{ color: Colors.lime600.slice(1) }}
+            floatingLabelFixed={false}
+            style={selectStyle}
+          >{durationMenu}
+          </SelectField>
+          <SelectField
+            value={this.state.modeValue}
+            onChange={this.handleModeChange.bind(this)}
+            floatingLabelText="mode"
+            floatingLabelStyle={{ color: Colors.lime600.slice(1) }}
+            floatingLabelFixed={false}
+            style={selectStyle}
+          >{modeMenu}
+          </SelectField>
+          <span className="text"> of </span>
+          <form id="within" onSubmit={this.handleWithinSubmit.bind(this)}>
+            <TextField
+              id="within-text"
+              value={this.state.withinFieldValue}
+              onChange={this.handleWithinFieldChange.bind(this)}
+              floatingLabelText="Enter destination"
+              floatingLabelStyle={floatingLabelStyle}
+              floatingLabelFocusStyle={floatingLabelFocusStyle}
+              hintStyle={zoomTextStyle}
+            />
+          </form>
+          <IconButton tooltip="Go" touch={true} onClick={this.searchWithinTime.bind(this)} tooltipPosition="top-center">
+            <ActionGrade />
+          </IconButton>
         </div>
         <div id="map"></div> 
           <RaisedButton 
