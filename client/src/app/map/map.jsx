@@ -4,7 +4,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { Link } from 'react-router';
 import MarkerClusterer from 'node-js-marker-clusterer';
 import * as Utils from '../utils/utils.js';
-import * as Colors from '../../../dist/colors.js';
+import * as Colors from './colors.js';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
@@ -96,6 +96,7 @@ const zoomTextStyle = {
 
 const selectTimeStyle = {
   position: "fixed",
+  left: 'calc(10% + 130px)"
   width: 130
 };
 
