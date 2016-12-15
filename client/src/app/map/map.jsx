@@ -21,29 +21,18 @@ const modeMenu = [
 ];
 
 const durationMenu = [
-  <MenuItem key={1} value={"10"} primaryText="10 min" />,
-  <MenuItem key={2} value={"15"} primaryText="15 min" />,
-  <MenuItem key={3} value={"30"} primaryText="30 min" />,
-  <MenuItem key={4} value={"60"} primaryText="1 hour" />
+  <MenuItem key={1} value={"10"} primaryText="within 10 min" />,
+  <MenuItem key={2} value={"15"} primaryText="within 15 min" />,
+  <MenuItem key={3} value={"30"} primaryText="within 30 min" />,
+  <MenuItem key={4} value={"60"} primaryText="within 1 hour" />
 ];
-
-const actionStyle = {
-  color: 'white',
-  backgroundColor: Colors.purple600,
-  position: 'fixed',
-  top: '85%',
-  left: '50%',
-  height:'40px',
-  width:'160px',
-  transform: 'translate(-50%, -50%)'
-};
 
 const showMarkersStyle = {
   color: 'white',
   backgroundColor: Colors.indigo600,
   position: 'fixed',
-  top: '85%',
-  left: 'calc(50% - 165px)',
+  top: 'calc(90% + 45px)',
+  left: 'calc(50% - 82px)',
   height:'40px',
   width:'160px',
   transform: 'translate(-50%, -50%)'
@@ -53,8 +42,19 @@ const hideMarkersStyle = {
   color: 'white',
   backgroundColor: Colors.deepPurple600,
   position: 'fixed',
-  top: '85%',
-  left: 'calc(50% + 165px)',
+  top: '90%',
+  left: 'calc(50% - 82px)',
+  height:'40px',
+  width:'160px',
+  transform: 'translate(-50%, -50%)'
+};
+
+const actionStyle = {
+  color: 'white',
+  backgroundColor: Colors.purple600,
+  position: 'fixed',
+  top: '90%',
+  left: 'calc(50% + 82px)',
   height:'40px',
   width:'160px',
   transform: 'translate(-50%, -50%)'
@@ -62,21 +62,10 @@ const hideMarkersStyle = {
 
 const drawingStyle = {
   color: 'white',
-  backgroundColor: Colors.pink600,
+  backgroundColor: Colors.purple900,
   position: 'fixed',
-  top: '85%',
-  left: 'calc(50% + 330px)',
-  height:'40px',
-  width:'160px',
-  transform: 'translate(-50%, -50%)'
-};
-
-const zoomStyle = {
-  color: 'white',
-  backgroundColor: Colors.purpleA200,
-  position: 'fixed',
-  top: '85%',
-  left: 'calc(50% - 330px)',
+  top: 'calc(90% + 45px)',
+  left: 'calc(50% + 82px)',
   height:'40px',
   width:'160px',
   transform: 'translate(-50%, -50%)'
@@ -90,34 +79,44 @@ const floatingLabelFocusStyle = {
   color: Colors.blue500
 };
 
-const zoomTextStyle = {
-  position: 'fixed',
-  top: '5%',
-  left: 'calc(1% + 300px)',
-  color: Colors.lime600
-};
-
 const selectTimeStyle = {
-  position: 'fixed',
-  top: '5%',
-  left: 'calc(1% + 20px)',
-  width: 130
+  width: 180,
+  left: '5%'
 };
 
 const selectModeStyle = {
-  position: 'fixed',
-  top: '5%',
-  left: 'calc(1% + 160px)',
-  width: 130
+  width: 180,
+  left: '20px'
+};
+
+const zoomInputStyle = {
+  width: 280,
+  left: '5%'
+};
+
+const go = {
+};
+
+const zoomTextStyle = { 
+  color: Colors.lime600
+};
+
+const zoomAreaStyle = {
+  width: 280,
+  left: '5%',
+}
+
+const zoomStyle = {
+  color: 'white',
+  backgroundColor: Colors.purpleA200,
+  // transform: 'translate(-50%, -50%)',
+  height:'40px',
+  width:'90px'
 };
 
 const radio = {
   margin: 0,
   width: 100
-};
-
-const go = {
-  margin: 12
 };
 
 const linkStyle = {
@@ -630,11 +629,10 @@ class Map extends Component {
     return (
       <div className="container">
         <div className="options-box">
-        <table>
-          <tbody>
-            <tr>
-              <td>
-                <span className="text"> within </span>
+          <table>
+            <tbody>
+              <tr>
+                <td>
                   <SelectField
                     value={this.state.durationValue}
                     onChange={this.handleDurationChange.bind(this)}
@@ -643,6 +641,8 @@ class Map extends Component {
                     style={selectTimeStyle}
                   >{durationMenu}
                   </SelectField>
+                </td>
+                <td>
                   <SelectField
                     value={this.state.modeValue}
                     onChange={this.handleModeChange.bind(this)}
@@ -651,8 +651,13 @@ class Map extends Component {
                     style={selectModeStyle}
                   >{modeMenu}
                   </SelectField>
-                  <span className="text"> of </span>
                 </td>
+              </tr>
+            </tbody>
+          </table>
+          <table>
+            <tbody>   
+              <tr>
                 <td>
                   <form id="within" onSubmit={this.handleWithinSubmit.bind(this)}>
                     <TextField
@@ -663,6 +668,8 @@ class Map extends Component {
                       floatingLabelStyle={floatingLabelStyle}
                       floatingLabelFocusStyle={floatingLabelFocusStyle}
                       hintStyle={zoomTextStyle}
+                      style={zoomInputStyle}
+                      multiLine={true}
                     />
                   </form>
                 </td>
@@ -672,12 +679,17 @@ class Map extends Component {
                     labelPosition="before"
                     primary={true}
                     icon={<ActionAndroid />}
-                    style={go}
                     onClick={this.searchWithinTime.bind(this)} 
-                  />
+                    style={go}
+                  />           
                 </td>
               </tr>
-              <tr>
+            </tbody>
+          </table>
+
+          <table>
+          <tbody>
+            <tr>
               <td>
                 <form id="area" onSubmit={this.handleAreaSubmit.bind(this)}>
                   <TextField
@@ -687,91 +699,27 @@ class Map extends Component {
                     floatingLabelText="Zoom in on area or address"
                     floatingLabelStyle={floatingLabelStyle}
                     floatingLabelFocusStyle={floatingLabelFocusStyle}
+                    multiLine={true}
                     hintStyle={zoomTextStyle}
+                    style={zoomAreaStyle}
                   />
                 </form>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <table>
-          <tbody>
-            <tr>
-              <td>
-                <span className="text"> within </span>
-              </td>
-              <td>
-                <div className="radio" style={radio}>
-                  <span>Time</span>
-                  <RadioButton
-                    onClick={this.setTime.bind(this, 'time', '10')}
-                    label="10min" checked={this.state.radio.time === '10'}
-                  />
-                  <RadioButton
-                    onClick={this.setTime.bind(this, 'time', '15')}
-                    label="15min" checked={this.state.radio.time === '15'}
-                  />
-                  <RadioButton
-                    onClick={this.setTime.bind(this, 'time', '30')}
-                    label="30min" checked={this.state.radio.time === '30'}
-                  />
-                  <RadioButton
-                    onClick={this.setTime.bind(this, 'time', '60')}
-                    label="1hour" checked={this.state.radio.time === '60'}
-                  />
-                </div>
-              </td>
-              <td>
-                <div className="radio" style={radio}>
-                  <span>Mode</span>
-                  <RadioButton
-                    onClick={this.setMode.bind(this, 'mode', 'WALKING')}
-                    label="walk" checked={this.state.radio.mode === 'WALKING'}
-                  />
-                  <RadioButton
-                    onClick={this.setMode.bind(this, 'mode', 'BICYCLING')}
-                    label="bike" checked={this.state.radio.mode === 'BICYCLING'}
-                  />
-                  <RadioButton
-                    onClick={this.setMode.bind(this, 'mode', 'DRIVING')}
-                    label="drive" checked={this.state.radio.mode === 'DRIVING'}
-                  />
-                  <RadioButton
-                    onClick={this.setMode.bind(this, 'mode', 'TRANSIT')}
-                    label="transit" checked={this.state.radio.mode === 'TRANSIT'}
-                  />
-                </div>
-              </td>
-              <td>
-                <span className="text"> of </span>
-              </td>
-              <td>
-                <form id="within" onSubmit={this.handleWithinSubmit.bind(this)}>
-                  <TextField
-                    id="within-text"
-                    value={this.state.withinFieldValue}
-                    onChange={this.handleWithinFieldChange.bind(this)}
-                    floatingLabelText="destination"
-                    floatingLabelStyle={floatingLabelStyle}
-                    floatingLabelFocusStyle={floatingLabelFocusStyle}
-                    hintStyle={zoomTextStyle}
-                  />
-                </form>
-              </td>
-              <td>
-                <RaisedButton
-                  label="go"
-                  labelPosition="before"
-                  primary={true}
-                  icon={<ActionAndroid />}
-                  style={go}
-                  onClick={this.searchWithinTime.bind(this)} 
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>  
+                </td>
+                <td>
+                  <RaisedButton 
+                    id="zoom-to-area"
+                    onTouchTap={this.zoomToArea.bind(this)}   
+                    label="Zoom"
+                    buttonStyle={zoomStyle}
+                    primary = {true}
+                    fullWidth={false}
+                  ></RaisedButton>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+
         <div id="map"></div> 
           <RaisedButton 
             onTouchTap={this.getCoordinates.bind(this)}   
@@ -802,14 +750,6 @@ class Map extends Component {
             onTouchTap={this.toggleDrawing.bind(this)}   
             label="Drawing tools"
             buttonStyle={drawingStyle}
-            primary = {true}
-            fullWidth={false}
-          ></RaisedButton>
-          <RaisedButton 
-            id="zoom-to-area"
-            onTouchTap={this.zoomToArea.bind(this)}   
-            label="Zoom"
-            buttonStyle={zoomStyle}
             primary = {true}
             fullWidth={false}
           ></RaisedButton>

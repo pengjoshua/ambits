@@ -20,18 +20,6 @@ html {
   width: 100%;
 }
 
-/*#map {
-  bottom:0px;
-  height: 100%;
-  left: 362px;
-  position: absolute;
-  right: 0px;
-}*/
-
-/*.text {
-  font-size: 16px;
-}*/
-
 #pano {
   width: 200px;
   height: 200px;
@@ -51,6 +39,26 @@ body {
 .hidden {
   display: none;
 }
+
+.within {
+  top: 500px;
+}
+
+.of {
+  top: 100px;
+}
+
+/*#map {
+  bottom:0px;
+  height: 100%;
+  left: 362px;
+  position: absolute;
+  right: 0px;
+}*/
+
+/*.text {
+  font-size: 16px;
+}*/
 
 /*.options-box {
   background: #fff;
