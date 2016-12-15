@@ -5,6 +5,8 @@ var jwt = require('jwt-simple');
 var findAmbit = q.nbind(Ambit.findOne, Ambit);
 var findAllAmbits = q.nbind(Ambit.find, Ambit);
 var createAmbit = q.nbind(Ambit.create, Ambit);
+var deleteAmbit = q.nbind(Ambit.findOneAndRemove, Ambit);
+var updateAmbit = q.nbind(Ambit.findOneAndUpdate, Ambit);
 
 module.exports.addAmbit = function (req, res, next) {
   //records a new ambit from the user
@@ -77,3 +79,18 @@ module.exports.getAmbits = function(req, res, next) {
       next(error);
     });
 };
+
+module.exports.deleteAmbit = function(req, res, next) {
+  var refId = req.body.ambit.refId;
+
+  // return the deleted ambit
+  deleteAmbit({refId: refId})
+    .then(function (ambit) {
+      console.log('Server: ambit deleted', ambit);
+      res.send(ambit);
+    })
+    .fail(function (error) {
+      console.log('Server: failed to delete ambit', error);
+      next(error);
+    });
+}

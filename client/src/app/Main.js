@@ -25,6 +25,11 @@ const styles = {
   },
 };
 
+const linkStyle = {
+  textDecoration: 'none',
+  color: 'white'
+}
+
 const appBarStyle = {
   position: 'fixed',
   top: '0',
@@ -55,7 +60,7 @@ class Main extends Component {
   }
 
   handleDrawerToggle = () => this.setState({open: !this.state.open});
-  
+
   handleClose = () => this.setState({open: false});
 
   render() {
@@ -72,7 +77,7 @@ class Main extends Component {
       <MuiThemeProvider muiTheme={muiTheme}>
         <div>
           <AppBar
-            title='Ambitually'
+            title={<Link to="/" style={linkStyle}>Ambitually</Link>}
             style={appBarStyle}
             onLeftIconButtonTouchTap={this.handleDrawerToggle}
             iconElementRight={logOutButton}
@@ -85,6 +90,7 @@ class Main extends Component {
             <Link to="/" onClick={this.handleDrawerToggle}><MenuItem>Home</MenuItem></Link>
             <Link to='/display' onClick={this.handleDrawerToggle}><MenuItem>Statistics</MenuItem></Link>
             <Link to='/map' onClick={this.handleDrawerToggle}><MenuItem>Maps</MenuItem></Link>
+            <Link to='/logout' onClick={this.handleDrawerToggle}><MenuItem>Logout</MenuItem></Link>
           </Drawer>
           {LoginModal}
           {this.props.children}

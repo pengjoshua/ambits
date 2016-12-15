@@ -108,7 +108,7 @@ const panel = {
   left: '50%'
 };
 
-const zoomTextStyle = { 
+const zoomTextStyle = {
   color: Colors.lime600
 };
 
@@ -172,10 +172,9 @@ class Map extends Component {
   componentWillMount() {
     Utils.getAllAmbits((res) => {
       this.ambits = this.ambits.concat(res);
-      console.log('ambits', this.ambits);
     });
   }
-  
+
   componentDidMount() {
     loadGoogleMapsAPI({
       // key: "AIzaSyAHJfNJp8pbRxf_05L1TIm5ru-Dvcla-Nw",
@@ -483,10 +482,10 @@ class Map extends Component {
       // Geocode the address/area entered to get the center. Then, center the map
       // on it and zoom in
       geocoder.geocode(
-      { 
+      {
         address: address,
         componentRestrictions: { locality: 'San Francisco' }
-      }, 
+      },
       (results, status) => {
         if (status === google.maps.GeocoderStatus.OK) {
           this.map.setCenter(results[0].geometry.location);
@@ -676,7 +675,7 @@ class Map extends Component {
           </table>
 
           <table className="destination">
-            <tbody>   
+            <tbody>
               <tr>
                 <td>
                   <form id="within" onSubmit={this.handleWithinSubmit.bind(this)}>
@@ -698,9 +697,9 @@ class Map extends Component {
                     labelPosition="before"
                     primary={true}
                     icon={<ActionAndroid />}
-                    onClick={this.searchWithinTime.bind(this)} 
+                    onClick={this.searchWithinTime.bind(this)}
                     style={go}
-                  />           
+                  />
                 </td>
               </tr>
             </tbody>
@@ -724,9 +723,9 @@ class Map extends Component {
                 </form>
                 </td>
                 <td>
-                  <RaisedButton 
+                  <RaisedButton
                     id="zoom-to-area"
-                    onTouchTap={this.zoomToArea.bind(this)}   
+                    onTouchTap={this.zoomToArea.bind(this)}
                     label="Zoom"
                     buttonStyle={zoomStyle}
                     primary = {true}
@@ -740,7 +739,7 @@ class Map extends Component {
         </div>
         </ToggleDisplay>
 
-        <div id="map"></div> 
+        <div id="map"></div>
 
           <FloatingActionButton 
             mini={true} 
@@ -759,25 +758,25 @@ class Map extends Component {
             // containerElement={<Link to='/schedule'/>}
             fullWidth={false}
           ></RaisedButton>
-          <RaisedButton 
+          <RaisedButton
             id="show-markers"
-            onTouchTap={this.showMarkers.bind(this)}   
+            onTouchTap={this.showMarkers.bind(this)}
             label="Show markers"
             buttonStyle={showMarkersStyle}
             primary = {true}
             fullWidth={false}
           ></RaisedButton>
-          <RaisedButton 
+          <RaisedButton
             id="hide-markers"
-            onTouchTap={this.hideMarkers.bind(this)}   
+            onTouchTap={this.hideMarkers.bind(this)}
             label="Hide markers"
             buttonStyle={hideMarkersStyle}
             primary = {true}
             fullWidth={false}
           ></RaisedButton>
-          <RaisedButton 
+          <RaisedButton
             id="toggle-drawing"
-            onTouchTap={this.toggleDrawing.bind(this)}   
+            onTouchTap={this.toggleDrawing.bind(this)}
             label="Drawing tools"
             buttonStyle={drawingStyle}
             primary = {true}

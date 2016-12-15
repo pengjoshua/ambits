@@ -24,6 +24,11 @@ const statsStyle = {
   backgroundColor:'red',
 };
 
+const deleteStyle = {
+  color: 'white',
+  backgroundColor:'red',
+};
+
 const cardStyle = {
   'margin': '10px'
 };
@@ -37,12 +42,11 @@ class Ambit extends React.Component {
   constructor(props) {
     super(props);
 
-
-
-
     this.state = {
     };
   }
+
+
 
   render () {
     return (
@@ -72,8 +76,14 @@ class Ambit extends React.Component {
             style={this.props.ambit.checkedIn ? checkedStyle : notCheckedStyle}
           />
           <FlatButton
-            label={<Link to='/display' style={linkStyle}>Stats</Link>}//send to the stats page of the ambit.
+            label={<Link to='/display' style={linkStyle}>Stats</Link>}//send to
             style={statsStyle}
+          />
+          <FlatButton
+            label={'Delete'}
+            onTouchTap={() =>
+              this.props.handleDeleteAmbit(this.props.ambit)}
+            style={deleteStyle}
           />
         </CardActions>
       </Card>
