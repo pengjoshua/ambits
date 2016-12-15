@@ -17,6 +17,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import ToggleDisplay from 'react-toggle-display';
 import Geosuggest from 'react-geosuggest';
 
+
 const modeMenu = [
   <MenuItem key={1} value={"WALKING"} primaryText="walk" />,
   <MenuItem key={2} value={"BICYCLING"} primaryText="bike" />,
