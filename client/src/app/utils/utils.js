@@ -1,4 +1,6 @@
 import axios from 'axios';
+import moment from 'moment'
+import later from 'later'
 import * as loginCtrl from '../login/loginCtrl';
 
 //private helper functions:
@@ -163,4 +165,39 @@ export const checkinAmbit = function(ambit, successCb,errorCb) {
   //device does not support geolocation:
   console.log('your device does not support geolocation :(');
  }
+};
+
+export const nextOccurance = (ambit) => {
+  let time = ambit.startTime.split(':');
+  let hours = parseInt(time[0]);
+  let minutes = parseInt(time[1]);
+  let daysOfWeek = ambit.weekdays;
+
+  // Reformat weekdays to [Sa,Su,M,T,W,Th,F,S]
+  let saturday = ambit.weekdays.pop();
+  daysOfWeek.unshift(saturday);
+
+  // reduce truthy values to days of the week they represent
+  daysOfWeek = daysOfWeek.reduce(function(days, checked, index) {
+    if (checked) {
+      days.push(index);
+    }
+    return days;
+  }, []);
+
+  // Make our schedule for later.js
+  let sched = {
+    schedules: [
+      {h: [hours],
+       m: [minutes],
+       dw: daysOfWeek
+     }]
+  };
+
+  var occurance = later.schedule(sched);
+  // Use local time when performing next occurance calculations
+  later.date.localTime();
+
+  // return next occurance starting from the current time
+  return occurance.next(1, new Date());
 };
