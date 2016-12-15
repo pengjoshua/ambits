@@ -94,7 +94,13 @@ const zoomTextStyle = {
   color: Colors.lime600
 };
 
-const selectStyle = {
+const selectTimeStyle = {
+  position: "fixed",
+  width: 130
+};
+
+const selectModeStyle = {
+  position: "fixed",
   width: 130
 };
 
@@ -627,7 +633,7 @@ class Map extends Component {
                     onChange={this.handleDurationChange.bind(this)}
                     floatingLabelText="time"
                     floatingLabelStyle={{ color: Colors.lime600.slice(1) }}
-                    style={selectStyle}
+                    style={selectTimeStyle}
                   >{durationMenu}
                   </SelectField>
                   <SelectField
@@ -635,7 +641,7 @@ class Map extends Component {
                     onChange={this.handleModeChange.bind(this)}
                     floatingLabelText="mode"
                     floatingLabelStyle={{ color: Colors.lime600.slice(1) }}
-                    style={selectStyle}
+                    style={selectModeStyle}
                   >{modeMenu}
                   </SelectField>
                   <span className="text"> of </span>
