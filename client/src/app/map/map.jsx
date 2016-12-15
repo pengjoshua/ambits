@@ -124,6 +124,11 @@ const linkStyle = {
   'textDecoration':'none'
 };
 
+// const center = {
+//   top: '50%',
+//   left: '50%'
+// };
+
 var Coords = {
   latitude: 0,
   longitude: 0
@@ -167,10 +172,17 @@ class Map extends Component {
       v: '3.25'
     }).then((googleMaps) => {
       this.initMap(googleMaps);
-      // var map = this.map; // new instance of googleMaps
+      var map = this.map; // new instance of googleMaps
 
-      // googleMaps.event.addListener(this.map, 'drag', () => {
-      //   var centerLatLng = this.map.getCenter();
+      // var centerIcon = {
+      //   url: 'http://icon-icons.com/icons2/864/PNG/512/Add_Circle_Plus_Download_icon-icons.com_67898.png',
+      //   size: new google.maps.Size(20, 20),
+      //   scaledSize: new google.maps.Size(20, 20),
+      //   origin: new google.maps.Point(0,0)
+      // };
+
+      // googleMaps.event.addListener(map, 'dragend', () => {
+      //   var centerLatLng = map.getCenter();
       //   this.centerMarker.setPosition(centerLatLng);
       // });
 
@@ -722,6 +734,7 @@ class Map extends Component {
         </div>
 
         <div id="map"></div> 
+
           <RaisedButton 
             onTouchTap={this.getCoordinates.bind(this)}   
             label={<Link to='/schedule' style={linkStyle}>Schedule Ambit</Link> }
@@ -754,6 +767,7 @@ class Map extends Component {
             primary = {true}
             fullWidth={false}
           ></RaisedButton>
+
       </div>
     )
   }

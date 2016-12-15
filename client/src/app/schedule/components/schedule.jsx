@@ -181,11 +181,6 @@ onSelectDaysInputSaturday(event, checked) {
             currentState = {this.state}
             onScheduleAmbit = {this.onScheduleAmbit}/>
         </div>
-        <div>
-          <CommitButton
-            currentState = {this.state}
-            onScheduleAmbit = {this.onScheduleAmbit}/>
-        </div>
       </div>
     );
   }
