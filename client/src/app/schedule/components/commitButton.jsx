@@ -9,12 +9,12 @@ const style = {
 const CommitButton = (props) => (
   <div>
     <RaisedButton
-    label={<Link to='/map'>Schedule and Return to Map</Link>}
+    label={<Link to='/'>home</Link>}
     style={style}
     onTouchTap={props.onScheduleAmbit} // create ambit using date, name etc from current state
     />
     <RaisedButton
-    label={<Link to='/display'>Schedule and Return to Display</Link>}
+    label={<Link to='/map'>map</Link>}
     style={style}
     onTouchTap={props.onScheduleAmbit} // create ambit using date, name etc from current state
     />
