@@ -1,16 +1,17 @@
 import axios from 'axios';
-
+import * as loginCtrl from '../login/loginCtrl';
 
 //private helper functions:
 var validateLocation = function (current, checkin) {
-  const MIN_DIST = 200; // acceptable distance between ambit loc and checkin loc
+  const MIN_DIST_MILES = 0.15; // acceptable distance between ambit loc and checkin loc (units = miles)
+  const MIN_DIST = MIN_DIST_MILES*1609.34; // acceptable distance between ambit loc and checkin loc (units = meters)
 
   var rad = function(x) {
     return x * Math.PI / 180;
   };
   //calculate the distance btw two points.
   var getDistance = function(p1, p2) {
-    var R = 6378137; // Earth’s mean radius in meter
+    var R = 6378137; // Earth’s mean radius in meters
     var dLat = rad(p2.latitude - p1.latitude);
     var dLong = rad(p2.longitude - p1.longitude);
     var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
@@ -18,7 +19,7 @@ var validateLocation = function (current, checkin) {
       Math.sin(dLong / 2) * Math.sin(dLong / 2);
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     var d = R * c;
-    return Math.round(d); // returns the distance in meter
+    return Math.round(d); // returns the distance in meters
   };
 
   if (getDistance(current, checkin) < MIN_DIST) {
@@ -79,12 +80,19 @@ const decorateAmbits = function(ambits) {
 
 const url = '';
 
+const getToken = function() {
+  return loginCtrl.getJwt();
+}
+
 //public functions:
 export const postCheckin = function (ambitId, callback) {
   axios({
     method:'post',
     url:'/ambits/' + ambitId,
-    contentType: 'application/json'
+    contentType: 'application/json',
+    headers: {
+      'token': getToken()
+    }
     }).then(function(response){
 
       callback(response);
@@ -99,7 +107,12 @@ export const postAmbit = function (ambit, callback){
     method:'post',
     url:'/ambits',
     contentType: 'application/json',
-    data: {ambit: ambit}
+    headers: {
+      'token': getToken()
+    },
+    data: {
+      ambit: ambit
+    }
     }).then(function(response){
       callback(response, null);
     }).catch(function(error) {
@@ -108,38 +121,23 @@ export const postAmbit = function (ambit, callback){
 };
 
 export const getAllAmbits = function(callback) {
-  axios({
-    method: 'get',
-    url: url + '/ambits',
-    contentType: 'application/json',
-  }).then(function(response) {
-    //testing comment out 
-    response.data.push( {
-        refId: 1234,
-        name: 'Gym',
-        coords: {
-          latitude: 37.784,
-          longitude: -122.40903
-        },
-        weekdays:[true,true,true,true,true,true,true],
-        startDate:'2016-12-12',
-        checkIns:[]
-        });
-    response.data.push( {
-        refId: 1234,
-        name: 'Work at WeWork',
-        coords: {
-          latitude: 37.784,
-          longitude: -122.40903
-        },
-        weekdays:[true,true,true,true,true,true,true],
-        startDate:'2016-12-12',
-        checkIns:[]
-        });
-    callback(decorateAmbits(response.data));
-  }).catch(function(error){
-    throw error;
-  });
+  let token = getToken();
+  if (token) {
+    axios({
+      method: 'get',
+      url: url + '/ambits',
+      headers: {
+        'token': token
+      },
+      contentType: 'application/json',
+    }).then(function(response) {
+      callback(decorateAmbits(response.data));
+    }).catch(function(error){
+      throw error;
+    });
+  } else {
+    callback([]);
+  }
 };
 
 
