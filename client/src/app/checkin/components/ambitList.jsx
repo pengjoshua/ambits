@@ -2,7 +2,12 @@ import React from 'react';
 import Ambit from './ambit.jsx';
 
 const AmbitList = (props) => {
-  return (<div className='ambitList'>
+  const windowStyle = {
+    marginTop: '64px', // set top bar height
+    marginBottom: '42px', // set bottom button height
+  };
+
+  return (<div className='ambitList' style={windowStyle}>
   {
     props.ambits.map((item, i) =>
       (<Ambit ambit={item} key={i} handleCheckinAmbit={props.handleCheckinAmbit}/>))

@@ -21,8 +21,7 @@ injectTapEventPlugin();
 render(
   //React-Router with nested routes
   <Router history={browserHistory}>
-    <Route component={Main}>
-
+    <Route component={Main} >
       <Route path='/' component={CheckinContainer}/>
       <Route path='/schedule' component={Schedule}/>
       <Route path='/map' component={Map}/>

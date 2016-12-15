@@ -12,10 +12,17 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 
 // styling
+const buttonStyle = {
+  color: 'white',
+  backgroundColor:'orange',
+  position: 'fixed',
+  bottom: '0',
+};
+
 const muiTheme = getMuiTheme({
   palette: {
     accent1Color: deepOrange500,
-  },
+  }
 });
 
 const createStyle = {
@@ -116,6 +123,7 @@ export default class CheckinContainer extends React.Component {
             buttonStyle={createStyle}
             containerElement={<Link to='/map'/>}
             fullWidth = {true}
+            style={buttonStyle}
             >Create Ambit</RaisedButton>
 
             <Snackbar
