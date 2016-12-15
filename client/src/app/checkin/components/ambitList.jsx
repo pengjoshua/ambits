@@ -3,8 +3,8 @@ import Ambit from './ambit.jsx';
 
 const AmbitList = (props) => {
   const windowStyle = {
-    marginTop: '64px', // set top bar height
-    marginBottom: '42px', // set bottom button height
+    marginTop: '74px', // set top bar height (10px spacing)
+    marginBottom: '52px', // set bottom button height (10px spacing)
   };
 
   return (<div className='ambitList' style={windowStyle}>
