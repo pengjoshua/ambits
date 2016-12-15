@@ -15,19 +15,26 @@ export default class ScheduleContainer extends React.Component {
   constructor (props) {
     super(props);
 
-    this.state = {
-      name: '',
-      coords:{
-        latitude: Coords.latitude,
-        longitude:Coords.longitude
-      },
-      // frequency:'',
-      weekdays: [false, false, false, false, false, false, false],
-      //[Su,M,T,w,Th,F,Sa]
-      startDate: null,
-      startTime: null,
-      checkIns:[]
-    };
+    if (props.location.state === undefined) {
+      this.state = {
+        name: '',
+        coords:{
+          latitude: Coords.latitude,
+          longitude:Coords.longitude
+        },
+        // frequency:'',
+        weekdays: [false, false, false, false, false, false, false],
+        //[Su,M,T,w,Th,F,Sa]
+        startDate: null,
+        startTime: null,
+        checkIns:[],
+        isEditing: false
+      };
+    } else {
+      this.state = props.location.state;
+      this.state.isEditing = true;
+    }
+
 
     this.onNameInput = this.onNameInput.bind(this);
     this.onStartDateSet = this.onStartDateSet.bind(this);
@@ -58,7 +65,6 @@ export default class ScheduleContainer extends React.Component {
     this.setState({
       startDate: date
     });
-    console.log(this.state);
   }
 
 
@@ -78,6 +84,14 @@ export default class ScheduleContainer extends React.Component {
 
     Utils.postAmbit(ambitState, function(res) {
       console.log('posted!', res);
+    });
+  }
+
+  onUpdateAmbit() {
+    var ambitState = this.state;
+
+    Utils.updateAmbit(ambitState, function(res) {
+      console.log('Ambit updated!', res);
     });
   }
 
@@ -168,7 +182,9 @@ onSelectDaysInputSaturday(event, checked) {
         </div>
         <div>
         <SelectTime
-            onSelectTime={this.onSelectTime}/>
+            onSelectTime={this.onSelectTime}
+            startTime={this.state.startTime}
+          />
         </div>
         <Divider />
         <div>
@@ -179,7 +195,7 @@ onSelectDaysInputSaturday(event, checked) {
         <div>
           <CommitButton
             currentState = {this.state}
-            onScheduleAmbit = {this.onScheduleAmbit}/>
+            onSubmitAmbit = {this.state.isEditing ? this.onUpdateAmbit.bind(this) : this.onScheduleAmbit.bind(this)}/>
         </div>
       </div>
     );

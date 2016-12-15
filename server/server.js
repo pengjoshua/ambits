@@ -63,6 +63,7 @@ app.set('view engine', 'html');
 
 app.get('/ambits', ambitHelper.getAmbits);
 app.post('/ambits', ambitHelper.addAmbit);
+app.put('/ambits', ambitHelper.updateAmbit);
 app.delete('/ambits', ambitHelper.deleteAmbit);
 
 
