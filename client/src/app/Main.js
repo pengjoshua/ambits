@@ -10,10 +10,13 @@ import FlatButton from 'material-ui/FlatButton';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
+import Drawer from 'material-ui/Drawer';
+import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
 import Login from './login/login.jsx';
 import * as loginCtrl from './login/loginCtrl';
 require('../www/favicon.ico'); //Tell webpack to load favicon.ico
+import { Link } from 'react-router'
 
 const styles = {
   container: {
@@ -34,9 +37,9 @@ class Main extends Component {
     this.state = {
       isLoggedIn: !!loginCtrl.getJwt(),
       username: ''
+      open: false
     };
   }
-
 
   handleLogout() {
     let newAmbits = this.state.ambits;
@@ -46,6 +49,10 @@ class Main extends Component {
     });
     // TODO: Reset ambits arry when logged out
   }
+
+  handleDrawerToggle = () => this.setState({open: !this.state.open});
+  
+  handleClose = () => this.setState({open: false});
 
   render() {
     const logOutButton = this.state.isLoggedIn ?
@@ -62,8 +69,18 @@ class Main extends Component {
         <div>
           <AppBar
             title='Ambitually'
+            onLeftIconButtonTouchTap={this.handleDrawerToggle}
             iconElementRight={logOutButton}
           />
+          <Drawer
+            docked={false}
+            open={this.state.open}
+            onRequestChange={(open) => this.setState({open})}
+          >
+            <Link to="/" onClick={this.handleDrawerToggle}><MenuItem>Home</MenuItem></Link>
+            <Link to='/display' onClick={this.handleDrawerToggle}><MenuItem>Statistics</MenuItem></Link>
+            <Link to='/map' onClick={this.handleDrawerToggle}><MenuItem>Maps</MenuItem></Link>
+          </Drawer>
           {LoginModal}
           {this.props.children}
         </div>
