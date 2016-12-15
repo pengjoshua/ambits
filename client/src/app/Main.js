@@ -36,7 +36,7 @@ class Main extends Component {
     super(props, context);
     this.state = {
       isLoggedIn: !!loginCtrl.getJwt(),
-      username: ''
+      username: '',
       open: false
     };
   }
