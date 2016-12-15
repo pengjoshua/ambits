@@ -1,5 +1,6 @@
 import React from 'react';
 import Ambit from './ambit.jsx';
+import {nextOccurance} from '../../utils/utils.js'
 
 const AmbitList = (props) => {
   const windowStyle = {
@@ -10,7 +11,11 @@ const AmbitList = (props) => {
   return (<div className='ambitList' style={windowStyle}>
   {
     props.ambits.map((item, i) =>
-      (<Ambit ambit={item} key={i} handleCheckinAmbit={props.handleCheckinAmbit}/>))
+      (<Ambit ambit={item} key={i} handleCheckinAmbit={props.handleCheckinAmbit}
+      handleDeleteAmbit={props.handleDeleteAmbit}
+      />)).sort((a, b) => {
+        return nextOccurance(a.props.ambit) - nextOccurance(b.props.ambit);
+      })
   }
   </div>);
 }
