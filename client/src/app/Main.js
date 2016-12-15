@@ -25,6 +25,11 @@ const styles = {
   },
 };
 
+const appBarStyle = {
+  position: 'fixed',
+  top: '0',
+};
+
 const muiTheme = getMuiTheme({
   palette: {
     accent1Color: deepOrange500,
@@ -47,7 +52,6 @@ class Main extends Component {
     this.setState({
       isLoggedIn: false
     });
-    // TODO: Reset ambits arry when logged out
   }
 
   handleDrawerToggle = () => this.setState({open: !this.state.open});
@@ -62,13 +66,14 @@ class Main extends Component {
       ) :
       null;
     const LoginModal = !this.state.isLoggedIn ?
-      (<Login main={this} />) :
+      (<Login main={this} style={this.mainStyle}/>) :
       null;
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
         <div>
           <AppBar
             title='Ambitually'
+            style={appBarStyle}
             onLeftIconButtonTouchTap={this.handleDrawerToggle}
             iconElementRight={logOutButton}
           />
