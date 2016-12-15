@@ -91,17 +91,23 @@ const floatingLabelFocusStyle = {
 };
 
 const zoomTextStyle = {
+  position: 'fixed',
+  top: '5%',
+  left: 'calc(1% + 300px)',
   color: Colors.lime600
 };
 
 const selectTimeStyle = {
-  position: "fixed",
-  left: 'calc(10% + 130px)"
+  position: 'fixed',
+  top: '5%',
+  left: 'calc(1% + 20px)',
   width: 130
 };
 
 const selectModeStyle = {
-  position: "fixed",
+  position: 'fixed',
+  top: '5%',
+  left: 'calc(1% + 160px)',
   width: 130
 };
 
