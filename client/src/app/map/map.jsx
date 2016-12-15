@@ -15,7 +15,6 @@ import ActionAndroid from 'material-ui/svg-icons/action/android';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import ToggleDisplay from 'react-toggle-display';
-import FontIcon from 'material-ui/FontIcon';
 
 const modeMenu = [
   <MenuItem key={1} value={"WALKING"} primaryText="walk" />,
@@ -84,18 +83,21 @@ const floatingLabelFocusStyle = {
 };
 
 const selectTimeStyle = {
+  top: '50px',
   width: 180,
-  left: '5%'
+  left: '6%'
 };
 
 const selectModeStyle = {
+  top: '50px',
   width: 180,
-  left: '20px'
+  left: '30px'
 };
 
 const zoomInputStyle = {
-  width: 280,
-  left: '5%',
+  top: '30px',
+  width: 290,
+  left: '3%',
   margin: '0 20px 0 0'
 };
 
@@ -111,12 +113,13 @@ const zoomTextStyle = {
 };
 
 const zoomAreaStyle = {
-  width: 280,
-  left: '5%',
+  width: 290,
+  left: '3%',
   margin: '0 20px 0 0'
 }
 
 const go = {
+  margin: '50px 15px 0 0'
 };
 
 const zoomStyle = {
@@ -136,10 +139,6 @@ const linkStyle = {
   color:'white',
   'textDecoration':'none'
 };
-
-const mapStyle = {
-  position: 'fixed'
-}
 
 var Coords = {
   latitude: 0,
@@ -646,8 +645,6 @@ class Map extends Component {
     return (
       <div className="container">
 
-        
-
         <ToggleDisplay show={this.state.show}>
         <div className="options-box">
 
@@ -743,7 +740,7 @@ class Map extends Component {
         </div>
         </ToggleDisplay>
 
-          <div id="map" style={mapStyle}></div> 
+        <div id="map"></div> 
 
           <FloatingActionButton 
             mini={true} 
