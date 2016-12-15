@@ -115,21 +115,24 @@ export const postAmbit = function (ambit, callback){
     });
 };
 
-
-// TODO: get and send user token
 export const getAllAmbits = function(callback) {
-  axios({
-    method: 'get',
-    url: url + '/ambits',
-    headers: {
-      'token': getToken()
-    },
-    contentType: 'application/json',
-  }).then(function(response) {
-    callback(decorateAmbits(response.data));
-  }).catch(function(error){
-    throw error;
-  });
+  let token = getToken();
+  if (token) {
+    axios({
+      method: 'get',
+      url: url + '/ambits',
+      headers: {
+        'token': token
+      },
+      contentType: 'application/json',
+    }).then(function(response) {
+      callback(decorateAmbits(response.data));
+    }).catch(function(error){
+      throw error;
+    });
+  } else {
+    callback([]);
+  }
 };
 
 

@@ -20,7 +20,6 @@ class Login extends Component {
   };
 
   handleLogin = () => {
-    console.log('logging in')
     var returningUser = {
       email: this.state.email.toLowerCase(),
       password: this.state.password
@@ -73,7 +72,7 @@ class Login extends Component {
     }
     if (name === 'email') {
       this.setState({
-        [name]: e.target.value.toUpperCase();
+        [name]: e.target.value.toUpperCase()
       });
     } else {
       this.setState({

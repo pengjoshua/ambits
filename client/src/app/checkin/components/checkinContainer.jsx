@@ -66,25 +66,9 @@ export default class CheckinContainer extends React.Component {
     });
   }
 
-  // shouldComponentUpdate() {
-  //   console.log('shouldComponentUpdate')
-  //   return true
-  // }
-  // componentWillUpdate() {
-  //   console.log('componentWillUpdate')
-  // }
   componentWillReceiveProps() {
-    console.log('componentWillReceiveProps')
     this.getAmbits()
   }
-  componentWillUnmount() {
-    console.log('componentWillUnmount')
-  }
-  // componentDidUpdate() {
-  //   console.log('componentDidUpdate')
-  // }
-
-
 
   getAmbits() {
     Utils.getAllAmbits((data) => {
