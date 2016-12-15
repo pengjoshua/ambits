@@ -10,8 +10,11 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import ActionGrade from 'material-ui/svg-icons/action/grade';
-import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
+import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import ActionAndroid from 'material-ui/svg-icons/action/android';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+import ToggleDisplay from 'react-toggle-display';
 
 const modeMenu = [
   <MenuItem key={1} value={"WALKING"} primaryText="walk" />,
@@ -80,21 +83,29 @@ const floatingLabelFocusStyle = {
 };
 
 const selectTimeStyle = {
+  top: '50px',
   width: 180,
-  left: '5%'
+  left: '6%'
 };
 
 const selectModeStyle = {
+  top: '50px',
   width: 180,
-  left: '20px'
+  left: '30px'
 };
 
 const zoomInputStyle = {
-  width: 280,
-  left: '5%'
+  top: '30px',
+  width: 290,
+  left: '3%',
+  margin: '0 20px 0 0'
 };
 
-const go = {
+const panel = {
+  position: 'fixed',
+  zIndex: 9999,
+  top: '1.5%',
+  left: '50%'
 };
 
 const zoomTextStyle = {
@@ -102,9 +113,14 @@ const zoomTextStyle = {
 };
 
 const zoomAreaStyle = {
-  width: 280,
-  left: '5%',
+  width: 290,
+  left: '3%',
+  margin: '0 20px 0 0'
 }
+
+const go = {
+  margin: '50px 15px 0 0'
+};
 
 const zoomStyle = {
   color: 'white',
@@ -123,11 +139,6 @@ const linkStyle = {
   color:'white',
   'textDecoration':'none'
 };
-
-// const center = {
-//   top: '50%',
-//   left: '50%'
-// };
 
 var Coords = {
   latitude: 0,
@@ -150,6 +161,7 @@ class Map extends Component {
       withinFieldValue: '',
       modeValue: '',
       durationValue: '',
+      show: false,
       radio: {
         time: '10',
         mode: 'WALKING',
@@ -582,28 +594,20 @@ class Map extends Component {
   }
 
   handleTextFieldChange(e) {
-    this.setState({
-      textFieldValue: e.target.value
-    });
+    this.setState({ textFieldValue: e.target.value });
   }
 
   handleWithinFieldChange(e) {
-    this.setState({
-      withinFieldValue: e.target.value
-    });
+    this.setState({ withinFieldValue: e.target.value });
   }
 
   handleModeChange(e, index, value) {
-    this.setState({
-      modeValue: value
-    });
+    this.setState({ modeValue: value });
     console.log('handleModeChange', this.state.modeValue)
   }
 
   handleDurationChange(e, index, value) {
-    this.setState({
-      durationValue: value
-    });
+    this.setState({ durationValue: value });
     console.log('handleDurationChange', this.state.durationValue)
   }
 
@@ -622,24 +626,27 @@ class Map extends Component {
   setTime(time, selectedTime) {
     const radio = this.state.radio;
     radio[time] = selectedTime;
-    this.setState({
-      radio: radio,
-    });
+    this.setState({ radio: radio });
   };
 
   setMode(mode, selectedMode) {
     const radio = this.state.radio;
     radio[mode] = selectedMode;
-    this.setState({
-      radio: radio,
-    });
+    this.setState({ radio: radio });
   };
+
+  showPanel() {
+    this.setState({ show: !this.state.show });
+  }
 
 
   render() {
     return (
       <div className="container">
+
+        <ToggleDisplay show={this.state.show}>
         <div className="options-box">
+
           <table className="timemode">
             <tbody>
               <tr>
@@ -681,7 +688,6 @@ class Map extends Component {
                       floatingLabelFocusStyle={floatingLabelFocusStyle}
                       hintStyle={zoomTextStyle}
                       style={zoomInputStyle}
-                      multiLine={true}
                     />
                   </form>
                 </td>
@@ -711,7 +717,6 @@ class Map extends Component {
                     floatingLabelText="Zoom in on area or address"
                     floatingLabelStyle={floatingLabelStyle}
                     floatingLabelFocusStyle={floatingLabelFocusStyle}
-                    multiLine={true}
                     hintStyle={zoomTextStyle}
                     style={zoomAreaStyle}
                   />
@@ -730,12 +735,23 @@ class Map extends Component {
               </tr>
             </tbody>
           </table>
+
         </div>
+        </ToggleDisplay>
 
         <div id="map"></div>
 
-          <RaisedButton
-            onTouchTap={this.getCoordinates.bind(this)}
+          <FloatingActionButton 
+            mini={true} 
+            onTouchTap={this.showPanel.bind(this)}   
+            style={panel}
+            secondary={true}
+          >
+            <ContentAdd />
+          </FloatingActionButton>
+
+          <RaisedButton 
+            onTouchTap={this.getCoordinates.bind(this)}   
             label={<Link to='/schedule' style={linkStyle}>Schedule Ambit</Link> }
             buttonStyle={actionStyle}
             primary = {true}

@@ -32,14 +32,6 @@ body {
   line-height: 20px;
 }
 
-.hidden {
-  display: none;
-}
-
-.timemode, .destination, .area {
-  height: 50;
-}
-
 @keyframes blink {
   0% {
     opacity:1;
@@ -66,7 +58,7 @@ body {
 #map {
   height: 100%;
   width: 100%;
-  position: relative;
+  position: absolute;
 }
 
 #map:after {
@@ -94,6 +86,13 @@ body {
   animation:blink normal 1.0s infinite ease-in-out;
   /* Opera */
 }
+
+.options-box {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.9);
+  z-index: 1;
+}
+
 
 /*#map {
   bottom:0px;
