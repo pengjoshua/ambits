@@ -11,8 +11,14 @@ const CommitButton = (props) => {
  return (
   <div>
     <RaisedButton
-    id='home'
+    id='toHome'
     label={<Link to='/'>Commit</Link>}
+    style={style}
+    onTouchTap={props.onSubmitAmbit} // create ambit using date, name etc from current state
+    />
+    <RaisedButton
+    id='toMap'
+    label={<Link to='/map'>Cancel</Link>}
     style={style}
     onTouchTap={props.onSubmitAmbit} // create ambit using date, name etc from current state
     />
