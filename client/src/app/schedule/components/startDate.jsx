@@ -4,13 +4,13 @@ import DatePicker from 'material-ui/DatePicker';
 const StartDate = (props) => (
   <div>
     <DatePicker
-    hintText="Select Ambit Start Date"
-    value = {props.startDate}
-    onChange= {props.onStartDateSet}
-    autoOk= {true}
-    locale="en-US"
-    firstDayOfWeek={0}
-    />
+      defaultDate={props.startDate !== null ? new Date(props.startDate) : undefined}
+      hintText="Select Ambit Start Date"
+      onChange= {props.onStartDateSet}
+      autoOk= {true}
+      locale="en-US"
+      firstDayOfWeek={0}
+      />
   </div>
 );
 

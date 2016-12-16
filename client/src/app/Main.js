@@ -25,6 +25,11 @@ const styles = {
   },
 };
 
+const linkStyle = {
+  textDecoration: 'none',
+  color: 'white'
+}
+
 const appBarStyle = {
   position: 'fixed',
   top: '0',
@@ -46,25 +51,26 @@ class Main extends Component {
     };
   }
 
+  setUsername(username) {
+    this.setState({ username });
+  }
+
   handleLogout() {
     let newAmbits = this.state.ambits;
     loginCtrl.logout();
     this.setState({
-      isLoggedIn: false
+      isLoggedIn: false,
+      username: ''
     });
   }
 
   handleDrawerToggle = () => this.setState({open: !this.state.open});
-  
+
   handleClose = () => this.setState({open: false});
 
   render() {
-    const logOutButton = this.state.isLoggedIn ?
-      (<FlatButton label="Logout"
-        onTouchTap={this.handleLogout.bind(this)}
-       />
-      ) :
-      null;
+    const usernameIcon = this.state.isLoggedIn ?
+      (<FlatButton disabled={true} label={this.state.username} style={this.mainStyle}/>) : null;
     const LoginModal = !this.state.isLoggedIn ?
       (<Login main={this} style={this.mainStyle}/>) :
       null;
@@ -72,10 +78,10 @@ class Main extends Component {
       <MuiThemeProvider muiTheme={muiTheme}>
         <div>
           <AppBar
-            title='Ambitually'
+            title={<Link to="/" style={linkStyle}>Ambitually</Link>}
             style={appBarStyle}
             onLeftIconButtonTouchTap={this.handleDrawerToggle}
-            iconElementRight={logOutButton}
+            iconElementRight={usernameIcon}
           />
           <Drawer
             docked={false}
@@ -85,6 +91,7 @@ class Main extends Component {
             <Link to="/" onClick={this.handleDrawerToggle}><MenuItem>Home</MenuItem></Link>
             <Link to='/display' onClick={this.handleDrawerToggle}><MenuItem>Statistics</MenuItem></Link>
             <Link to='/map' onClick={this.handleDrawerToggle}><MenuItem>Maps</MenuItem></Link>
+            <Link to='/' onClick={(e)=>{this.handleDrawerToggle();this.handleLogout.call(this)}}><MenuItem>Logout</MenuItem></Link>
           </Drawer>
           {LoginModal}
           {this.props.children}
