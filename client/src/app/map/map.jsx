@@ -304,8 +304,80 @@ class Map extends Component {
       center: hackReactor
     });
 
+    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+      infoWindow.setPosition(pos);
+      infoWindow.setContent(browserHasGeolocation ?
+                            'Error: The Geolocation service failed.' :
+                            'Error: Your browser doesn\'t support geolocation.');
+    };
+
+    function geocodeLatLng(geocoder, map, infowindow, pos) {
+      // var input = document.getElementById('latlng').value;
+      var input = pos.lat + ', ' + pos.lng;
+      var latlngStr = input.split(',', 2);
+      var latlng = {lat: parseFloat(latlngStr[0]), lng: parseFloat(latlngStr[1])};
+      geocoder.geocode({'location': latlng}, function(results, status) {
+        if (status === 'OK') {
+          if (results[1]) {
+            // map.setZoom(11);
+            var currentLocationMarker = new google.maps.Marker({
+              position: latlng,
+              map: map,
+              animation: googleMaps.Animation.DROP,
+              icon: bluedot,
+              draggable: true,
+              id: 'currentLocation'
+            });
+            // console.log('results', results[0].formatted_address);
+            infowindow.setContent('Current location: \r' + results[0].formatted_address);
+            infowindow.open(map, currentLocationMarker);
+          } else {
+            window.alert('No results found');
+          }
+        } else {
+          window.alert('Geocoder failed due to: ' + status);
+        }
+      });
+    };
+
+    var infoWindow = new googleMaps.InfoWindow({ map: map });
+    var geocoder = new google.maps.Geocoder;
+    // Try HTML5 geolocation.
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        var pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+
+        geocodeLatLng(geocoder, map, infoWindow, pos);
+
+        infoWindow.setPosition(pos);
+        // infoWindow.setContent('Location found.');
+        console.log('position', pos);
+
+        map.setCenter(pos);
+      }, function() {
+        handleLocationError(true, infoWindow, map.getCenter());
+      });
+    } else {
+      // Browser doesn't support Geolocation
+      handleLocationError(false, infoWindow, map.getCenter());
+    }
+  
+
     // Style the markers a bit. This will be our listing marker icon.
     var defaultIcon = this.makeMarkerIcon(Colors.limeA400.slice(1));
+
+    // Create a current location icon
+    var currentLocationIcon = this.makeMarkerIcon(Colors.pinkA400.slice(1));
+    var bluedot = new google.maps.MarkerImage(
+      'http://plebeosaur.us/etc/map/bluedot_retina.png',
+      null, // size
+      null, // origin
+      new google.maps.Point( 8, 8 ), // anchor (move to center of marker)
+      new google.maps.Size( 17, 17 ) // scaled size (required for Retina display icon)
+    );
 
     // Create a "highlighted location" marker color for when the user
     // mouses over the marker.
