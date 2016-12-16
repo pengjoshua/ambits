@@ -90,9 +90,20 @@ body {
 .options-box {
   position: absolute;
   background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
   z-index: 1;
 }
 
+.searchText {
+  color: #C0CA33;
+  margin: 0 0 0 10px;
+}
+
+#places-search {
+  margin: 0 0 0 10px;
+  width: 290px;
+  font-size: 12pt;
+}
 
 /*#map {
   bottom:0px;

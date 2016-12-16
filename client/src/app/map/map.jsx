@@ -15,6 +15,8 @@ import ActionAndroid from 'material-ui/svg-icons/action/android';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import ToggleDisplay from 'react-toggle-display';
+import Geosuggest from 'react-geosuggest';
+
 
 const modeMenu = [
   <MenuItem key={1} value={"WALKING"} primaryText="walk" />,
@@ -118,10 +120,6 @@ const zoomAreaStyle = {
   margin: '0 20px 0 0'
 }
 
-const go = {
-  margin: '50px 15px 0 0'
-};
-
 const zoomStyle = {
   color: 'white',
   backgroundColor: Colors.purpleA200,
@@ -129,6 +127,14 @@ const zoomStyle = {
   height:'40px',
   width:'90px'
 };
+
+const destGo = {
+  margin: '50px 15px 0 0'
+};
+
+const searchGo = {
+  margin: '0 0 0 10px'
+}
 
 const radio = {
   margin: 0,
@@ -149,6 +155,7 @@ class Map extends Component {
   constructor(props, context) {
     super(props, context);
 
+    this.placeMarkers = [];
     this.markers = [];
     this.ambits = [];
     this.map = {};
@@ -157,7 +164,8 @@ class Map extends Component {
     this.drawingManager = {};
     this.polygon = null;
     this.state = {
-      textFieldValue: '',
+      searchFieldValue: '',
+      zoomFieldValue: '',
       withinFieldValue: '',
       modeValue: '',
       durationValue: '',
@@ -285,6 +293,18 @@ class Map extends Component {
     // Create a "highlighted location" marker color for when the user
     // mouses over the marker.
     var highlightedIcon = this.makeMarkerIcon(Colors.tealA400.slice(1));
+
+    // This autocomplete is for use in the search within time entry box.
+    var timeAutocomplete = new google.maps.places.Autocomplete(this.state.withinFieldValue);
+    // This autocomplete is for use in the geocoder entry box.
+    var zoomAutocomplete = new google.maps.places.Autocomplete(this.state.zoomFieldValue);
+    //Bias the boundaries within the map for the zoom to area text.
+    zoomAutocomplete.bindTo('bounds', map);
+    // Create a searchbox in order to execute a places search
+    var searchBox = new google.maps.places.SearchBox(
+        document.getElementById('places-search'));
+    // Bias the searchbox to within the bounds of the map.
+    searchBox.setBounds(map.getBounds());
 
     var largeInfowindow = new googleMaps.InfoWindow();
     var bounds = new googleMaps.LatLngBounds();
@@ -474,7 +494,7 @@ class Map extends Component {
     var geocoder = new google.maps.Geocoder();
     // Get the address or place that the user entered.
     // var address = document.getElementById('zoom-to-area-text').value;
-    var address = this.state.textFieldValue;
+    var address = this.state.zoomFieldValue;
     // Make sure the address isn't blank.
     if (address === '') {
       window.alert('You must enter an area, or address.');
@@ -572,10 +592,47 @@ class Map extends Component {
             //the origin [i] should = the markers[i]
             this.markers[i].setMap(this.map);
             atLeastOne = true;
+
+            var ctx = this;
+            var displayDirections = function (origin) {
+              window.hideMarkers = ctx.hideMarkers.bind(ctx);
+              window.hideMarkers();
+              var directionsService = new google.maps.DirectionsService;
+              // Get the destination address from the user entered value.
+              // var destinationAddress = this.state.withinFieldValue;
+              var destinationAddress = ctx.state.withinFieldValue;
+              // Get mode again from the user entered value.
+              // var mode = this.state.modeValue;
+              var mode = ctx.state.modeValue;
+              directionsService.route({
+                // The origin is the passed in marker's position.
+                origin: origin,
+                // The destination is user entered address.
+                destination: destinationAddress,
+                travelMode: google.maps.TravelMode[mode]
+              }, 
+              (response, status) => {
+                if (status === google.maps.DirectionsStatus.OK) {
+                  var directionsDisplay = new google.maps.DirectionsRenderer({
+                    map: ctx.map,
+                    directions: response,
+                    draggable: true,
+                    polylineOptions: {
+                      strokeColor: 'green'
+                    }
+                  });
+                } else {
+                  window.alert('Directions request failed due to ' + status);
+                }
+              });
+            };
+            window.displayDirections = displayDirections;
             // Create a mini infowindow to open immediately and contain the
             // distance and duration
             var infowindow = new google.maps.InfoWindow({
-              content: durationText + ' away, ' + distanceText
+              content: durationText + ' away, ' + distanceText +
+                '<div><input type=\"button\" value=\"View Route\" onclick=' +
+                '\"window.displayDirections(&quot;' + origins[i] + '&quot;)\"></input></div>'
             });
             infowindow.open(map, this.markers[i]);
             // Put this in so that this small window closes if the user clicks
@@ -593,8 +650,123 @@ class Map extends Component {
     }
   }
 
-  handleTextFieldChange(e) {
-    this.setState({ textFieldValue: e.target.value });
+  // This function fires when the user selects a searchbox picklist item.
+  // It will do a nearby search using the selected query string or place.
+  searchBoxPlaces(searchBox) {
+    this.hideMarkers(this.placeMarkers);
+    var places = searchBox.getPlaces();
+    // For each place, get the icon, name and location.
+    this.createMarkersForPlaces(places);
+    if (places.length == 0) {
+      window.alert('We did not find any places matching that search!');
+    }
+  }
+
+  // This function firest when the user select "go" on the places search.
+  // It will do a nearby search using the entered query string or place.
+  textSearchPlaces() {
+    var bounds = this.map.getBounds();
+    this.hideMarkers(this.placeMarkers);
+    var placesService = new google.maps.places.PlacesService(this.map);
+    var ctx = this;
+    placesService.textSearch({
+      query: document.getElementById('places-search').value,
+      bounds: bounds
+    }, function(results, status) {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        ctx.createMarkersForPlaces(results);
+      }
+    });
+  }
+
+  // This function creates markers for each place found in either places search.
+  createMarkersForPlaces(places) {
+    var bounds = new google.maps.LatLngBounds();
+    for (var i = 0; i < places.length; i++) {
+      var place = places[i];
+      var icon = {
+        url: place.icon,
+        size: new google.maps.Size(35, 35),
+        origin: new google.maps.Point(0, 0),
+        anchor: new google.maps.Point(15, 34),
+        scaledSize: new google.maps.Size(25, 25)
+      };
+      // Create a marker for each place.
+      var marker = new google.maps.Marker({
+        map: this.map,
+        icon: icon,
+        title: place.name,
+        position: place.geometry.location,
+        id: place.id
+      });
+      // If a marker is clicked, do a place details search on it in the next function.
+      var ctx = this;
+      marker.addListener('click', function() {
+        ctx.getPlacesDetails(this, place);
+      });
+      this.placeMarkers.push(marker);
+      if (place.geometry.viewport) {
+        // Only geocodes have viewport.
+        bounds.union(place.geometry.viewport);
+      } else {
+        bounds.extend(place.geometry.location);
+      }
+    }
+    this.map.fitBounds(bounds);
+  }
+
+  // This is the PLACE DETAILS search - it's the most detailed so it's only
+  // executed when a marker is selected, indicating the user wants more
+  // details about that place.
+  getPlacesDetails(marker, infowindow) {
+    var service = new google.maps.places.PlacesService(map);
+    service.getDetails({
+      placeId: marker.id
+    }, function(place, status) {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        // Set the marker property on this infowindow so it isn't created again.
+        infowindow.marker = marker;
+        var innerHTML = '<div>';
+        if (place.name) {
+          innerHTML += '<strong>' + place.name + '</strong>';
+        }
+        if (place.formatted_address) {
+          innerHTML += '<br>' + place.formatted_address;
+        }
+        if (place.formatted_phone_number) {
+          innerHTML += '<br>' + place.formatted_phone_number;
+        }
+        if (place.opening_hours) {
+          innerHTML += '<br><br><strong>Hours:</strong><br>' +
+              place.opening_hours.weekday_text[0] + '<br>' +
+              place.opening_hours.weekday_text[1] + '<br>' +
+              place.opening_hours.weekday_text[2] + '<br>' +
+              place.opening_hours.weekday_text[3] + '<br>' +
+              place.opening_hours.weekday_text[4] + '<br>' +
+              place.opening_hours.weekday_text[5] + '<br>' +
+              place.opening_hours.weekday_text[6];
+        }
+        if (place.photos) {
+          innerHTML += '<br><br><img src="' + place.photos[0].getUrl(
+              {maxHeight: 100, maxWidth: 200}) + '">';
+        }
+        innerHTML += '</div>';
+        infowindow.setContent(innerHTML);
+        infowindow.open(this.map, marker);
+        // Make sure the marker property is cleared if the infowindow is closed.
+        infowindow.addListener('closeclick', function() {
+          infowindow.marker = null;
+        });
+      }
+    });
+  }
+
+  handleSearchFieldChange(e) {
+    this.setState({ searchFieldValue: e.target.value });
+  }
+
+  handleZoomFieldChange(e) {
+    this.setState({ zoomFieldValue: e.target.value });
   }
 
   handleWithinFieldChange(e) {
@@ -611,10 +783,16 @@ class Map extends Component {
     console.log('handleDurationChange', this.state.durationValue)
   }
 
+  handleSearchSubmit(e) {
+    e.preventDefault();
+    this.textSearchPlaces();
+    this.setState({ searchFieldValue: '' });
+  }
+
   handleAreaSubmit(e) {
     e.preventDefault();
     this.zoomToArea();
-    this.setState({ textFieldValue: '' });
+    this.setState({ zoomFieldValue: '' });
   }
 
   handleWithinSubmit(e) {
@@ -697,9 +875,10 @@ class Map extends Component {
                     labelPosition="before"
                     primary={true}
                     icon={<ActionAndroid />}
-                    onClick={this.searchWithinTime.bind(this)}
-                    style={go}
-                  />
+                    onClick={this.searchWithinTime.bind(this)} 
+                    style={destGo}
+                  />           
+
                 </td>
               </tr>
             </tbody>
@@ -712,8 +891,8 @@ class Map extends Component {
                 <form id="area-field" onSubmit={this.handleAreaSubmit.bind(this)}>
                   <TextField
                     id="zoom-to-area-text"
-                    value={this.state.textFieldValue}
-                    onChange={this.handleTextFieldChange.bind(this)}
+                    value={this.state.zoomFieldValue}
+                    onChange={this.handleZoomFieldChange.bind(this)}
                     floatingLabelText="Zoom in on area or address"
                     floatingLabelStyle={floatingLabelStyle}
                     floatingLabelFocusStyle={floatingLabelFocusStyle}
@@ -731,6 +910,36 @@ class Map extends Component {
                     primary = {true}
                     fullWidth={false}
                   ></RaisedButton>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table>
+            <tbody>
+              <tr>
+                <td>        
+                  <span className="searchText">Search for nearby places</span>
+                  <form id="search-field" onSubmit={this.handleSearchSubmit.bind(this)}>
+                    <input 
+                      id="places-search" 
+                      size='25'
+                      type="text" 
+                      placeholder="Ex: Hack Reactor, SF"
+                      value={this.state.searchFieldValue}
+                      onChange={this.handleSearchFieldChange.bind(this)}
+                    />
+                  </form>
+                </td>
+                <td>
+                  <RaisedButton
+                    label="go"
+                    labelPosition="after"
+                    secondary={true}
+                    icon={<ActionAndroid />}
+                    onClick={this.textSearchPlaces.bind(this)} 
+                    style={searchGo}
+                  />                    
                 </td>
               </tr>
             </tbody>
