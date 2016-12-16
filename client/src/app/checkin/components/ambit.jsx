@@ -5,7 +5,7 @@ import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'mat
 import FlatButton from 'material-ui/FlatButton';
 import Snackbar from 'material-ui/Snackbar';
 import {Link} from 'react-router';
-import {nextOccurance} from '../../utils/utils.js'
+import {nextOccurrence} from '../../utils/utils.js'
 import moment from 'moment'
 
 const notCheckedStyle = {
@@ -62,10 +62,10 @@ class Ambit extends React.Component {
           subtitle = {this.props.ambit.frequency}
         />
         <CardTitle
-          title = { nextOccurance(this.props.ambit).toLocaleTimeString()
+          title = { nextOccurrence(this.props.ambit).toLocaleString()
           }
           subtitle = {
-          moment(nextOccurance(this.props.ambit)).fromNow()
+          moment(new Date(nextOccurrence(this.props.ambit).toLocaleString())).fromNow()
           }
         />
         <CardActions>
