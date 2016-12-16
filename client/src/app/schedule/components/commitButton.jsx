@@ -14,13 +14,12 @@ const CommitButton = (props) => {
     id='toHome'
     label={<Link to='/'>Commit</Link>}
     style={style}
-    onTouchTap={props.onSubmitAmbit} // create ambit using date, name etc from current state
+    onTouchTap={props.onSubmitAmbit}
     />
     <RaisedButton
     id='toMap'
     label={<Link to='/map'>Cancel</Link>}
     style={style}
-    onTouchTap={} // do nothing, redirect to map
     />
   </div>
 );
