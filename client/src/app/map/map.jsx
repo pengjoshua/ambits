@@ -88,28 +88,39 @@ const floatingLabelFocusStyle = {
 };
 
 const selectTimeStyle = {
-  top: '50px',
+  top: '-15px',
   width: 180,
   left: '6%'
 };
 
 const selectModeStyle = {
-  top: '50px',
+  top: '-15px',
   width: 180,
   left: '30px'
 };
 
 const zoomInputStyle = {
-  top: '30px',
   width: 290,
   left: '3%',
   margin: '0 20px 0 0'
 };
 
+const destGo = {
+  top: '-30px',
+  margin: '0 15px 0 0'
+};
+
 const panel = {
   position: 'fixed',
   zIndex: 9999,
-  top: '1.5%',
+  top: '12px',
+  left: '50%'
+};
+
+const panelHide = {
+  position: 'fixed',
+  display: 'none',
+  top: '12px',
   left: '50%'
 };
 
@@ -131,12 +142,9 @@ const zoomStyle = {
   width:'90px'
 };
 
-const destGo = {
-  margin: '50px 15px 0 0'
-};
 
 const searchGo = {
-  margin: '0 0 0 10px'
+  margin: '0 0 10px 10px'
 }
 
 const radio = {
@@ -195,6 +203,12 @@ class Map extends Component {
     }).then((googleMaps) => {
       this.initMap(googleMaps);
       var map = this.map; // new instance of googleMaps
+
+      // Listener to close menu
+      var ctx = this;
+      map.addListener('click', function() {
+        ctx.setState({ show: false });
+      });
 
       // var centerIcon = {
       //   url: 'http://icon-icons.com/icons2/864/PNG/512/Add_Circle_Plus_Download_icon-icons.com_67898.png',
@@ -343,6 +357,7 @@ class Map extends Component {
       marker.addListener('mouseout', function() {
         this.setIcon(defaultIcon);
       });
+
     }
     // map.fitBounds(bounds);
 
@@ -918,7 +933,7 @@ class Map extends Component {
             </tbody>
           </table>
 
-          <table>
+          <table className="searchbar">
             <tbody>
               <tr>
                 <td>
@@ -951,15 +966,15 @@ class Map extends Component {
         </div>
         </ToggleDisplay>
 
-          <FloatingActionButton
-            mini={true}
-            onTouchTap={this.showPanel.bind(this)}
-            style={panel}
-            secondary={true}
-          >
-            <ContentAdd />
-          </FloatingActionButton>
-          
+            <FloatingActionButton
+              mini={true}
+              onTouchTap={this.showPanel.bind(this)}
+              style={this.state.show ? panelHide : panel}
+              secondary={true}
+            >
+              <ContentAdd />
+            </FloatingActionButton>  
+
         <div id="map"></div>
 
           <RaisedButton
