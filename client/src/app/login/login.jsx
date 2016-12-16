@@ -118,10 +118,13 @@ class Login extends Component {
           <Dialog
             autoDetectWindowHeight={false}
             overlayClassName='hidden'
+            overlayStyle={{backgroundColor: '#fff'}}
             open={this.state.loginIsOpen}
-            title='Welcome!'
+            title={'Welcome to Ambitually!'}
+            titleStyle={{textAlign: 'center'}}
             actions={standardActions}
             modal={true}
+            actionsContainerStyle={{textAlign: 'center'}}
           >
             <TextField
               onChange={this.handleChange.bind(this,'email')}
