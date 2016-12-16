@@ -25,7 +25,7 @@ const modeMenu = [
 ];
 
 const windowStyle = {
-  marginTop: '74px', // set top bar height (10px spacing)
+  marginTop: '64px', // set top bar height
 };
 
 const durationMenu = [
@@ -613,7 +613,7 @@ class Map extends Component {
                 // The destination is user entered address.
                 destination: destinationAddress,
                 travelMode: google.maps.TravelMode[mode]
-              }, 
+              },
               (response, status) => {
                 if (status === google.maps.DirectionsStatus.OK) {
                   var directionsDisplay = new google.maps.DirectionsRenderer({
@@ -823,7 +823,7 @@ class Map extends Component {
 
   render() {
     return (
-      <div className="container" styles={windowStyle}>
+      <div className="container" style={windowStyle}>
 
         <ToggleDisplay show={this.state.show}>
         <div className="options-box">
@@ -878,9 +878,9 @@ class Map extends Component {
                     labelPosition="before"
                     primary={true}
                     icon={<ActionAndroid />}
-                    onClick={this.searchWithinTime.bind(this)} 
+                    onClick={this.searchWithinTime.bind(this)}
                     style={destGo}
-                  />           
+                  />
 
                 </td>
               </tr>
@@ -921,13 +921,13 @@ class Map extends Component {
           <table>
             <tbody>
               <tr>
-                <td>        
+                <td>
                   <span className="searchText">Search for nearby places</span>
                   <form id="search-field" onSubmit={this.handleSearchSubmit.bind(this)}>
-                    <input 
-                      id="places-search" 
+                    <input
+                      id="places-search"
                       size='25'
-                      type="text" 
+                      type="text"
                       placeholder="Ex: Hack Reactor, SF"
                       value={this.state.searchFieldValue}
                       onChange={this.handleSearchFieldChange.bind(this)}
@@ -940,9 +940,9 @@ class Map extends Component {
                     labelPosition="after"
                     secondary={true}
                     icon={<ActionAndroid />}
-                    onClick={this.textSearchPlaces.bind(this)} 
+                    onClick={this.textSearchPlaces.bind(this)}
                     style={searchGo}
-                  />                    
+                  />
                 </td>
               </tr>
             </tbody>
