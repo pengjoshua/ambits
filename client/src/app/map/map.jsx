@@ -951,8 +951,6 @@ class Map extends Component {
         </div>
         </ToggleDisplay>
 
-        <div id="map"></div>
-
           <FloatingActionButton
             mini={true}
             onTouchTap={this.showPanel.bind(this)}
@@ -961,6 +959,8 @@ class Map extends Component {
           >
             <ContentAdd />
           </FloatingActionButton>
+          
+        <div id="map"></div>
 
           <RaisedButton
             onTouchTap={this.getCoordinates.bind(this)}
