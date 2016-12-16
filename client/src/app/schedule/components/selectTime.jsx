@@ -11,9 +11,8 @@ const SelectTime = (props) => {
     date = new Date(0,0,0,hours,minutes);
   }
 
-
   return (
-    <div>
+    <div style={{marginBottom: '15px',}}>
       <TimePicker
         defaultTime={date}
         hintText="Select Ambit Time"
