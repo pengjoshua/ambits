@@ -16,11 +16,6 @@ const CommitButton = (props) => {
     style={style}
     onTouchTap={props.onSubmitAmbit} // create ambit using date, name etc from current state
     />
-    <RaisedButton
-    label={<Link to='/display'>Schedule and Return to Display</Link>}
-    style={style}
-    onTouchTap={props.onSubmitAmbit} // create ambit using date, name etc from current state
-    />
   </div>
 );
 }
