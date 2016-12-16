@@ -15,7 +15,6 @@ import ActionAndroid from 'material-ui/svg-icons/action/android';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import ToggleDisplay from 'react-toggle-display';
-import Geosuggest from 'react-geosuggest';
 
 
 const modeMenu = [
