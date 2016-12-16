@@ -135,6 +135,19 @@ export const deleteAmbit = function (ambit, callback){
     });
 };
 
+export const updateAmbit = function (ambit, callback){
+  axios({
+    method:'put',
+    url:'/ambits',
+    contentType: 'application/json',
+    data: {ambit: ambit}
+    }).then(function(response){
+      callback(response, null);
+    }).catch(function(error) {
+      callback(null, error);
+    });
+};
+
 export const getAllAmbits = function(callback) {
   let token = getToken();
   if (token) {

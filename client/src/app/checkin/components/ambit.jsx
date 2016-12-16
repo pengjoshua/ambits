@@ -33,6 +33,11 @@ const cardStyle = {
   'margin': '10px'
 };
 
+const editStyle = {
+  color: 'white',
+  backgroundColor:'blue',
+};
+
 const linkStyle = {
   color:'white',
   'textDecoration':'none'
@@ -76,7 +81,11 @@ class Ambit extends React.Component {
             style={this.props.ambit.checkedIn ? checkedStyle : notCheckedStyle}
           />
           <FlatButton
-            label={<Link to='/display' style={linkStyle}>Stats</Link>}//send to
+            label={<Link to={{pathname: '/schedule', state: this.props.ambit}} style={linkStyle}>Edit</Link>}//send to the stats page of the ambit.
+            style={editStyle}
+          />
+          <FlatButton
+            label={<Link to='/display' style={linkStyle}>Stats</Link>}//send to the stats page of the ambit.
             style={statsStyle}
           />
           <FlatButton

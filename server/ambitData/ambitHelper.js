@@ -94,3 +94,19 @@ module.exports.deleteAmbit = function(req, res, next) {
       next(error);
     });
 }
+
+module.exports.updateAmbit = function(req, res, next) {
+  //send an array containing all the ambits back to the user.
+  var refId = req.body.ambit.refId;
+
+  var ambit = req.body.ambit;
+  updateAmbit({refId: refId}, ambit)
+    .then(function(ambit){
+      console.log("Server: Ambit updated");
+      res.send(ambit);
+    })
+    .fail(function (error) {
+      console.log("Server: Failed to update Ambit");
+      next(error);
+    });
+};
