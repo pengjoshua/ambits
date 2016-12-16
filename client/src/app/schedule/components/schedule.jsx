@@ -50,6 +50,11 @@ export default class ScheduleContainer extends React.Component {
       onSelectDaysInputThursday: this.onSelectDaysInputThursday.bind(this),
       onSelectDaysInputFriday: this.onSelectDaysInputFriday.bind(this),
       onSelectDaysInputSaturday: this.onSelectDaysInputSaturday.bind(this),
+      onSelectDaysInputSelectAll: this.onSelectDaysInputSelectAll.bind(this),
+      onSelectDaysInputWeekdays: this.onSelectDaysInputWeekdays.bind(this),
+      onSelectDaysInputWeekends: this.onSelectDaysInputWeekends.bind(this),
+      onSelectDaysInputMWF: this.onSelectDaysInputMWF.bind(this),
+      onSelectDaysInputTR: this.onSelectDaysInputTR.bind(this)
     };
   }
 
@@ -121,6 +126,50 @@ export default class ScheduleContainer extends React.Component {
 
 // DONT JUDGE ME, IM PRESSED FOR TIME D;
 //////////////////////////////////////////////////
+onSelectDaysInputSelectAll(event, checked) {
+  var currentState = this.state;
+  currentState.weekdays[0] = checked;
+  currentState.weekdays[1] = checked;
+  currentState.weekdays[2] = checked;
+  currentState.weekdays[3] = checked;
+  currentState.weekdays[4] = checked;
+  currentState.weekdays[5] = checked;
+  currentState.weekdays[6] = checked;
+  this.setState(currentState);
+}
+
+onSelectDaysInputWeekdays(event, checked) {
+  var currentState = this.state;
+  currentState.weekdays[1] = checked;
+  currentState.weekdays[2] = checked;
+  currentState.weekdays[3] = checked;
+  currentState.weekdays[4] = checked;
+  currentState.weekdays[5] = checked;
+  this.setState(currentState);
+}
+
+onSelectDaysInputWeekends(event, checked) {
+  var currentState = this.state;
+  currentState.weekdays[0] = checked;
+  currentState.weekdays[6] = checked;
+  this.setState(currentState);
+}
+
+onSelectDaysInputMWF(event, checked) {
+  var currentState = this.state;
+  currentState.weekdays[1] = checked;
+  currentState.weekdays[3] = checked;
+  currentState.weekdays[5] = checked;
+  this.setState(currentState);
+}
+
+onSelectDaysInputTR(event, checked) {
+  var currentState = this.state;
+  currentState.weekdays[2] = checked;
+  currentState.weekdays[4] = checked;
+  this.setState(currentState);
+}
+
 onSelectDaysInputSunday(event, checked) {
   var currentState = this.state;
   currentState.weekdays[0] = checked;
