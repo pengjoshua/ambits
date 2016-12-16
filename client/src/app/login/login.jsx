@@ -118,6 +118,7 @@ class Login extends Component {
           <Dialog
             autoDetectWindowHeight={false}
             overlayClassName='hidden'
+            overlayStyle={{backgroundColor: '#fff'}}
             open={this.state.loginIsOpen}
             title='Welcome!'
             actions={standardActions}
