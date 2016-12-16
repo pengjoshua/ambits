@@ -53,7 +53,6 @@ export default class ScheduleContainer extends React.Component {
     };
   }
 
-
   onNameInput(nameInput) {
       this.setState({
         name: nameInput.target.value
@@ -167,8 +166,13 @@ onSelectDaysInputSaturday(event, checked) {
 
 
   render() {
+    const windowStyle = {
+      marginTop: '64px', // set top bar height (10px spacing)
+      padding: '15px'
+    };
+
     return (
-      <div>
+      <div style={windowStyle}>
         <div>
           <AmbitNameInput
             onNameInput={this.onNameInput}

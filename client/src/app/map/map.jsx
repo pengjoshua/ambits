@@ -23,6 +23,10 @@ const modeMenu = [
   <MenuItem key={4} value={"TRANSIT"} primaryText="transit ride" />
 ];
 
+const windowStyle = {
+  marginTop: '74px', // set top bar height (10px spacing)
+};
+
 const durationMenu = [
   <MenuItem key={1} value={"10"} primaryText="within 10 min" />,
   <MenuItem key={2} value={"15"} primaryText="within 15 min" />,
@@ -642,7 +646,7 @@ class Map extends Component {
 
   render() {
     return (
-      <div className="container">
+      <div className="container" styles={windowStyle}>
 
         <ToggleDisplay show={this.state.show}>
         <div className="options-box">
@@ -741,17 +745,17 @@ class Map extends Component {
 
         <div id="map"></div>
 
-          <FloatingActionButton 
-            mini={true} 
-            onTouchTap={this.showPanel.bind(this)}   
+          <FloatingActionButton
+            mini={true}
+            onTouchTap={this.showPanel.bind(this)}
             style={panel}
             secondary={true}
           >
             <ContentAdd />
           </FloatingActionButton>
 
-          <RaisedButton 
-            onTouchTap={this.getCoordinates.bind(this)}   
+          <RaisedButton
+            onTouchTap={this.getCoordinates.bind(this)}
             label={<Link to='/schedule' style={linkStyle}>Schedule Ambit</Link> }
             buttonStyle={actionStyle}
             primary = {true}
