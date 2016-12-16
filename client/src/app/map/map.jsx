@@ -120,10 +120,6 @@ const zoomAreaStyle = {
   margin: '0 20px 0 0'
 }
 
-const go = {
-  margin: '50px 15px 0 0'
-};
-
 const zoomStyle = {
   color: 'white',
   backgroundColor: Colors.purpleA200,
@@ -131,6 +127,14 @@ const zoomStyle = {
   height:'40px',
   width:'90px'
 };
+
+const destGo = {
+  margin: '50px 15px 0 0'
+};
+
+const searchGo = {
+  margin: '0 0 0 10px'
+}
 
 const radio = {
   margin: 0,
@@ -160,6 +164,7 @@ class Map extends Component {
     this.drawingManager = {};
     this.polygon = null;
     this.state = {
+      searchFieldValue: '',
       zoomFieldValue: '',
       withinFieldValue: '',
       modeValue: '',
@@ -652,7 +657,7 @@ class Map extends Component {
     this.hideMarkers(this.placeMarkers);
     var places = searchBox.getPlaces();
     // For each place, get the icon, name and location.
-    createMarkersForPlaces(places);
+    this.createMarkersForPlaces(places);
     if (places.length == 0) {
       window.alert('We did not find any places matching that search!');
     }
@@ -664,12 +669,13 @@ class Map extends Component {
     var bounds = this.map.getBounds();
     this.hideMarkers(this.placeMarkers);
     var placesService = new google.maps.places.PlacesService(this.map);
+    var ctx = this;
     placesService.textSearch({
       query: document.getElementById('places-search').value,
       bounds: bounds
     }, function(results, status) {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
-        this.createMarkersForPlaces(results);
+        ctx.createMarkersForPlaces(results);
       }
     });
   }
@@ -756,8 +762,11 @@ class Map extends Component {
     });
   }
 
+  handleSearchFieldChange(e) {
+    this.setState({ searchFieldValue: e.target.value });
+  }
 
-  handleTextFieldChange(e) {
+  handleZoomFieldChange(e) {
     this.setState({ zoomFieldValue: e.target.value });
   }
 
@@ -773,6 +782,12 @@ class Map extends Component {
   handleDurationChange(e, index, value) {
     this.setState({ durationValue: value });
     console.log('handleDurationChange', this.state.durationValue)
+  }
+
+  handleSearchSubmit(e) {
+    e.preventDefault();
+    this.textSearchPlaces();
+    this.setState({ searchFieldValue: '' });
   }
 
   handleAreaSubmit(e) {
@@ -862,7 +877,7 @@ class Map extends Component {
                     primary={true}
                     icon={<ActionAndroid />}
                     onClick={this.searchWithinTime.bind(this)} 
-                    style={go}
+                    style={destGo}
                   />           
                 </td>
               </tr>
@@ -877,7 +892,7 @@ class Map extends Component {
                   <TextField
                     id="zoom-to-area-text"
                     value={this.state.zoomFieldValue}
-                    onChange={this.handleTextFieldChange.bind(this)}
+                    onChange={this.handleZoomFieldChange.bind(this)}
                     floatingLabelText="Zoom in on area or address"
                     floatingLabelStyle={floatingLabelStyle}
                     floatingLabelFocusStyle={floatingLabelFocusStyle}
@@ -903,12 +918,28 @@ class Map extends Component {
           <table>
             <tbody>
               <tr>
+                <td>        
+                  <span className="searchText">Search for nearby places</span>
+                  <form id="search-field" onSubmit={this.handleSearchSubmit.bind(this)}>
+                    <input 
+                      id="places-search" 
+                      size='25'
+                      type="text" 
+                      placeholder="Ex: Hack Reactor, SF"
+                      value={this.state.searchFieldValue}
+                      onChange={this.handleSearchFieldChange.bind(this)}
+                    />
+                  </form>
+                </td>
                 <td>
-                  <div>
-                  <span className="text">Search for nearby places</span>
-                  <input id="places-search" type="text" placeholder="Ex: Pizza delivery in SF"></input>
-                  <input id="go-places" type="button" value="Go"></input>
-                  </div>
+                  <RaisedButton
+                    label="go"
+                    labelPosition="after"
+                    secondary={true}
+                    icon={<ActionAndroid />}
+                    onClick={this.textSearchPlaces.bind(this)} 
+                    style={searchGo}
+                  />                    
                 </td>
               </tr>
             </tbody>

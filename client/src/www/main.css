@@ -94,6 +94,16 @@ body {
   z-index: 1;
 }
 
+.searchText {
+  color: #C0CA33;
+  margin: 0 0 0 10px;
+}
+
+#places-search {
+  margin: 0 0 0 10px;
+  width: 290px;
+  font-size: 12pt;
+}
 
 /*#map {
   bottom:0px;
