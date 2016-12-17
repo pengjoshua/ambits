@@ -15,6 +15,14 @@ import ActionAndroid from 'material-ui/svg-icons/action/android';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import ToggleDisplay from 'react-toggle-display';
+import FontIcon from 'material-ui/FontIcon';
+import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
+import Paper from 'material-ui/Paper';
+import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
+
+const recentsIcon = <FontIcon className="material-icons">restore</FontIcon>;
+const favoritesIcon = <FontIcon className="material-icons">favorite</FontIcon>;
+const nearbyIcon = <IconLocationOn />;
 
 
 const modeMenu = [
@@ -175,6 +183,7 @@ class Map extends Component {
     this.drawingManager = {};
     this.polygon = null;
     this.state = {
+      selectedIndex: 0,
       searchFieldValue: '',
       zoomFieldValue: '',
       withinFieldValue: '',
@@ -329,6 +338,7 @@ class Map extends Component {
               id: 'currentLocation'
             });
             // console.log('results', results[0].formatted_address);
+            infowindow.setPosition(pos);
             infowindow.setContent('Current location: \r' + results[0].formatted_address);
             infowindow.open(map, currentLocationMarker);
           } else {
@@ -340,7 +350,7 @@ class Map extends Component {
       });
     };
 
-    var infoWindow = new googleMaps.InfoWindow({ map: map });
+    var infowindow = new googleMaps.InfoWindow({ map: map });
     var geocoder = new google.maps.Geocoder;
     // Try HTML5 geolocation.
     if (navigator.geolocation) {
@@ -350,19 +360,18 @@ class Map extends Component {
           lng: position.coords.longitude
         };
 
-        geocodeLatLng(geocoder, map, infoWindow, pos);
+        geocodeLatLng(geocoder, map, infowindow, pos);
 
-        infoWindow.setPosition(pos);
+        // infoWindow.setPosition(pos);
         // infoWindow.setContent('Location found.');
         console.log('position', pos);
-
         map.setCenter(pos);
       }, function() {
-        handleLocationError(true, infoWindow, map.getCenter());
+        handleLocationError(true, infowindow, map.getCenter());
       });
     } else {
       // Browser doesn't support Geolocation
-      handleLocationError(false, infoWindow, map.getCenter());
+      handleLocationError(false, infowindow, map.getCenter());
     }
   
 
@@ -542,7 +551,9 @@ class Map extends Component {
       this.markers[i].setMap(this.map);
       bounds.extend(this.markers[i].position);
     }
-    this.map.fitBounds(bounds);
+    // if (this.markers.length > 0) {
+    //   this.map.fitBounds(bounds);
+    // }
   }
 
   // This function will loop through the markers and hide them all.
@@ -907,6 +918,9 @@ class Map extends Component {
     this.setState({ show: !this.state.show });
   }
 
+  selectBot(index) {
+    this.setState({ selectedIndex: index });
+  }
 
   render() {
     return (
