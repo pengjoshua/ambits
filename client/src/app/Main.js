@@ -25,7 +25,7 @@ const styles = {
   },
 };
 
-const linkStyle = {
+const titleStyle = {
   textDecoration: 'none',
   color: 'white'
 }
@@ -33,6 +33,11 @@ const linkStyle = {
 const appBarStyle = {
   position: 'fixed',
   top: '0',
+};
+
+const linkStyle = {
+  color: 'rgba(0, 0, 0, 0.870588)',
+  textDecoration: 'none'
 };
 
 const muiTheme = getMuiTheme({
@@ -78,7 +83,7 @@ class Main extends Component {
       <MuiThemeProvider muiTheme={muiTheme}>
         <div>
           <AppBar
-            title={<Link to="/" style={linkStyle}>Ambitually</Link>}
+            title={<Link to="/" style={titleStyle}>Ambitually</Link>}
             style={appBarStyle}
             onLeftIconButtonTouchTap={this.handleDrawerToggle}
             iconElementRight={usernameIcon}
@@ -88,10 +93,10 @@ class Main extends Component {
             open={this.state.open}
             onRequestChange={(open) => this.setState({open})}
           >
-            <Link to="/" onClick={this.handleDrawerToggle}><MenuItem>Home</MenuItem></Link>
-            <Link to='/display' onClick={this.handleDrawerToggle}><MenuItem>Statistics</MenuItem></Link>
-            <Link to='/map' onClick={this.handleDrawerToggle}><MenuItem>Maps</MenuItem></Link>
-            <Link to='/' onClick={(e)=>{this.handleDrawerToggle();this.handleLogout.call(this)}}><MenuItem>Logout</MenuItem></Link>
+            <Link to="/" style={linkStyle} onClick={this.handleDrawerToggle}><MenuItem>Home</MenuItem></Link>
+            <Link to='/display' style={linkStyle} onClick={this.handleDrawerToggle}><MenuItem>Statistics</MenuItem></Link>
+            <Link to='/map' style={linkStyle} onClick={this.handleDrawerToggle}><MenuItem>Maps</MenuItem></Link>
+            <Link to='/' style={linkStyle} onClick={(e)=>{this.handleDrawerToggle();this.handleLogout.call(this)}}><MenuItem>Logout</MenuItem></Link>
           </Drawer>
           {LoginModal}
           {this.props.children}

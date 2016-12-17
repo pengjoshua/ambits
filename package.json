@@ -6,7 +6,8 @@
   "scripts": {
     "example": "webpack-dev-server --config webpack-dev-server.config.js --progress --hot --inline --colors",
     "client-start": "webpack -d --watch",
-    "start": "nodemon server/server.js",
+    "start:db": "mongod --dbpath server/data/db",
+    "start:server": "nodemon server/server.js",
     "//test": "node server/server.js & mocha server/specs/; pkill -n node",
     "test": "mocha client/specs/",
     "build": "webpack --config webpack-production.config.js --progress --colors",

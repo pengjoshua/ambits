@@ -20,6 +20,11 @@ import { BottomNavigation, BottomNavigationItem } from 'material-ui/BottomNaviga
 import Paper from 'material-ui/Paper';
 import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
 
+/*
+ * Many of the methods found this script were modified and adapted from
+ * Udacity's Google Maps APIs course: https://github.com/udacity/ud864
+*/
+
 const drawShapeIcon = <i className="material-icons">check_box_outline_blank</i>;
 const editLocationIcon = <i className="material-icons">edit_location</i>;
 const addLocationIcon = <i className="material-icons">add_location</i>;
@@ -162,8 +167,8 @@ const radio = {
 };
 
 const linkStyle = {
-  color:'white',
-  'textDecoration':'none'
+  color: 'white',
+  textDecoration: 'none'
 };
 
 var Coords = {
@@ -175,6 +180,7 @@ class Map extends Component {
   constructor(props, context) {
     super(props, context);
 
+    this.pos = {};
     this.placeMarkers = [];
     this.markers = [];
     this.ambits = [];
@@ -310,7 +316,7 @@ class Map extends Component {
     var map = new googleMaps.Map(document.getElementById('map'), {
       zoom: 15,
       styles: styles,
-      mapTypeControl: false,
+      // mapTypeControl: false,
       center: hackReactor
     });
 
@@ -331,6 +337,7 @@ class Map extends Component {
           if (results[1]) {
             // map.setZoom(11);
             var currentLocationMarker = new google.maps.Marker({
+              optimized: false,
               position: latlng,
               map: map,
               animation: googleMaps.Animation.DROP,
@@ -352,7 +359,7 @@ class Map extends Component {
     };
 
     var infowindow = new googleMaps.InfoWindow({ map: map });
-    var geocoder = new google.maps.Geocoder;
+    var geocoder = new googleMaps.Geocoder;
     // Try HTML5 geolocation.
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
@@ -365,9 +372,10 @@ class Map extends Component {
 
         // infoWindow.setPosition(pos);
         // infoWindow.setContent('Location found.');
-        console.log('position', pos);
-        
+        console.log('position', pos);        
+
         // map.setCenter(pos);
+
       }, function() {
         handleLocationError(true, infowindow, map.getCenter());
       });
@@ -386,8 +394,8 @@ class Map extends Component {
       'http://plebeosaur.us/etc/map/bluedot_retina.png',
       null, // size
       null, // origin
-      new google.maps.Point( 8, 8 ), // anchor (move to center of marker)
-      new google.maps.Size( 17, 17 ) // scaled size (required for Retina display icon)
+      new google.maps.Point(8, 8), // anchor (move to center of marker)
+      new google.maps.Size(17, 17) // scaled size (required for Retina display icon)
     );
 
     // Create a "highlighted location" marker color for when the user
@@ -416,6 +424,7 @@ class Map extends Component {
       var position = location;
       var title = this.ambits[i].name;
       var marker = new googleMaps.Marker({
+        optimized: false,
         map: map,
         position: position,
         title: title,
@@ -425,6 +434,13 @@ class Map extends Component {
         id: i
       });
       markers.push(marker);
+
+      // var overlay = new google.maps.OverlayView();
+      // overlay.draw = function() {
+      //   this.getPanes().markerLayer.id='markerLayer';
+      // };
+      // console.log(overlay);
+      // overlay.setMap(map);
 
       var ctx = this;
       marker.addListener('click', function() {
@@ -500,7 +516,7 @@ class Map extends Component {
       latitude: this.map.getCenter().lat(),
       longitude: this.map.getCenter().lng()
     };
-    console.log(Coords);
+    // console.log(Coords);
   }
 
   populateInfoWindow(marker, infowindow) {
@@ -1075,6 +1091,7 @@ class Map extends Component {
               <ContentAdd />
             </FloatingActionButton>  
 
+        
         <div id="map"></div>
 
           <RaisedButton

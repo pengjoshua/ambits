@@ -25,6 +25,8 @@ const muiTheme = getMuiTheme({
   }
 });
 
+
+
 const createStyle = {
   color: 'white',
   backgroundColor:'orange',
@@ -49,6 +51,7 @@ const userFeedback = {
 
 
 export default class CheckinContainer extends React.Component {
+
   constructor(props) {
     super(props);
 
@@ -59,7 +62,8 @@ export default class CheckinContainer extends React.Component {
         open: false,
         autoHideDuration: 3000,
         message: userFeedback.default
-      }
+      },
+      filteredAmbitList: null
     };
     this.handleCheckinAmbit = this.handleCheckinAmbit.bind(this);
   }
@@ -118,6 +122,22 @@ export default class CheckinContainer extends React.Component {
     });
   }
 
+  filterAmbits(e) {
+    let filterText = e.target.value;
+    let filteredAmbits = this.state.ambits
+      .filter((ambit) => {
+
+      if (filterText === undefined || filterText === '') {
+        return true;
+      } else if (ambit) {
+        return ambit.name.toLowerCase().includes(filterText.toLowerCase());
+      }
+    });
+    this.setState({
+      filteredAmbitList: filteredAmbits
+    });
+  }
+
   handleShowStats(){}
 
   render() {
@@ -125,12 +145,15 @@ export default class CheckinContainer extends React.Component {
       return (
         <MuiThemeProvider muiTheme={muiTheme}>
           <div>
-            <AmbitList ambits={this.state.ambits}
+            <AmbitList
+              filterText={this.state.filterText}
+              ambits={this.state.filteredAmbitList || this.state.ambits}
             handleCheckinAmbit={this.handleCheckinAmbit}
-            handleDeleteAmbit={this.handleDeleteAmbit.bind(this)}/>
+            handleDeleteAmbit={this.handleDeleteAmbit.bind(this)}
+            filterAmbits={this.filterAmbits.bind(this)}/>
 
             <RaisedButton
-            // onTouchTap={this.handleCreateAmbit}
+            onTouchTap={this.handleCreateAmbit}
             buttonStyle={createStyle}
             containerElement={<Link to='/map'/>}
             fullWidth = {true}

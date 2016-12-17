@@ -5,9 +5,9 @@ import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'mat
 import FlatButton from 'material-ui/FlatButton';
 import Snackbar from 'material-ui/Snackbar';
 import {Link} from 'react-router';
-import {nextOccurance} from '../../utils/utils.js';
-import moment from 'moment';
 import AttendanceStats from './attendanceStats.jsx'
+import {nextOccurrence} from '../../utils/utils.js'
+import moment from 'moment'
 
 const notCheckedStyle = {
   color: 'white', //TODO: not working colors...
@@ -62,20 +62,22 @@ class Ambit extends React.Component {
 
   render () {
     return (
-      <tag>
-        <Card style={cardStyle}>
-          <CardHeader
-            title = {this.props.ambit.name}
-            avatar ={'https://dummyimage.com/100x100/000/fff&text=' + this.props.ambit.name[0].toUpperCase()}
-            subtitle = {this.props.ambit.frequency}
-          />
-          <CardTitle
-            title = { nextOccurance(this.props.ambit).toLocaleTimeString()
-            }
-            subtitle = {
-            moment(nextOccurance(this.props.ambit)).fromNow()
-            }
-          />
+
+      <Card style={cardStyle}>
+        <CardHeader
+          title = {this.props.ambit.name}
+          avatar ={'https://dummyimage.com/100x100/000/fff&text=' + this.props.ambit.name[0].toUpperCase()}
+          subtitle = {this.props.ambit.frequency}
+        />
+        <CardTitle
+          title = { nextOccurrence(this.props.ambit).toLocaleString()
+          }
+          subtitle = {
+
+          moment(nextOccurrence(this.props.ambit)).fromNow()
+          }
+        />
+
           <CardActions>
             <FlatButton
               label= {
@@ -106,7 +108,6 @@ class Ambit extends React.Component {
            {this.state.showStats ? <AttendanceStats ambit = {this.props.ambit}/> : null}
           </CardActions>
         </Card>
-      </tag>
     );
   }
 };

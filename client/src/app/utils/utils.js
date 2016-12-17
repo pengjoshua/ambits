@@ -193,15 +193,15 @@ export const checkinAmbit = function(ambit, successCb,errorCb) {
  }
 };
 
-export const nextOccurance = (ambit) => {
-  console.log(ambit);
+
+export const nextOccurrence = (ambit) => {
   let time = ambit.startTime.split(':');
   let hours = parseInt(time[0]);
   let minutes = parseInt(time[1]);
-  let daysOfWeek = ambit.weekdays;
+  let daysOfWeek = ambit.weekdays.slice();
 
   // Reformat weekdays to [Sa,Su,M,T,W,Th,F,S]
-  let saturday = ambit.weekdays.pop();
+  let saturday = daysOfWeek.pop();
   daysOfWeek.unshift(saturday);
 
   // reduce truthy values to days of the week they represent
@@ -221,10 +221,18 @@ export const nextOccurance = (ambit) => {
      }]
   };
 
-  var occurance = later.schedule(sched);
-  // Use local time when performing next occurance calculations
+  let occurrence = later.schedule(sched);
+  // Use local time when performing next occurrence calculations
   later.date.localTime();
 
-  // return next occurance starting from the current time
-  return occurance.next(1, new Date());
+  // Ensure we are comparing to start date if it is in the future
+  let now = new Date((new Date()).toLocaleString());
+  let startDate = new Date(ambit.startDate + " " + ambit.startTime);
+  startDate.setHours(hours);
+  startDate.setMinutes(minutes);
+
+  var dateToCompare = startDate.getTime() > now.getTime() ? startDate : now;
+
+  // return next occurrence starting from the current time
+  return occurrence.next(1, dateToCompare);
 };
