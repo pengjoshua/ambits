@@ -16,12 +16,13 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import ToggleDisplay from 'react-toggle-display';
 import FontIcon from 'material-ui/FontIcon';
-import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
+import { BottomNavigation, BottomNavigationItem } from 'material-ui/BottomNavigation';
 import Paper from 'material-ui/Paper';
 import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
 
-const recentsIcon = <FontIcon className="material-icons">restore</FontIcon>;
-const favoritesIcon = <FontIcon className="material-icons">favorite</FontIcon>;
+const drawShapeIcon = <i className="material-icons">check_box_outline_blank</i>;
+const editLocationIcon = <i className="material-icons">edit_location</i>;
+const addLocationIcon = <i className="material-icons">add_location</i>;
 const nearbyIcon = <IconLocationOn />;
 
 
@@ -183,7 +184,7 @@ class Map extends Component {
     this.drawingManager = {};
     this.polygon = null;
     this.state = {
-      selectedIndex: 0,
+      selectedIndex: null,
       searchFieldValue: '',
       zoomFieldValue: '',
       withinFieldValue: '',
@@ -919,7 +920,19 @@ class Map extends Component {
   }
 
   selectBot(index) {
+    console.log('selectBot', index);
     this.setState({ selectedIndex: index });
+    if (index === 0) {
+      this.toggleDrawing();
+    } else if (index === 1) {
+      this.getCoordinates();
+    } else if (index === 2) {
+      this.hideMarkers();
+    } else if (index === 3) {
+      this.showMarkers();
+    } else {
+      // do nothing
+    }
   }
 
   render() {
@@ -1095,6 +1108,31 @@ class Map extends Component {
             primary = {true}
             fullWidth={false}
           ></RaisedButton>
+
+          <Paper zDepth={1} className="bottomNav">
+            <BottomNavigation selectedIndex={this.state.selectedIndex}>
+              <BottomNavigationItem
+                label="Draw Shape"
+                icon={drawShapeIcon}
+                onTouchTap={() => this.selectBot(0)}
+              />
+              <BottomNavigationItem
+                label={<Link to='/schedule' style={linkStyle}>Schedule Ambit</Link> }
+                icon={addLocationIcon}
+                onTouchTap={() => this.selectBot(1)}
+              />
+              <BottomNavigationItem
+                label="Hide Ambits"
+                icon={editLocationIcon}
+                onTouchTap={() => this.selectBot(2)}
+              />
+              <BottomNavigationItem
+                label="Show Ambits"
+                icon={nearbyIcon}
+                onTouchTap={() => this.selectBot(3)}
+              />
+            </BottomNavigation>
+          </Paper>
 
       </div>
     )
