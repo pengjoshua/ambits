@@ -15,7 +15,14 @@ import ActionAndroid from 'material-ui/svg-icons/action/android';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import ToggleDisplay from 'react-toggle-display';
-import Geosuggest from 'react-geosuggest';
+import FontIcon from 'material-ui/FontIcon';
+import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
+import Paper from 'material-ui/Paper';
+import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
+
+const recentsIcon = <FontIcon className="material-icons">restore</FontIcon>;
+const favoritesIcon = <FontIcon className="material-icons">favorite</FontIcon>;
+const nearbyIcon = <IconLocationOn />;
 
 
 const modeMenu = [
@@ -24,6 +31,10 @@ const modeMenu = [
   <MenuItem key={3} value={"DRIVING"} primaryText="drive" />,
   <MenuItem key={4} value={"TRANSIT"} primaryText="transit ride" />
 ];
+
+const windowStyle = {
+  marginTop: '64px', // set top bar height
+};
 
 const durationMenu = [
   <MenuItem key={1} value={"10"} primaryText="within 10 min" />,
@@ -85,32 +96,43 @@ const floatingLabelFocusStyle = {
 };
 
 const selectTimeStyle = {
-  top: '50px',
+  top: '-15px',
   width: 180,
   left: '6%'
 };
 
 const selectModeStyle = {
-  top: '50px',
+  top: '-15px',
   width: 180,
   left: '30px'
 };
 
 const zoomInputStyle = {
-  top: '30px',
   width: 290,
   left: '3%',
   margin: '0 20px 0 0'
 };
 
+const destGo = {
+  top: '-30px',
+  margin: '0 15px 0 0'
+};
+
 const panel = {
   position: 'fixed',
   zIndex: 9999,
-  top: '1.5%',
+  top: '12px',
   left: '50%'
 };
 
-const zoomTextStyle = { 
+const panelHide = {
+  position: 'fixed',
+  display: 'none',
+  top: '12px',
+  left: '50%'
+};
+
+const zoomTextStyle = {
   color: Colors.lime600
 };
 
@@ -120,10 +142,6 @@ const zoomAreaStyle = {
   margin: '0 20px 0 0'
 }
 
-const go = {
-  margin: '50px 15px 0 0'
-};
-
 const zoomStyle = {
   color: 'white',
   backgroundColor: Colors.purpleA200,
@@ -131,6 +149,11 @@ const zoomStyle = {
   height:'40px',
   width:'90px'
 };
+
+
+const searchGo = {
+  margin: '0 0 10px 10px'
+}
 
 const radio = {
   margin: 0,
@@ -160,6 +183,7 @@ class Map extends Component {
     this.drawingManager = {};
     this.polygon = null;
     this.state = {
+      searchFieldValue: '',
       zoomFieldValue: '',
       withinFieldValue: '',
       modeValue: '',
@@ -175,10 +199,9 @@ class Map extends Component {
   componentWillMount() {
     Utils.getAllAmbits((res) => {
       this.ambits = this.ambits.concat(res);
-      console.log('ambits', this.ambits);
     });
   }
-  
+
   componentDidMount() {
     loadGoogleMapsAPI({
       // key: "AIzaSyAHJfNJp8pbRxf_05L1TIm5ru-Dvcla-Nw",
@@ -188,6 +211,12 @@ class Map extends Component {
     }).then((googleMaps) => {
       this.initMap(googleMaps);
       var map = this.map; // new instance of googleMaps
+
+      // Listener to close menu
+      var ctx = this;
+      map.addListener('click', function() {
+        ctx.setState({ show: false });
+      });
 
       // var centerIcon = {
       //   url: 'http://icon-icons.com/icons2/864/PNG/512/Add_Circle_Plus_Download_icon-icons.com_67898.png',
@@ -283,8 +312,80 @@ class Map extends Component {
       center: hackReactor
     });
 
+    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+      infoWindow.setPosition(pos);
+      infoWindow.setContent(browserHasGeolocation ?
+                            'Error: The Geolocation service failed.' :
+                            'Error: Your browser doesn\'t support geolocation.');
+    };
+
+    function geocodeLatLng(geocoder, map, infowindow, pos) {
+      // var input = document.getElementById('latlng').value;
+      var input = pos.lat + ', ' + pos.lng;
+      var latlngStr = input.split(',', 2);
+      var latlng = {lat: parseFloat(latlngStr[0]), lng: parseFloat(latlngStr[1])};
+      geocoder.geocode({'location': latlng}, function(results, status) {
+        if (status === 'OK') {
+          if (results[1]) {
+            // map.setZoom(11);
+            var currentLocationMarker = new google.maps.Marker({
+              position: latlng,
+              map: map,
+              animation: googleMaps.Animation.DROP,
+              icon: bluedot,
+              draggable: true,
+              id: 'currentLocation'
+            });
+            // console.log('results', results[0].formatted_address);
+            infowindow.setContent('Current location: \r' + results[0].formatted_address);
+            infowindow.open(map, currentLocationMarker);
+          } else {
+            window.alert('No results found');
+          }
+        } else {
+          window.alert('Geocoder failed due to: ' + status);
+        }
+      });
+    };
+
+    var infoWindow = new googleMaps.InfoWindow({ map: map });
+    var geocoder = new google.maps.Geocoder;
+    // Try HTML5 geolocation.
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        var pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+
+        geocodeLatLng(geocoder, map, infoWindow, pos);
+
+        infoWindow.setPosition(pos);
+        // infoWindow.setContent('Location found.');
+        console.log('position', pos);
+
+        map.setCenter(pos);
+      }, function() {
+        handleLocationError(true, infoWindow, map.getCenter());
+      });
+    } else {
+      // Browser doesn't support Geolocation
+      handleLocationError(false, infoWindow, map.getCenter());
+    }
+  
+
     // Style the markers a bit. This will be our listing marker icon.
     var defaultIcon = this.makeMarkerIcon(Colors.limeA400.slice(1));
+
+    // Create a current location icon
+    var currentLocationIcon = this.makeMarkerIcon(Colors.pinkA400.slice(1));
+    var bluedot = new google.maps.MarkerImage(
+      'http://plebeosaur.us/etc/map/bluedot_retina.png',
+      null, // size
+      null, // origin
+      new google.maps.Point( 8, 8 ), // anchor (move to center of marker)
+      new google.maps.Size( 17, 17 ) // scaled size (required for Retina display icon)
+    );
 
     // Create a "highlighted location" marker color for when the user
     // mouses over the marker.
@@ -336,6 +437,7 @@ class Map extends Component {
       marker.addListener('mouseout', function() {
         this.setIcon(defaultIcon);
       });
+
     }
     // map.fitBounds(bounds);
 
@@ -498,10 +600,10 @@ class Map extends Component {
       // Geocode the address/area entered to get the center. Then, center the map
       // on it and zoom in
       geocoder.geocode(
-      { 
+      {
         address: address,
         componentRestrictions: { locality: 'San Francisco' }
-      }, 
+      },
       (results, status) => {
         if (status === google.maps.GeocoderStatus.OK) {
           this.map.setCenter(results[0].geometry.location);
@@ -606,7 +708,7 @@ class Map extends Component {
                 // The destination is user entered address.
                 destination: destinationAddress,
                 travelMode: google.maps.TravelMode[mode]
-              }, 
+              },
               (response, status) => {
                 if (status === google.maps.DirectionsStatus.OK) {
                   var directionsDisplay = new google.maps.DirectionsRenderer({
@@ -652,7 +754,7 @@ class Map extends Component {
     this.hideMarkers(this.placeMarkers);
     var places = searchBox.getPlaces();
     // For each place, get the icon, name and location.
-    createMarkersForPlaces(places);
+    this.createMarkersForPlaces(places);
     if (places.length == 0) {
       window.alert('We did not find any places matching that search!');
     }
@@ -664,12 +766,13 @@ class Map extends Component {
     var bounds = this.map.getBounds();
     this.hideMarkers(this.placeMarkers);
     var placesService = new google.maps.places.PlacesService(this.map);
+    var ctx = this;
     placesService.textSearch({
       query: document.getElementById('places-search').value,
       bounds: bounds
     }, function(results, status) {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
-        this.createMarkersForPlaces(results);
+        ctx.createMarkersForPlaces(results);
       }
     });
   }
@@ -756,8 +859,11 @@ class Map extends Component {
     });
   }
 
+  handleSearchFieldChange(e) {
+    this.setState({ searchFieldValue: e.target.value });
+  }
 
-  handleTextFieldChange(e) {
+  handleZoomFieldChange(e) {
     this.setState({ zoomFieldValue: e.target.value });
   }
 
@@ -773,6 +879,12 @@ class Map extends Component {
   handleDurationChange(e, index, value) {
     this.setState({ durationValue: value });
     console.log('handleDurationChange', this.state.durationValue)
+  }
+
+  handleSearchSubmit(e) {
+    e.preventDefault();
+    this.textSearchPlaces();
+    this.setState({ searchFieldValue: '' });
   }
 
   handleAreaSubmit(e) {
@@ -806,7 +918,7 @@ class Map extends Component {
 
   render() {
     return (
-      <div className="container">
+      <div className="container" style={windowStyle}>
 
         <ToggleDisplay show={this.state.show}>
         <div className="options-box">
@@ -839,7 +951,7 @@ class Map extends Component {
           </table>
 
           <table className="destination">
-            <tbody>   
+            <tbody>
               <tr>
                 <td>
                   <form id="within" onSubmit={this.handleWithinSubmit.bind(this)}>
@@ -861,9 +973,10 @@ class Map extends Component {
                     labelPosition="before"
                     primary={true}
                     icon={<ActionAndroid />}
-                    onClick={this.searchWithinTime.bind(this)} 
-                    style={go}
-                  />           
+                    onClick={this.searchWithinTime.bind(this)}
+                    style={destGo}
+                  />
+
                 </td>
               </tr>
             </tbody>
@@ -877,7 +990,7 @@ class Map extends Component {
                   <TextField
                     id="zoom-to-area-text"
                     value={this.state.zoomFieldValue}
-                    onChange={this.handleTextFieldChange.bind(this)}
+                    onChange={this.handleZoomFieldChange.bind(this)}
                     floatingLabelText="Zoom in on area or address"
                     floatingLabelStyle={floatingLabelStyle}
                     floatingLabelFocusStyle={floatingLabelFocusStyle}
@@ -887,9 +1000,9 @@ class Map extends Component {
                 </form>
                 </td>
                 <td>
-                  <RaisedButton 
+                  <RaisedButton
                     id="zoom-to-area"
-                    onTouchTap={this.zoomToArea.bind(this)}   
+                    onTouchTap={this.zoomToArea.bind(this)}
                     label="Zoom"
                     buttonStyle={zoomStyle}
                     primary = {true}
@@ -900,15 +1013,31 @@ class Map extends Component {
             </tbody>
           </table>
 
-          <table>
+          <table className="searchbar">
             <tbody>
               <tr>
                 <td>
-                  <div>
-                  <span className="text">Search for nearby places</span>
-                  <input id="places-search" type="text" placeholder="Ex: Pizza delivery in SF"></input>
-                  <input id="go-places" type="button" value="Go"></input>
-                  </div>
+                  <span className="searchText">Search for nearby places</span>
+                  <form id="search-field" onSubmit={this.handleSearchSubmit.bind(this)}>
+                    <input
+                      id="places-search"
+                      size='25'
+                      type="text"
+                      placeholder="Ex: Hack Reactor, SF"
+                      value={this.state.searchFieldValue}
+                      onChange={this.handleSearchFieldChange.bind(this)}
+                    />
+                  </form>
+                </td>
+                <td>
+                  <RaisedButton
+                    label="go"
+                    labelPosition="after"
+                    secondary={true}
+                    icon={<ActionAndroid />}
+                    onClick={this.textSearchPlaces.bind(this)}
+                    style={searchGo}
+                  />
                 </td>
               </tr>
             </tbody>
@@ -917,44 +1046,44 @@ class Map extends Component {
         </div>
         </ToggleDisplay>
 
-        <div id="map"></div> 
+            <FloatingActionButton
+              mini={true}
+              onTouchTap={this.showPanel.bind(this)}
+              style={this.state.show ? panelHide : panel}
+              secondary={true}
+            >
+              <ContentAdd />
+            </FloatingActionButton>  
 
-          <FloatingActionButton 
-            mini={true} 
-            onTouchTap={this.showPanel.bind(this)}   
-            style={panel}
-            secondary={true}
-          >
-            <ContentAdd />
-          </FloatingActionButton>
+        <div id="map"></div>
 
-          <RaisedButton 
-            onTouchTap={this.getCoordinates.bind(this)}   
+          <RaisedButton
+            onTouchTap={this.getCoordinates.bind(this)}
             label={<Link to='/schedule' style={linkStyle}>Schedule Ambit</Link> }
             buttonStyle={actionStyle}
             primary = {true}
             // containerElement={<Link to='/schedule'/>}
             fullWidth={false}
           ></RaisedButton>
-          <RaisedButton 
+          <RaisedButton
             id="show-markers"
-            onTouchTap={this.showMarkers.bind(this)}   
+            onTouchTap={this.showMarkers.bind(this)}
             label="Show markers"
             buttonStyle={showMarkersStyle}
             primary = {true}
             fullWidth={false}
           ></RaisedButton>
-          <RaisedButton 
+          <RaisedButton
             id="hide-markers"
-            onTouchTap={this.hideMarkers.bind(this)}   
+            onTouchTap={this.hideMarkers.bind(this)}
             label="Hide markers"
             buttonStyle={hideMarkersStyle}
             primary = {true}
             fullWidth={false}
           ></RaisedButton>
-          <RaisedButton 
+          <RaisedButton
             id="toggle-drawing"
-            onTouchTap={this.toggleDrawing.bind(this)}   
+            onTouchTap={this.toggleDrawing.bind(this)}
             label="Drawing tools"
             buttonStyle={drawingStyle}
             primary = {true}
