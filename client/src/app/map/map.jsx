@@ -30,7 +30,7 @@ const modeMenu = [
   <MenuItem key={1} value={"WALKING"} primaryText="walk" />,
   <MenuItem key={2} value={"BICYCLING"} primaryText="bike" />,
   <MenuItem key={3} value={"DRIVING"} primaryText="drive" />,
-  <MenuItem key={4} value={"TRANSIT"} primaryText="transit ride" />
+  <MenuItem key={4} value={"TRANSIT"} primaryText="transit" />
 ];
 
 const windowStyle = {
@@ -39,8 +39,8 @@ const windowStyle = {
 
 const durationMenu = [
   <MenuItem key={1} value={"10"} primaryText="within 10 min" />,
-  <MenuItem key={2} value={"15"} primaryText="within 15 min" />,
-  <MenuItem key={3} value={"30"} primaryText="within 30 min" />,
+  <MenuItem key={2} value={"20"} primaryText="within 20 min" />,
+  <MenuItem key={3} value={"40"} primaryText="within 40 min" />,
   <MenuItem key={4} value={"60"} primaryText="within 1 hour" />
 ];
 
@@ -48,7 +48,7 @@ const showMarkersStyle = {
   color: 'white',
   backgroundColor: Colors.indigo600,
   position: 'fixed',
-  top: 'calc(90% + 45px)',
+  top: 'calc(84% + 45px)',
   left: 'calc(50% - 82px)',
   height:'40px',
   width:'160px',
@@ -59,7 +59,7 @@ const hideMarkersStyle = {
   color: 'white',
   backgroundColor: Colors.deepPurple600,
   position: 'fixed',
-  top: '90%',
+  top: '84%',
   left: 'calc(50% - 82px)',
   height:'40px',
   width:'160px',
@@ -70,7 +70,7 @@ const actionStyle = {
   color: 'white',
   backgroundColor: Colors.purple600,
   position: 'fixed',
-  top: '90%',
+  top: '84%',
   left: 'calc(50% + 82px)',
   height:'40px',
   width:'160px',
@@ -81,7 +81,7 @@ const drawingStyle = {
   color: 'white',
   backgroundColor: Colors.purple900,
   position: 'fixed',
-  top: 'calc(90% + 45px)',
+  top: 'calc(84% + 45px)',
   left: 'calc(50% + 82px)',
   height:'40px',
   width:'160px',
@@ -123,14 +123,14 @@ const panel = {
   position: 'fixed',
   zIndex: 9999,
   top: '12px',
-  left: '50%'
+  left: 'calc(50% - 20px)'
 };
 
 const panelHide = {
   position: 'fixed',
   display: 'none',
   top: '12px',
-  left: '50%'
+  left: 'calc(50% - 20px)'
 };
 
 const zoomTextStyle = {
@@ -366,7 +366,8 @@ class Map extends Component {
         // infoWindow.setPosition(pos);
         // infoWindow.setContent('Location found.');
         console.log('position', pos);
-        map.setCenter(pos);
+        
+        // map.setCenter(pos);
       }, function() {
         handleLocationError(true, infowindow, map.getCenter());
       });
