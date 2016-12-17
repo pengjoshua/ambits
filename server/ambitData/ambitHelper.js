@@ -8,6 +8,43 @@ var createAmbit = q.nbind(Ambit.create, Ambit);
 var deleteAmbit = q.nbind(Ambit.findOneAndRemove, Ambit);
 var updateAmbit = q.nbind(Ambit.findOneAndUpdate, Ambit);
 
+updateMissed = function(ambit) {
+  var daysSince = function( date1, date2 ) {
+    var oneDay=1000*60*60*24;
+    var date1ms = date1.getTime();
+    var date2ms = date2.getTime();
+    var differenceMs = date2ms - date1ms;
+    return Math.floor(differenceMs/oneDay); 
+  }
+  var now = new Date()
+
+  var lastDate = new Date(Math.max(ambit.lastUpdate,
+    ambit.checkIns[ambit.checkIns.length - 1] ? ambit.checkIns[ambit.checkIns.length - 1] : ambit.startDate));
+  var daysSince = daysSince(lastDate, now);
+
+  if(daysSince < 1) { return; }
+  
+  var missed = ambit.missed;
+  var lastDay = (lastDate.getDay() + 1) % 7;
+
+  for(; lastDay < 7; lastDay++) {
+    missed[lastDay] += ambit.weekdays[lastDay] ? 1 : 0;
+    daysSince--;
+  }
+
+  for(thisWeek = now.getDay() - 1 ; thisWeek >= 0; thisWeek--) {
+    missed[thisWeek] += ambit.weekdays[thisWeek] ? 1 : 0;
+    daysSince--;
+  }
+
+  var weeksMissed = Math.max(daysSince/7, 0);
+  for(var i = 0; i < missed.length && weeksMissed; i++) {
+    missed[i] += ambit.weekdays[i] ? weeksMissed : 0
+  }
+
+  ambit.lastUpdate = now;
+}
+
 module.exports.addAmbit = function (req, res, next) {
   //records a new ambit from the user
   var ambit = req.body.ambit;
@@ -55,8 +92,11 @@ module.exports.saveCheckIn = function(req, res, next) {
       var now = new Date;
       var today = now.toDateString();
       var lastCheck = ambit.checkIns.length ? ambit.checkIns[ambit.checkIns.length -1].toDateString() : null;
-      if (today !== lastCheck){
-        ambit.checkIns.push( now );
+      if (today !== lastCheck && ambit.weekdays[now.getDay()]){
+        ambit.checkIns.push(now);
+        ambit.made[now.getDay()]++
+        ambit.made = ambit.made.slice();
+        ambit.markModified('made');
         return ambit.save();
       } else {
         res.json('already checked in');
@@ -67,12 +107,34 @@ module.exports.saveCheckIn = function(req, res, next) {
     });
 };
 
+
+// module.exports.getAmbits = function(req, res, next) {
+//   //send an array containing all the ambits back to the user.
+//   var token = req.headers.token;
+//   var user = jwt.decode(token, process.env.JWT_SECRET || 'ancient dev secret');
+//   findAllAmbits({ userId: user._id })
+//     .then(function(ambits){
+//       res.send(ambits);
+//     })
+//     .fail(function (error) {
+//       next(error);
+//     });
+// };
+
 module.exports.getAmbits = function(req, res, next) {
   //send an array containing all the ambits back to the user.
   var token = req.headers.token;
   var user = jwt.decode(token, process.env.JWT_SECRET || 'ancient dev secret');
   findAllAmbits({ userId: user._id })
     .then(function(ambits){
+      if(ambits) {
+        ambits.forEach(ambit => {
+          updateMissed(ambit)
+          ambit.markModified('lastUpdate');
+          ambit.markModified('missed');
+          ambit.save();
+        })
+      }
       res.send(ambits);
     })
     .fail(function (error) {
@@ -110,3 +172,9 @@ module.exports.updateAmbit = function(req, res, next) {
       next(error);
     });
 };
+
+
+
+
+
+
