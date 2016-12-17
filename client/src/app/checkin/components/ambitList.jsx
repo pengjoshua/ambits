@@ -5,19 +5,24 @@ import {Card, CardHeader} from 'material-ui/Card';
 
 
 const cardStyle = {
-  'margin': '10px'
+  'margin': '10px',
+  height: '54px'
+};
+
+const inputStyle = {
+  minWidth: '100%'
 };
 
 const AmbitList = (props) => {
   const windowStyle = {
-    marginTop: '74px', // set top bar height (10px spacing)
-    marginBottom: '52px', // set bottom button height (10px spacing)
+    marginTop: '74', // set top bar height (10px spacing)
+    marginBottom: '52px' // set bottom button height (10px spacing)
   };
 
   return (<div className='ambitList' style={windowStyle}>
   <Card style={cardStyle}>
-    <CardHeader
-      title = {<input id='searchFilter' type='text' onChange={(e) => props.filterAmbits(e)} placeholder='Search'></input>}
+    <CardHeader className='here'
+      title = {<input style={inputStyle} id='searchFilter' type='text' onChange={(e) => props.filterAmbits(e)} placeholder='Search'></input>}
       />
   </Card>
 
