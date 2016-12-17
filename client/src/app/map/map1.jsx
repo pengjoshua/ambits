@@ -16,12 +16,13 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import ToggleDisplay from 'react-toggle-display';
 import FontIcon from 'material-ui/FontIcon';
-import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
+import { BottomNavigation, BottomNavigationItem } from 'material-ui/BottomNavigation';
 import Paper from 'material-ui/Paper';
 import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
 
-const recentsIcon = <FontIcon className="material-icons">restore</FontIcon>;
-const favoritesIcon = <FontIcon className="material-icons">favorite</FontIcon>;
+const drawShapeIcon = <i className="material-icons">check_box_outline_blank</i>;
+const editLocationIcon = <i className="material-icons">edit_location</i>;
+const addLocationIcon = <i className="material-icons">add_location</i>;
 const nearbyIcon = <IconLocationOn />;
 
 
@@ -183,6 +184,7 @@ class Map extends Component {
     this.drawingManager = {};
     this.polygon = null;
     this.state = {
+      selectedIndex: null,
       searchFieldValue: '',
       zoomFieldValue: '',
       withinFieldValue: '',
@@ -337,6 +339,7 @@ class Map extends Component {
               id: 'currentLocation'
             });
             // console.log('results', results[0].formatted_address);
+            infowindow.setPosition(pos);
             infowindow.setContent('Current location: \r' + results[0].formatted_address);
             infowindow.open(map, currentLocationMarker);
           } else {
@@ -348,7 +351,7 @@ class Map extends Component {
       });
     };
 
-    var infoWindow = new googleMaps.InfoWindow({ map: map });
+    var infowindow = new googleMaps.InfoWindow({ map: map });
     var geocoder = new google.maps.Geocoder;
     // Try HTML5 geolocation.
     if (navigator.geolocation) {
@@ -358,19 +361,18 @@ class Map extends Component {
           lng: position.coords.longitude
         };
 
-        geocodeLatLng(geocoder, map, infoWindow, pos);
+        geocodeLatLng(geocoder, map, infowindow, pos);
 
-        infoWindow.setPosition(pos);
+        // infoWindow.setPosition(pos);
         // infoWindow.setContent('Location found.');
         console.log('position', pos);
-
         map.setCenter(pos);
       }, function() {
-        handleLocationError(true, infoWindow, map.getCenter());
+        handleLocationError(true, infowindow, map.getCenter());
       });
     } else {
       // Browser doesn't support Geolocation
-      handleLocationError(false, infoWindow, map.getCenter());
+      handleLocationError(false, infowindow, map.getCenter());
     }
   
 
@@ -550,7 +552,9 @@ class Map extends Component {
       this.markers[i].setMap(this.map);
       bounds.extend(this.markers[i].position);
     }
-    this.map.fitBounds(bounds);
+    // if (this.markers.length > 0) {
+    //   this.map.fitBounds(bounds);
+    // }
   }
 
   // This function will loop through the markers and hide them all.
@@ -915,6 +919,21 @@ class Map extends Component {
     this.setState({ show: !this.state.show });
   }
 
+  selectBot(index) {
+    console.log('selectBot', index);
+    this.setState({ selectedIndex: index });
+    if (index === 0) {
+      this.toggleDrawing();
+    } else if (index === 1) {
+      this.getCoordinates();
+    } else if (index === 2) {
+      this.hideMarkers();
+    } else if (index === 3) {
+      this.showMarkers();
+    } else {
+      // do nothing
+    }
+  }
 
   render() {
     return (
@@ -1089,6 +1108,31 @@ class Map extends Component {
             primary = {true}
             fullWidth={false}
           ></RaisedButton>
+
+          <Paper zDepth={1} className="bottomNav">
+            <BottomNavigation selectedIndex={this.state.selectedIndex}>
+              <BottomNavigationItem
+                label="Draw Shape"
+                icon={drawShapeIcon}
+                onTouchTap={() => this.selectBot(0)}
+              />
+              <BottomNavigationItem
+                label="Schedule Ambit"
+                icon={addLocationIcon}
+                onTouchTap={() => this.selectBot(1)}
+              />
+              <BottomNavigationItem
+                label="Hide Ambits"
+                icon={editLocationIcon}
+                onTouchTap={() => this.selectBot(2)}
+              />
+              <BottomNavigationItem
+                label="Show Ambits"
+                icon={nearbyIcon}
+                onTouchTap={() => this.selectBot(3)}
+              />
+            </BottomNavigation>
+          </Paper>
 
       </div>
     )
