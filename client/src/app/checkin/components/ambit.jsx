@@ -50,12 +50,14 @@ class Ambit extends React.Component {
     super(props);
 
     this.state = {
-      ambit: this.props.ambit
+      ambit: this.props.ambit,
+      showStats: false,
     };
-
-
   }
 
+  statsClick() {
+    this.setState({showStats: !this.state.showStats});
+  }
 
 
   render () {
@@ -91,7 +93,8 @@ class Ambit extends React.Component {
               style={editStyle}
             />
             <FlatButton
-              label={<Link to='/display' style={linkStyle}>Stats</Link>}//send to the stats page of the ambit.
+              onClick = {this.statsClick.bind(this)}
+              label='Stats'//send to the stats page of the ambit.
               style={statsStyle}
             />
             <FlatButton
@@ -100,7 +103,7 @@ class Ambit extends React.Component {
                 this.props.handleDeleteAmbit(this.props.ambit)}
               style={deleteStyle}
             />
-           <AttendanceStats ambit = {this.props.ambit}/>
+           {this.state.showStats ? <AttendanceStats ambit = {this.props.ambit}/> : null}
           </CardActions>
         </Card>
       </tag>
