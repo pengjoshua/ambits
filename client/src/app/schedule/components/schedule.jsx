@@ -12,8 +12,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import * as Utils from '../../utils/utils.js';
 import {Coords} from '../../map/map.jsx';
-
-
+import { browserHistory } from 'react-router'
 
 export default class ScheduleContainer extends React.Component {
   constructor (props) {
@@ -107,8 +106,10 @@ export default class ScheduleContainer extends React.Component {
     this.validateFields( () => {
       if (!this.state.isError) {
         let ambitState = this.state;
+        let ctx = this;
         Utils.postAmbit(ambitState, function(res) {
           console.log('posted!', res);
+          browserHistory.replace('/')
         });
       }
     })
@@ -120,6 +121,7 @@ export default class ScheduleContainer extends React.Component {
         let ambitState = this.state;
         Utils.updateAmbit(ambitState, function(res) {
           console.log('Ambit updated!', res);
+          browserHistory.replace('/')
         });
       }
     })
@@ -153,7 +155,7 @@ export default class ScheduleContainer extends React.Component {
 
     } else {
       this.setState({
-        errorMsg: '',
+        errorMsg: [],
         isError: false,
         errors: {
           name: false,
@@ -161,7 +163,7 @@ export default class ScheduleContainer extends React.Component {
           time: false,
           freq: false
         }
-      });
+      }, cb);
     }
   }
 

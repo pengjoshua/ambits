@@ -3,11 +3,15 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { Link } from 'react-router';
 
 const style = {
-  minWidth: '70%'
+  minWidth: '70%',
+};
+
+const linkStyle = {
+  color: 'rgba(0, 0, 0, 0.870588)',
+  textDecoration: 'none'
 };
 
 const btnStyle = {
-  bottom: '0',
   width: '100%',
   alignItems: 'center',
 };
@@ -28,13 +32,14 @@ const CommitButton = (props) => {
         id='toHome'
         label='Commit'
         style={style}
+        labelStyle={linkStyle}
         onTouchTap={props.onSubmitAmbit}
         />
     </div>
     <div style={splitStyle}>
       <RaisedButton
         id='toMap'
-        label={<Link to='/map'>Cancel</Link>}
+        label={<Link style={linkStyle} to='/map'>Cancel</Link>}
         style={style}
         />
     </div>

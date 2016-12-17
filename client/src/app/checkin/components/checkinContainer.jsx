@@ -130,7 +130,7 @@ export default class CheckinContainer extends React.Component {
             handleDeleteAmbit={this.handleDeleteAmbit.bind(this)}/>
 
             <RaisedButton
-            // onTouchTap={this.handleCreateAmbit}
+            onTouchTap={this.handleCreateAmbit}
             buttonStyle={createStyle}
             containerElement={<Link to='/map'/>}
             fullWidth = {true}

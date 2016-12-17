@@ -145,8 +145,8 @@ const radio = {
 };
 
 const linkStyle = {
-  color:'white',
-  'textDecoration':'none'
+  color: 'white',
+  textDecoration: 'none'
 };
 
 var Coords = {
