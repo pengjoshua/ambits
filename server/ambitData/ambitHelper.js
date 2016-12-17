@@ -18,13 +18,13 @@ updateMissed = function(ambit) {
   }
   var now = new Date()
 
-  var lastDate = new Date(Math.max(ambit.stats.lastUpdate,
+  var lastDate = new Date(Math.max(ambit.lastUpdate,
     ambit.checkIns[ambit.checkIns.length - 1] ? ambit.checkIns[ambit.checkIns.length - 1] : ambit.startDate));
   var daysSince = daysSince(lastDate, now);
 
   if(daysSince < 1) { return; }
   
-  var missed = ambit.stats.missed;
+  var missed = ambit.missed;
   var lastDay = (lastDate.getDay() + 1) % 7;
 
   for(; lastDay < 7; lastDay++) {
@@ -42,7 +42,7 @@ updateMissed = function(ambit) {
     missed[i] += ambit.weekdays[i] ? weeksMissed : 0
   }
 
-  ambit.stats.lastUpdate = now;
+  ambit.lastUpdate = now;
 }
 
 module.exports.addAmbit = function (req, res, next) {
@@ -94,7 +94,9 @@ module.exports.saveCheckIn = function(req, res, next) {
       var lastCheck = ambit.checkIns.length ? ambit.checkIns[ambit.checkIns.length -1].toDateString() : null;
       if (today !== lastCheck && ambit.weekdays[now.getDay()]){
         ambit.checkIns.push(now);
-        ambit.stats.made[now.getDay()]++
+        ambit.made[now.getDay()]++
+        ambit.made = ambit.made.slice();
+        ambit.markModified('made');
         return ambit.save();
       } else {
         res.json('already checked in');
@@ -106,12 +108,31 @@ module.exports.saveCheckIn = function(req, res, next) {
 };
 
 
+// module.exports.getAmbits = function(req, res, next) {
+//   //send an array containing all the ambits back to the user.
+//   var token = req.headers.token;
+//   var user = jwt.decode(token, process.env.JWT_SECRET || 'ancient dev secret');
+//   findAllAmbits({ userId: user._id })
+//     .then(function(ambits){
+//       res.send(ambits);
+//     })
+//     .fail(function (error) {
+//       next(error);
+//     });
+// };
+
 module.exports.getAmbits = function(req, res, next) {
   //send an array containing all the ambits back to the user.
   var token = req.headers.token;
   var user = jwt.decode(token, process.env.JWT_SECRET || 'ancient dev secret');
   findAllAmbits({ userId: user._id })
     .then(function(ambits){
+      if(ambits) {
+        ambits.forEach(ambit => {
+          updateMissed(ambit)
+          ambit.save();
+        })
+      }
       res.send(ambits);
     })
     .fail(function (error) {
@@ -182,21 +203,5 @@ module.exports.updateAmbit = function(req, res, next) {
 // };
 
 
-// module.exports.getAmbits = function(req, res, next) {
-//   //send an array containing all the ambits back to the user.
-//   var token = req.headers.token;
-//   var user = jwt.decode(token, process.env.JWT_SECRET || 'ancient dev secret');
-//   findAllAmbits({ userId: user._id })
-//     .then(function(ambits){
-//       console.log(ambits)
-//       ambits.forEach(updateMissed);
-//       res.send(ambits);
-//       ambits.forEach(ambit => {
-//         ambit.save();
-//       })
-//     })
-//     .fail(function (error) {
-//       next(error);
-//     });
-// };
+
 
