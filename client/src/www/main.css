@@ -56,7 +56,9 @@ body {
 }
 
 .bottomNav {
-  position: relative;
+  position: fixed;
+  width: 100%;
+  top: 93%;
 }
 
 #map {
