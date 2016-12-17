@@ -20,6 +20,14 @@ html {
   width: 100%;
 }*/
 
+#searchFilter {
+  width: 250px;
+  border: none;
+  border-bottom: 1px solid rgb(219, 219, 219);
+  font-size: 13px;
+  line-height: 20px;
+}
+
 #pano {
   width: 200px;
   height: 200px;
@@ -55,10 +63,16 @@ body {
   }
 }
 
+.bottomNav {
+  position: fixed;
+  width: 100%;
+  top: 93%;
+}
+
 #map {
   height: 100%;
   width: 100%;
-  position: absolute;
+  position: relative;
 }
 
 #map:after {
@@ -67,7 +81,8 @@ body {
   display: block;
   content: ' ';
   position: absolute;
-  top: 50%; left: 50%;
+  top: calc(50% - 15px); 
+  left: calc(50% - 15px);
 /*  margin: -40px 0 0 -11px;*/
   background: url('http://icon-icons.com/icons2/864/PNG/512/Add_Circle_Plus_Download_icon-icons.com_67898.png');
   background-size: 30px 30px; /* Since I used the HiDPI marker version this compensates for the 2x size */
@@ -88,8 +103,8 @@ body {
 }
 
 .options-box {
-  position: absolute;
-  background-color: rgba(255, 255, 255, 0.9);
+  position: fixed;
+  background-color: rgba(255, 255, 255, 0.85);
   border-radius: 15px;
   z-index: 1;
 }
@@ -103,6 +118,62 @@ body {
   margin: 0 0 0 10px;
   width: 290px;
   font-size: 12pt;
+}
+
+.timemode {
+  margin: 0 0 -30px 0;
+}
+
+.destination {
+  margin: 0 0 -30px 0;
+}
+
+.area {
+  margin: 0 0 -10px 0;
+}
+
+.searchbar {
+
+}
+
+/*#markerLayer img {
+  border: 2px solid red !important;
+  width: 85% !important;
+  height: 90% !important;
+  border-radius: 5px;
+}*/
+
+/*#markerLayer {
+  margin-top: -50px;
+  margin-left: -50px;
+}
+
+#markerLayer:after {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  content: '';
+  animation: pulsate 1s ease-out;
+  animation-delay: 1.1s;
+  animation-iteration-count: infinite;
+  opacity: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 1px 2px rgba(0, 0, 0, .5);
+  box-shadow: 0 0 6px 3px rgba(16, 63, 249, 1.0);
+}*/
+
+@keyframes pulsate {
+  0% {
+    transform: scale(.1, .1);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.2, 1.2);
+    opacity: 0;
+  }
 }
 
 /*#map {

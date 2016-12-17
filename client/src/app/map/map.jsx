@@ -15,13 +15,27 @@ import ActionAndroid from 'material-ui/svg-icons/action/android';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import ToggleDisplay from 'react-toggle-display';
+import FontIcon from 'material-ui/FontIcon';
+import { BottomNavigation, BottomNavigationItem } from 'material-ui/BottomNavigation';
+import Paper from 'material-ui/Paper';
+import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
+
+/*
+ * Many of the methods found this script were modified and adapted from
+ * Udacity's Google Maps APIs course: https://github.com/udacity/ud864
+*/
+
+const drawShapeIcon = <i className="material-icons">check_box_outline_blank</i>;
+const editLocationIcon = <i className="material-icons">edit_location</i>;
+const addLocationIcon = <i className="material-icons">add_location</i>;
+const nearbyIcon = <IconLocationOn />;
 
 
 const modeMenu = [
   <MenuItem key={1} value={"WALKING"} primaryText="walk" />,
   <MenuItem key={2} value={"BICYCLING"} primaryText="bike" />,
   <MenuItem key={3} value={"DRIVING"} primaryText="drive" />,
-  <MenuItem key={4} value={"TRANSIT"} primaryText="transit ride" />
+  <MenuItem key={4} value={"TRANSIT"} primaryText="transit" />
 ];
 
 const windowStyle = {
@@ -30,8 +44,8 @@ const windowStyle = {
 
 const durationMenu = [
   <MenuItem key={1} value={"10"} primaryText="within 10 min" />,
-  <MenuItem key={2} value={"15"} primaryText="within 15 min" />,
-  <MenuItem key={3} value={"30"} primaryText="within 30 min" />,
+  <MenuItem key={2} value={"20"} primaryText="within 20 min" />,
+  <MenuItem key={3} value={"40"} primaryText="within 40 min" />,
   <MenuItem key={4} value={"60"} primaryText="within 1 hour" />
 ];
 
@@ -39,7 +53,7 @@ const showMarkersStyle = {
   color: 'white',
   backgroundColor: Colors.indigo600,
   position: 'fixed',
-  top: 'calc(90% + 45px)',
+  top: 'calc(84% + 45px)',
   left: 'calc(50% - 82px)',
   height:'40px',
   width:'160px',
@@ -50,7 +64,7 @@ const hideMarkersStyle = {
   color: 'white',
   backgroundColor: Colors.deepPurple600,
   position: 'fixed',
-  top: '90%',
+  top: '84%',
   left: 'calc(50% - 82px)',
   height:'40px',
   width:'160px',
@@ -61,7 +75,7 @@ const actionStyle = {
   color: 'white',
   backgroundColor: Colors.purple600,
   position: 'fixed',
-  top: '90%',
+  top: '84%',
   left: 'calc(50% + 82px)',
   height:'40px',
   width:'160px',
@@ -72,7 +86,7 @@ const drawingStyle = {
   color: 'white',
   backgroundColor: Colors.purple900,
   position: 'fixed',
-  top: 'calc(90% + 45px)',
+  top: 'calc(84% + 45px)',
   left: 'calc(50% + 82px)',
   height:'40px',
   width:'160px',
@@ -88,29 +102,40 @@ const floatingLabelFocusStyle = {
 };
 
 const selectTimeStyle = {
-  top: '50px',
+  top: '-15px',
   width: 180,
   left: '6%'
 };
 
 const selectModeStyle = {
-  top: '50px',
+  top: '-15px',
   width: 180,
   left: '30px'
 };
 
 const zoomInputStyle = {
-  top: '30px',
   width: 290,
   left: '3%',
   margin: '0 20px 0 0'
 };
 
+const destGo = {
+  top: '-30px',
+  margin: '0 15px 0 0'
+};
+
 const panel = {
   position: 'fixed',
   zIndex: 9999,
-  top: '1.5%',
-  left: '50%'
+  top: '12px',
+  left: 'calc(50% - 20px)'
+};
+
+const panelHide = {
+  position: 'fixed',
+  display: 'none',
+  top: '12px',
+  left: 'calc(50% - 20px)'
 };
 
 const zoomTextStyle = {
@@ -131,12 +156,9 @@ const zoomStyle = {
   width:'90px'
 };
 
-const destGo = {
-  margin: '50px 15px 0 0'
-};
 
 const searchGo = {
-  margin: '0 0 0 10px'
+  margin: '0 0 10px 10px'
 }
 
 const radio = {
@@ -158,6 +180,7 @@ class Map extends Component {
   constructor(props, context) {
     super(props, context);
 
+    this.pos = {};
     this.placeMarkers = [];
     this.markers = [];
     this.ambits = [];
@@ -167,6 +190,7 @@ class Map extends Component {
     this.drawingManager = {};
     this.polygon = null;
     this.state = {
+      selectedIndex: null,
       searchFieldValue: '',
       zoomFieldValue: '',
       withinFieldValue: '',
@@ -195,6 +219,12 @@ class Map extends Component {
     }).then((googleMaps) => {
       this.initMap(googleMaps);
       var map = this.map; // new instance of googleMaps
+
+      // Listener to close menu
+      var ctx = this;
+      map.addListener('click', function() {
+        ctx.setState({ show: false });
+      });
 
       // var centerIcon = {
       //   url: 'http://icon-icons.com/icons2/864/PNG/512/Add_Circle_Plus_Download_icon-icons.com_67898.png',
@@ -286,12 +316,87 @@ class Map extends Component {
     var map = new googleMaps.Map(document.getElementById('map'), {
       zoom: 15,
       styles: styles,
-      mapTypeControl: false,
+      // mapTypeControl: false,
       center: hackReactor
     });
 
+    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+      infoWindow.setPosition(pos);
+      infoWindow.setContent(browserHasGeolocation ?
+                            'Error: The Geolocation service failed.' :
+                            'Error: Your browser doesn\'t support geolocation.');
+    };
+
+    function geocodeLatLng(geocoder, map, infowindow, pos) {
+      // var input = document.getElementById('latlng').value;
+      var input = pos.lat + ', ' + pos.lng;
+      var latlngStr = input.split(',', 2);
+      var latlng = {lat: parseFloat(latlngStr[0]), lng: parseFloat(latlngStr[1])};
+      geocoder.geocode({'location': latlng}, function(results, status) {
+        if (status === 'OK') {
+          if (results[1]) {
+            // map.setZoom(11);
+            var currentLocationMarker = new google.maps.Marker({
+              optimized: false,
+              position: latlng,
+              map: map,
+              animation: googleMaps.Animation.DROP,
+              icon: bluedot,
+              draggable: true,
+              id: 'currentLocation'
+            });
+            // console.log('results', results[0].formatted_address);
+            infowindow.setPosition(pos);
+            infowindow.setContent('Current location: \r' + results[0].formatted_address);
+            infowindow.open(map, currentLocationMarker);
+          } else {
+            window.alert('No results found');
+          }
+        } else {
+          window.alert('Geocoder failed due to: ' + status);
+        }
+      });
+    };
+
+    var infowindow = new googleMaps.InfoWindow({ map: map });
+    var geocoder = new googleMaps.Geocoder;
+    // Try HTML5 geolocation.
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        var pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+
+        geocodeLatLng(geocoder, map, infowindow, pos);
+
+        // infoWindow.setPosition(pos);
+        // infoWindow.setContent('Location found.');
+        console.log('position', pos);        
+
+        // map.setCenter(pos);
+
+      }, function() {
+        handleLocationError(true, infowindow, map.getCenter());
+      });
+    } else {
+      // Browser doesn't support Geolocation
+      handleLocationError(false, infowindow, map.getCenter());
+    }
+  
+
     // Style the markers a bit. This will be our listing marker icon.
     var defaultIcon = this.makeMarkerIcon(Colors.limeA400.slice(1));
+
+    // Create a current location icon
+    var currentLocationIcon = this.makeMarkerIcon(Colors.pinkA400.slice(1));
+    var bluedot = new google.maps.MarkerImage(
+      'http://plebeosaur.us/etc/map/bluedot_retina.png',
+      null, // size
+      null, // origin
+      new google.maps.Point(8, 8), // anchor (move to center of marker)
+      new google.maps.Size(17, 17) // scaled size (required for Retina display icon)
+    );
 
     // Create a "highlighted location" marker color for when the user
     // mouses over the marker.
@@ -319,6 +424,7 @@ class Map extends Component {
       var position = location;
       var title = this.ambits[i].name;
       var marker = new googleMaps.Marker({
+        optimized: false,
         map: map,
         position: position,
         title: title,
@@ -328,6 +434,13 @@ class Map extends Component {
         id: i
       });
       markers.push(marker);
+
+      // var overlay = new google.maps.OverlayView();
+      // overlay.draw = function() {
+      //   this.getPanes().markerLayer.id='markerLayer';
+      // };
+      // console.log(overlay);
+      // overlay.setMap(map);
 
       var ctx = this;
       marker.addListener('click', function() {
@@ -343,6 +456,7 @@ class Map extends Component {
       marker.addListener('mouseout', function() {
         this.setIcon(defaultIcon);
       });
+
     }
     // map.fitBounds(bounds);
 
@@ -455,7 +569,9 @@ class Map extends Component {
       this.markers[i].setMap(this.map);
       bounds.extend(this.markers[i].position);
     }
-    this.map.fitBounds(bounds);
+    // if (this.markers.length > 0) {
+    //   this.map.fitBounds(bounds);
+    // }
   }
 
   // This function will loop through the markers and hide them all.
@@ -820,6 +936,21 @@ class Map extends Component {
     this.setState({ show: !this.state.show });
   }
 
+  selectBot(index) {
+    console.log('selectBot', index);
+    this.setState({ selectedIndex: index });
+    if (index === 0) {
+      this.toggleDrawing();
+    } else if (index === 1) {
+      this.getCoordinates();
+    } else if (index === 2) {
+      this.hideMarkers();
+    } else if (index === 3) {
+      this.showMarkers();
+    } else {
+      // do nothing
+    }
+  }
 
   render() {
     return (
@@ -918,7 +1049,7 @@ class Map extends Component {
             </tbody>
           </table>
 
-          <table>
+          <table className="searchbar">
             <tbody>
               <tr>
                 <td>
@@ -951,15 +1082,16 @@ class Map extends Component {
         </div>
         </ToggleDisplay>
 
-          <FloatingActionButton
-            mini={true}
-            onTouchTap={this.showPanel.bind(this)}
-            style={panel}
-            secondary={true}
-          >
-            <ContentAdd />
-          </FloatingActionButton>
+            <FloatingActionButton
+              mini={true}
+              onTouchTap={this.showPanel.bind(this)}
+              style={this.state.show ? panelHide : panel}
+              secondary={true}
+            >
+              <ContentAdd />
+            </FloatingActionButton>  
 
+        
         <div id="map"></div>
 
           <RaisedButton
@@ -994,6 +1126,26 @@ class Map extends Component {
             primary = {true}
             fullWidth={false}
           ></RaisedButton>
+
+          <Paper zDepth={1} className="bottomNav">
+            <BottomNavigation selectedIndex={this.state.selectedIndex}>
+              <BottomNavigationItem
+                label="Draw Shape"
+                icon={drawShapeIcon}
+                onTouchTap={() => this.selectBot(0)}
+              />
+              <BottomNavigationItem
+                label="Hide Ambits"
+                icon={editLocationIcon}
+                onTouchTap={() => this.selectBot(2)}
+              />
+              <BottomNavigationItem
+                label="Show Ambits"
+                icon={nearbyIcon}
+                onTouchTap={() => this.selectBot(3)}
+              />
+            </BottomNavigation>
+          </Paper>
 
       </div>
     )
