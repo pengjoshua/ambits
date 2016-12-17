@@ -59,10 +59,10 @@ class Ambit extends React.Component {
         <CardHeader
           title = {this.props.ambit.name}
           avatar ={'https://dummyimage.com/100x100/' +
-            '#000'.slice(1) + // background color
-            '/' +
-            '#ffffff'.slice(1) +  // text color
-            '&text=' + this.props.ambit.name[0].toUpperCase()}
+            /* background color */ '#000'.slice(1) + '/' +
+            /* text color */ '#ffffff'.slice(1) +
+            '&text=' +
+            /* pull first letter */ this.props.ambit.name[0].toUpperCase()}
           subtitle = {this.props.ambit.frequency}
         />
         <CardTitle
