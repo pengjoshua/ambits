@@ -1117,9 +1117,10 @@ class Map extends Component {
                 onTouchTap={() => this.selectBot(0)}
               />
               <BottomNavigationItem
-                label={<Link to='/schedule' style={linkStyle}>Schedule Ambit</Link> }
+                id="scheduleAmbit"
+                label="Schedule Ambit"
                 icon={addLocationIcon}
-                onTouchTap={() => this.selectBot(1)}
+                onTouchTap={window.location.hash = '#/schedule'}
               />
               <BottomNavigationItem
                 label="Hide Ambits"

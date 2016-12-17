@@ -125,6 +125,10 @@ body {
 .searchbar {
 
 }
+
+#scheduleAmbit {
+  text-decoration: none;
+}
 /*#map {
   bottom:0px;
   height: 100%;
