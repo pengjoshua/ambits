@@ -20,6 +20,14 @@ html {
   width: 100%;
 }*/
 
+#searchFilter {
+  width: 250px;
+  border: none;
+  border-bottom: 1px solid rgb(219, 219, 219);
+  font-size: 13px;
+  line-height: 20px;
+}
+
 #pano {
   width: 200px;
   height: 200px;
