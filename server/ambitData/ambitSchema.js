@@ -11,11 +11,9 @@ var ambitSchema = new Schema({
     longitude: Number
   },
   createdAt: Date,
-  stats: {
-    lastUpdate: Date,
-    missed:{type: [Number], default: [0,0,0,0,0,0,0]},
-    made:{type: [Number], default: [0,0,0,0,0,0,0]}
-  },
+  lastUpdate: Date,
+  missed:{type: [Number], default: [0,0,0,0,0,0,0]},
+  made:{type: [Number], default: [0,0,0,0,0,0,0]},
   weekdays: [Boolean], //0 is Sunday, 6 is Saturday
   startDate: Date,
   startTime: String,
@@ -29,8 +27,8 @@ ambitSchema.pre('save', function(next){
   if (!this.created_at) {
     this.createdAt = now;
   }
-  if (!this.stats.lastUpdate) {
-    this.stats.lastUpdate = now;
+  if (!this.lastUpdate) {
+    this.lastUpdate = now;
   }
   next();
 });
