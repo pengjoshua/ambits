@@ -88,28 +88,39 @@ const floatingLabelFocusStyle = {
 };
 
 const selectTimeStyle = {
-  top: '50px',
+  top: '-15px',
   width: 180,
   left: '6%'
 };
 
 const selectModeStyle = {
-  top: '50px',
+  top: '-15px',
   width: 180,
   left: '30px'
 };
 
 const zoomInputStyle = {
-  top: '30px',
   width: 290,
   left: '3%',
   margin: '0 20px 0 0'
 };
 
+const destGo = {
+  top: '-30px',
+  margin: '0 15px 0 0'
+};
+
 const panel = {
   position: 'fixed',
   zIndex: 9999,
-  top: '1.5%',
+  top: '12px',
+  left: '50%'
+};
+
+const panelHide = {
+  position: 'fixed',
+  display: 'none',
+  top: '12px',
   left: '50%'
 };
 
@@ -131,12 +142,9 @@ const zoomStyle = {
   width:'90px'
 };
 
-const destGo = {
-  margin: '50px 15px 0 0'
-};
 
 const searchGo = {
-  margin: '0 0 0 10px'
+  margin: '0 0 10px 10px'
 }
 
 const radio = {
@@ -195,6 +203,12 @@ class Map extends Component {
     }).then((googleMaps) => {
       this.initMap(googleMaps);
       var map = this.map; // new instance of googleMaps
+
+      // Listener to close menu
+      var ctx = this;
+      map.addListener('click', function() {
+        ctx.setState({ show: false });
+      });
 
       // var centerIcon = {
       //   url: 'http://icon-icons.com/icons2/864/PNG/512/Add_Circle_Plus_Download_icon-icons.com_67898.png',
@@ -290,8 +304,80 @@ class Map extends Component {
       center: hackReactor
     });
 
+    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+      infoWindow.setPosition(pos);
+      infoWindow.setContent(browserHasGeolocation ?
+                            'Error: The Geolocation service failed.' :
+                            'Error: Your browser doesn\'t support geolocation.');
+    };
+
+    function geocodeLatLng(geocoder, map, infowindow, pos) {
+      // var input = document.getElementById('latlng').value;
+      var input = pos.lat + ', ' + pos.lng;
+      var latlngStr = input.split(',', 2);
+      var latlng = {lat: parseFloat(latlngStr[0]), lng: parseFloat(latlngStr[1])};
+      geocoder.geocode({'location': latlng}, function(results, status) {
+        if (status === 'OK') {
+          if (results[1]) {
+            // map.setZoom(11);
+            var currentLocationMarker = new google.maps.Marker({
+              position: latlng,
+              map: map,
+              animation: googleMaps.Animation.DROP,
+              icon: bluedot,
+              draggable: true,
+              id: 'currentLocation'
+            });
+            // console.log('results', results[0].formatted_address);
+            infowindow.setContent('Current location: \r' + results[0].formatted_address);
+            infowindow.open(map, currentLocationMarker);
+          } else {
+            window.alert('No results found');
+          }
+        } else {
+          window.alert('Geocoder failed due to: ' + status);
+        }
+      });
+    };
+
+    var infoWindow = new googleMaps.InfoWindow({ map: map });
+    var geocoder = new google.maps.Geocoder;
+    // Try HTML5 geolocation.
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        var pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+
+        geocodeLatLng(geocoder, map, infoWindow, pos);
+
+        infoWindow.setPosition(pos);
+        // infoWindow.setContent('Location found.');
+        console.log('position', pos);
+
+        map.setCenter(pos);
+      }, function() {
+        handleLocationError(true, infoWindow, map.getCenter());
+      });
+    } else {
+      // Browser doesn't support Geolocation
+      handleLocationError(false, infoWindow, map.getCenter());
+    }
+  
+
     // Style the markers a bit. This will be our listing marker icon.
     var defaultIcon = this.makeMarkerIcon(Colors.limeA400.slice(1));
+
+    // Create a current location icon
+    var currentLocationIcon = this.makeMarkerIcon(Colors.pinkA400.slice(1));
+    var bluedot = new google.maps.MarkerImage(
+      'http://plebeosaur.us/etc/map/bluedot_retina.png',
+      null, // size
+      null, // origin
+      new google.maps.Point( 8, 8 ), // anchor (move to center of marker)
+      new google.maps.Size( 17, 17 ) // scaled size (required for Retina display icon)
+    );
 
     // Create a "highlighted location" marker color for when the user
     // mouses over the marker.
@@ -343,6 +429,7 @@ class Map extends Component {
       marker.addListener('mouseout', function() {
         this.setIcon(defaultIcon);
       });
+
     }
     // map.fitBounds(bounds);
 
@@ -918,7 +1005,7 @@ class Map extends Component {
             </tbody>
           </table>
 
-          <table>
+          <table className="searchbar">
             <tbody>
               <tr>
                 <td>
@@ -951,15 +1038,15 @@ class Map extends Component {
         </div>
         </ToggleDisplay>
 
-          <FloatingActionButton
-            mini={true}
-            onTouchTap={this.showPanel.bind(this)}
-            style={panel}
-            secondary={true}
-          >
-            <ContentAdd />
-          </FloatingActionButton>
-          
+            <FloatingActionButton
+              mini={true}
+              onTouchTap={this.showPanel.bind(this)}
+              style={this.state.show ? panelHide : panel}
+              secondary={true}
+            >
+              <ContentAdd />
+            </FloatingActionButton>  
+
         <div id="map"></div>
 
           <RaisedButton
