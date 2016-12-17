@@ -65,7 +65,8 @@ class Ambit extends React.Component {
           title = { nextOccurrence(this.props.ambit).toLocaleString()
           }
           subtitle = {
-          moment(new Date(nextOccurrence(this.props.ambit).toLocaleString())).fromNow()
+
+          moment(nextOccurrence(this.props.ambit)).fromNow()
           }
         />
         <CardActions>
