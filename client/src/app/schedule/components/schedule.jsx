@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router'
 import DropDownList from './dropdown.jsx';
 import CommitButton from './commitButton.jsx';
 import StartDate from './startDate.jsx';
@@ -7,8 +8,11 @@ import AmbitNameInput from './ambitNameInput.jsx';
 import SelectTime from './selectTime.jsx';
 import SelectFrequency from './selectFrequency.jsx';
 import Divider from 'material-ui/Divider';
+import RaisedButton from 'material-ui/RaisedButton';
+import Dialog from 'material-ui/Dialog';
 import * as Utils from '../../utils/utils.js';
 import {Coords} from '../../map/map.jsx';
+
 
 
 export default class ScheduleContainer extends React.Component {
@@ -28,14 +32,18 @@ export default class ScheduleContainer extends React.Component {
         startDate: null,
         startTime: null,
         checkIns:[],
-        isEditing: false
+        isEditing: false,
+        isError: false, // error in validation
+        errorMsg: '' // validation error message
       };
     } else {
       this.state = props.location.state;
       this.state.isEditing = true;
+      this.state.isError = false; // error in validation
+      this.state.errorMsg = ''; // validation error message
     }
 
-
+    this.validateFields = this.validateFields.bind(this);
     this.onNameInput = this.onNameInput.bind(this);
     this.onStartDateSet = this.onStartDateSet.bind(this);
     this.onSelectTime = this.onSelectTime.bind(this);
@@ -84,19 +92,54 @@ export default class ScheduleContainer extends React.Component {
   }
 
   onScheduleAmbit() {
-    var ambitState = this.state;
-
-    Utils.postAmbit(ambitState, function(res) {
-      console.log('posted!', res);
-    });
+    this.validateFields(() => {
+      if (!this.state.isError) {
+        let ambitState = this.state;
+        Utils.postAmbit(ambitState, function(res) {
+          console.log('posted!', res);
+        });
+      }
+    })
   }
 
   onUpdateAmbit() {
-    var ambitState = this.state;
+    this.validateFields(() => {
+      if (!this.state.isError) {
+        let ambitState = this.state;
+        Utils.updateAmbit(ambitState, function(res) {
+          console.log('Ambit updated!', res);
+        });
+      }
+    })
+  }
 
-    Utils.updateAmbit(ambitState, function(res) {
-      console.log('Ambit updated!', res);
-    });
+  validateFields (cb) {
+    let isValid = [
+      this.state.name !== '',
+      this.state.weekdays.includes(true),
+      this.state.startDate !== null,
+      this.state.startTime !== null
+    ]
+    if (isValid.includes(false)) {
+      let _errorMsg = [];
+      isValid[0] ? null : _errorMsg.push(' - Ambit Name');
+      isValid[1] ? null : _errorMsg.push(' - Ambit Frequency');
+      isValid[2] ? null : _errorMsg.push(' - Ambit Start Date');
+      isValid[3] ? null : _errorMsg.push(' - Ambit Time');
+
+      let errorMsgStr = _errorMsg.join('\n');
+
+      this.setState({
+        errorMsg: _errorMsg.join('\n'),
+        isError: true
+      }, cb);
+
+    } else {
+      this.setState({
+        errorMsg: '',
+        isError: false
+      });
+    }
   }
 
   // onDropDownSelect(event, index, value) {
@@ -111,7 +154,7 @@ export default class ScheduleContainer extends React.Component {
 //////////////////////////////////////////////////
     // onSelectDaysInput(day, event, checked) {
 
-      // var currentState = this.state;
+      // let currentState = this.state;
       // currentState.weekdays[day] = checked;
       // console.log(day, checked);
       // this.setState(currentState);
@@ -127,7 +170,7 @@ export default class ScheduleContainer extends React.Component {
 // DONT JUDGE ME, IM PRESSED FOR TIME D;
 //////////////////////////////////////////////////
 onSelectDaysInputSelectAll(event, checked) {
-  var currentState = this.state;
+  let currentState = this.state;
   currentState.weekdays[0] = checked;
   currentState.weekdays[1] = checked;
   currentState.weekdays[2] = checked;
@@ -139,7 +182,7 @@ onSelectDaysInputSelectAll(event, checked) {
 }
 
 onSelectDaysInputWeekdays(event, checked) {
-  var currentState = this.state;
+  let currentState = this.state;
   currentState.weekdays[1] = checked;
   currentState.weekdays[2] = checked;
   currentState.weekdays[3] = checked;
@@ -149,14 +192,14 @@ onSelectDaysInputWeekdays(event, checked) {
 }
 
 onSelectDaysInputWeekends(event, checked) {
-  var currentState = this.state;
+  let currentState = this.state;
   currentState.weekdays[0] = checked;
   currentState.weekdays[6] = checked;
   this.setState(currentState);
 }
 
 onSelectDaysInputMWF(event, checked) {
-  var currentState = this.state;
+  let currentState = this.state;
   currentState.weekdays[1] = checked;
   currentState.weekdays[3] = checked;
   currentState.weekdays[5] = checked;
@@ -164,53 +207,62 @@ onSelectDaysInputMWF(event, checked) {
 }
 
 onSelectDaysInputTR(event, checked) {
-  var currentState = this.state;
+  let currentState = this.state;
   currentState.weekdays[2] = checked;
   currentState.weekdays[4] = checked;
   this.setState(currentState);
 }
 
 onSelectDaysInputSunday(event, checked) {
-  var currentState = this.state;
+  let currentState = this.state;
   currentState.weekdays[0] = checked;
   this.setState(currentState);
 }
 
 onSelectDaysInputMonday(event, checked) {
-  var currentState = this.state;
+  let currentState = this.state;
   currentState.weekdays[1] = checked;
   this.setState(currentState)
 }
 
 onSelectDaysInputTuesday(event, checked) {
-  var currentState = this.state;
+  let currentState = this.state;
   currentState.weekdays[2] = checked;
   this.setState(currentState);
 }
 
 onSelectDaysInputWednesday(event, checked) {
-  var currentState = this.state;
+  let currentState = this.state;
   currentState.weekdays[3] = checked;
   this.setState(currentState)
 }
 
 onSelectDaysInputThursday(event, checked) {
-  var currentState = this.state;
+  let currentState = this.state;
   currentState.weekdays[4] = checked;
   this.setState(currentState)
 }
 
 onSelectDaysInputFriday(event, checked) {
-  var currentState = this.state;
+  let currentState = this.state;
   currentState.weekdays[5] = checked;
   this.setState(currentState)
 }
 
 onSelectDaysInputSaturday(event, checked) {
-  var currentState = this.state;
+  let currentState = this.state;
   currentState.weekdays[6] = checked;
   this.setState(currentState)
 }
+
+// Handler dialog operations
+handleClose () {
+  this.setState({
+    isError: false
+  });
+};
+
+
 //////////////////////////////////////////////////
 
 
@@ -220,8 +272,27 @@ onSelectDaysInputSaturday(event, checked) {
       padding: '15px'
     };
 
-    return (
+    const actions = [
+      <RaisedButton
+        label='OK'
+        onTouchTap={this.handleClose.bind(this)}
+        />,
+      // <RaisedButton
+      //   label={<Link to="/map" >Cancel</Link>}
+      //   onTouchTap={this.handleClose.bind(this)}
+      //   />
+    ];
+
+return (
       <div style={windowStyle}>
+        <div>
+          <Dialog
+            actions={actions}
+            modal={false}
+            open={this.state.isError}
+            onRequestClose={this.handleClose.bind(this)}
+            >{}</Dialog>
+        </div>
         <div>
           <AmbitNameInput
             onNameInput={this.onNameInput}
