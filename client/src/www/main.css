@@ -93,7 +93,7 @@ body {
 }
 
 .options-box {
-  position: absolute;
+  position: fixed;
   background-color: rgba(255, 255, 255, 0.85);
   border-radius: 15px;
   z-index: 1;
@@ -126,9 +126,6 @@ body {
 
 }
 
-#scheduleAmbit {
-  text-decoration: none;
-}
 /*#map {
   bottom:0px;
   height: 100%;
