@@ -130,6 +130,8 @@ module.exports.getAmbits = function(req, res, next) {
       if(ambits) {
         ambits.forEach(ambit => {
           updateMissed(ambit)
+          ambit.markModified('lastUpdate');
+          ambit.markModified('missed');
           ambit.save();
         })
       }
@@ -171,36 +173,7 @@ module.exports.updateAmbit = function(req, res, next) {
     });
 };
 
-// module.exports.addAmbit = function (req, res, next) {
-//   //records a new ambit from the user
-//   var ambit = req.body.ambit;
-//   var token = req.headers.token;
-//   var user = jwt.decode(token, process.env.JWT_SECRET || 'ancient dev secret');
-//   ambit.userId = user._id;
-//   ambit.checkIns = [];
-//   // TODO: create unique refId
-//   ambit.refId = Math.round(Math.random()*10000);
 
-//   findAmbit({
-//     refId: ambit.refId,
-//     userId: ambit.userId
-//   })
-//     .then(function(found){
-//       if (found) {
-//         return next(new Error('Ambit refId already exists'));
-//       } else {
-//         return createAmbit(ambit);
-//       }
-//     })
-//     .then(function (createdAmbit) {
-//       if (createdAmbit) {
-//         res.json(createdAmbit);
-//       }
-//     })
-//     .fail(function (error) {
-//       next(error);
-//     });
-// };
 
 
 
