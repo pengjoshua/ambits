@@ -193,8 +193,8 @@ export const checkinAmbit = function(ambit, successCb,errorCb) {
  }
 };
 
+
 export const nextOccurrence = (ambit) => {
-  // if()
   let time = ambit.startTime.split(':');
   let hours = parseInt(time[0]);
   let minutes = parseInt(time[1]);

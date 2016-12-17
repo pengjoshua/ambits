@@ -167,8 +167,8 @@ const radio = {
 };
 
 const linkStyle = {
-  color:'white',
-  'textDecoration':'none'
+  color: 'white',
+  textDecoration: 'none'
 };
 
 var Coords = {
@@ -516,7 +516,7 @@ class Map extends Component {
       latitude: this.map.getCenter().lat(),
       longitude: this.map.getCenter().lng()
     };
-    console.log(Coords);
+    // console.log(Coords);
   }
 
   populateInfoWindow(marker, infowindow) {
@@ -1091,6 +1091,7 @@ class Map extends Component {
               <ContentAdd />
             </FloatingActionButton>  
 
+        
         <div id="map"></div>
 
           <RaisedButton

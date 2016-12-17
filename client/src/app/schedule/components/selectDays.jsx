@@ -5,13 +5,14 @@ const styles = {
   block: {
     display: 'inline-block',
     minWidth: '50%',
-    maxWidth: '50%',
     marginTop: '15px',
     textAlign: 'center',
-    verticalAlign: 'middle'
+    verticalAlign: 'middle',
+    alignItems: 'center'
   },
   checkbox: {
-    marginBottom: 16,
+    width: '80%',
+    marginBottom: '16px',
   },
 };
 const SelectDays = (props) => (
