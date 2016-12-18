@@ -84,19 +84,37 @@ class Ambit extends React.Component {
   }
 
   decorateDate() {
-    console.log('ambit ',this.props.ambit)
-    let options= {
+    let dateOptions = {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     };
-    let rawDate = nextOccurrence(this.props.ambit).toLocaleString(options);
-    console.log('Date ',rawDate)
-    let date = (<div>
-                  <span>{rawDate}</span>
-                </div>);
-    return date;
+    let timeOptions = {
+      hour12: true,
+      hour: 'numeric',
+      minute: 'numeric'
+    };
+    let rawDate = new Date(nextOccurrence(this.props.ambit).toLocaleString());
+    let tomorrow = new Date();
+    tomorrow.setDate(((new Date()).getDate() + 1));
+    let today = new Date().toLocaleDateString();
+    tomorrow = tomorrow.toLocaleDateString();
+    let ambitDate = rawDate.toLocaleDateString();
+
+    let soonText = '';
+    if (ambitDate === today) {
+      soonText = 'today';
+    } else if (ambitDate === tomorrow) {
+      soonText = 'tomorrow';
+    } else {
+      soonText = '';
+    }
+
+    return (<div>
+              <span>{rawDate.toLocaleDateString('en-US', dateOptions)}</span><br></br>
+              <span>{'@ ' + rawDate.toLocaleTimeString('en-US', timeOptions)}</span><small className='soonText'>{soonText}</small>
+            </div>);
   }
 
   render () {

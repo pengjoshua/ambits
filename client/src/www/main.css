@@ -18,7 +18,7 @@ html {
 .nextOccurrence {
   padding: 0 16px;
   color: rgba(0, 0, 0, 0.541176);
-  font-size: 14px
+  font-size: 14px;
 }
 
 /*#map {
@@ -188,6 +188,13 @@ body {
     transform: scale(1.2, 1.2);
     opacity: 0;
   }
+}
+
+.soonText {
+  color: rgba(0, 0, 0, 0.541176);
+  font-size: 20px;
+  margin-left: 20px;
+  font-style: italic;
 }
 
 /*#map {

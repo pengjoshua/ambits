@@ -44,7 +44,8 @@ const userFeedback = {
   cheat:'Not at the Location',
   geoNotFount: 'Geolocation feature is not enabled',
   successfulCheckin: 'Check in successful',
-  checkInternetConnection:'Cannot fetch ambits:( Check internet connection'
+  checkInternetConnection:'Cannot fetch ambits:( Check internet connection',
+  notTimeYet: 'You can only check in 10 minutes before Ambit'
 };
 
 
