@@ -65,6 +65,7 @@ body {
 
 .bottomNav {
   position: fixed;
+  display: table;
   width: 100%;
   top: 93%;
 }
@@ -81,7 +82,7 @@ body {
   display: block;
   content: ' ';
   position: absolute;
-  top: calc(50% - 15px); 
+  top: calc(50% - 15px);
   left: calc(50% - 15px);
 /*  margin: -40px 0 0 -11px;*/
   background: url('http://icon-icons.com/icons2/864/PNG/512/Add_Circle_Plus_Download_icon-icons.com_67898.png');
@@ -132,8 +133,10 @@ body {
   margin: 0 0 -10px 0;
 }
 
-.searchbar {
-
+.set-ambit, .hide-ambits, .show-ambits, .list-ambits {
+  margin: 0 auto;
+  left: calc(50% - 40px);
+  position: relative;
 }
 
 /*#markerLayer img {
