@@ -28,7 +28,9 @@ import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
 const drawShapeIcon = <i className="material-icons">check_box_outline_blank</i>;
 const editLocationIcon = <i className="material-icons">edit_location</i>;
 const addLocationIcon = <i className="material-icons">add_location</i>;
-const nearbyIcon = <IconLocationOn />;
+const pinDropIcon = <i className="material-icons">pin_drop</i>;
+const personPinIcon = <i className="material-icons">person_pin</i>;
+const placeIcon = <i className="material-icons">place</i>;
 
 
 const modeMenu = [
@@ -372,9 +374,10 @@ class Map extends Component {
 
         // infoWindow.setPosition(pos);
         // infoWindow.setContent('Location found.');
-        console.log('position', pos);        
+        console.log('position', pos);
 
-        // map.setCenter(pos);
+        map.setCenter(pos);
+        var setCenter = true;
 
       }, function() {
         handleLocationError(true, infowindow, map.getCenter());
@@ -383,7 +386,7 @@ class Map extends Component {
       // Browser doesn't support Geolocation
       handleLocationError(false, infowindow, map.getCenter());
     }
-  
+
 
     // Style the markers a bit. This will be our listing marker icon.
     var defaultIcon = this.makeMarkerIcon(Colors.limeA400.slice(1));
@@ -1089,61 +1092,47 @@ class Map extends Component {
               secondary={true}
             >
               <ContentAdd />
-            </FloatingActionButton>  
+            </FloatingActionButton>
 
         
         <div id="map"></div>
 
-          <RaisedButton
-            onTouchTap={this.getCoordinates.bind(this)}
-            label={<Link to='/schedule' style={linkStyle}>Schedule Ambit</Link> }
-            buttonStyle={actionStyle}
-            primary = {true}
-            // containerElement={<Link to='/schedule'/>}
-            fullWidth={false}
-          ></RaisedButton>
-          <RaisedButton
-            id="show-markers"
-            onTouchTap={this.showMarkers.bind(this)}
-            label="Show markers"
-            buttonStyle={showMarkersStyle}
-            primary = {true}
-            fullWidth={false}
-          ></RaisedButton>
-          <RaisedButton
-            id="hide-markers"
-            onTouchTap={this.hideMarkers.bind(this)}
-            label="Hide markers"
-            buttonStyle={hideMarkersStyle}
-            primary = {true}
-            fullWidth={false}
-          ></RaisedButton>
-          <RaisedButton
-            id="toggle-drawing"
-            onTouchTap={this.toggleDrawing.bind(this)}
-            label="Drawing tools"
-            buttonStyle={drawingStyle}
-            primary = {true}
-            fullWidth={false}
-          ></RaisedButton>
-
           <Paper zDepth={1} className="bottomNav">
             <BottomNavigation selectedIndex={this.state.selectedIndex}>
+
+              <Link to='/schedule'>
+                <BottomNavigationItem
+                  className="set-ambit"
+                  label="Set Ambit"
+                  icon={addLocationIcon}
+                  onTouchTap={() => this.selectBot(1)}
+                  />
+              </Link>
+              <Link>
               <BottomNavigationItem
-                label="Draw Shape"
-                icon={drawShapeIcon}
-                onTouchTap={() => this.selectBot(0)}
-              />
-              <BottomNavigationItem
+                className="hide-ambits"
                 label="Hide Ambits"
                 icon={editLocationIcon}
                 onTouchTap={() => this.selectBot(2)}
               />
+              </Link>
+              <Link>
               <BottomNavigationItem
+                className="show-ambits"
                 label="Show Ambits"
-                icon={nearbyIcon}
+                icon={placeIcon}
                 onTouchTap={() => this.selectBot(3)}
               />
+              </Link>
+              <Link to='/'>
+                <BottomNavigationItem
+                  className="list-ambits"
+                  label="List Ambits"
+                  icon={personPinIcon}
+                  onTouchTap={() => this.selectBot(4)}
+                  />
+              </Link>
+
             </BottomNavigation>
           </Paper>
 

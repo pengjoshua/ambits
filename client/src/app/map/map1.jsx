@@ -20,6 +20,11 @@ import { BottomNavigation, BottomNavigationItem } from 'material-ui/BottomNaviga
 import Paper from 'material-ui/Paper';
 import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
 
+/*
+ * Many of the methods found this script were modified and adapted from
+ * Udacity's Google Maps APIs course: https://github.com/udacity/ud864
+*/
+
 const drawShapeIcon = <i className="material-icons">check_box_outline_blank</i>;
 const editLocationIcon = <i className="material-icons">edit_location</i>;
 const addLocationIcon = <i className="material-icons">add_location</i>;
@@ -30,7 +35,7 @@ const modeMenu = [
   <MenuItem key={1} value={"WALKING"} primaryText="walk" />,
   <MenuItem key={2} value={"BICYCLING"} primaryText="bike" />,
   <MenuItem key={3} value={"DRIVING"} primaryText="drive" />,
-  <MenuItem key={4} value={"TRANSIT"} primaryText="transit ride" />
+  <MenuItem key={4} value={"TRANSIT"} primaryText="transit" />
 ];
 
 const windowStyle = {
@@ -39,8 +44,8 @@ const windowStyle = {
 
 const durationMenu = [
   <MenuItem key={1} value={"10"} primaryText="within 10 min" />,
-  <MenuItem key={2} value={"15"} primaryText="within 15 min" />,
-  <MenuItem key={3} value={"30"} primaryText="within 30 min" />,
+  <MenuItem key={2} value={"20"} primaryText="within 20 min" />,
+  <MenuItem key={3} value={"40"} primaryText="within 40 min" />,
   <MenuItem key={4} value={"60"} primaryText="within 1 hour" />
 ];
 
@@ -48,7 +53,7 @@ const showMarkersStyle = {
   color: 'white',
   backgroundColor: Colors.indigo600,
   position: 'fixed',
-  top: 'calc(90% + 45px)',
+  top: 'calc(84% + 45px)',
   left: 'calc(50% - 82px)',
   height:'40px',
   width:'160px',
@@ -59,7 +64,7 @@ const hideMarkersStyle = {
   color: 'white',
   backgroundColor: Colors.deepPurple600,
   position: 'fixed',
-  top: '90%',
+  top: '84%',
   left: 'calc(50% - 82px)',
   height:'40px',
   width:'160px',
@@ -70,7 +75,7 @@ const actionStyle = {
   color: 'white',
   backgroundColor: Colors.purple600,
   position: 'fixed',
-  top: '90%',
+  top: '84%',
   left: 'calc(50% + 82px)',
   height:'40px',
   width:'160px',
@@ -81,7 +86,7 @@ const drawingStyle = {
   color: 'white',
   backgroundColor: Colors.purple900,
   position: 'fixed',
-  top: 'calc(90% + 45px)',
+  top: 'calc(84% + 45px)',
   left: 'calc(50% + 82px)',
   height:'40px',
   width:'160px',
@@ -123,14 +128,14 @@ const panel = {
   position: 'fixed',
   zIndex: 9999,
   top: '12px',
-  left: '50%'
+  left: 'calc(50% - 20px)'
 };
 
 const panelHide = {
   position: 'fixed',
   display: 'none',
   top: '12px',
-  left: '50%'
+  left: 'calc(50% - 20px)'
 };
 
 const zoomTextStyle = {
@@ -175,6 +180,7 @@ class Map extends Component {
   constructor(props, context) {
     super(props, context);
 
+    this.pos = {};
     this.placeMarkers = [];
     this.markers = [];
     this.ambits = [];
@@ -310,7 +316,7 @@ class Map extends Component {
     var map = new googleMaps.Map(document.getElementById('map'), {
       zoom: 15,
       styles: styles,
-      mapTypeControl: false,
+      // mapTypeControl: false,
       center: hackReactor
     });
 
@@ -331,6 +337,7 @@ class Map extends Component {
           if (results[1]) {
             // map.setZoom(11);
             var currentLocationMarker = new google.maps.Marker({
+              optimized: false,
               position: latlng,
               map: map,
               animation: googleMaps.Animation.DROP,
@@ -352,7 +359,7 @@ class Map extends Component {
     };
 
     var infowindow = new googleMaps.InfoWindow({ map: map });
-    var geocoder = new google.maps.Geocoder;
+    var geocoder = new googleMaps.Geocoder;
     // Try HTML5 geolocation.
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
@@ -366,7 +373,10 @@ class Map extends Component {
         // infoWindow.setPosition(pos);
         // infoWindow.setContent('Location found.');
         console.log('position', pos);
+
         map.setCenter(pos);
+        var setCenter = true;
+
       }, function() {
         handleLocationError(true, infowindow, map.getCenter());
       });
@@ -374,7 +384,7 @@ class Map extends Component {
       // Browser doesn't support Geolocation
       handleLocationError(false, infowindow, map.getCenter());
     }
-  
+
 
     // Style the markers a bit. This will be our listing marker icon.
     var defaultIcon = this.makeMarkerIcon(Colors.limeA400.slice(1));
@@ -385,8 +395,8 @@ class Map extends Component {
       'http://plebeosaur.us/etc/map/bluedot_retina.png',
       null, // size
       null, // origin
-      new google.maps.Point( 8, 8 ), // anchor (move to center of marker)
-      new google.maps.Size( 17, 17 ) // scaled size (required for Retina display icon)
+      new google.maps.Point(8, 8), // anchor (move to center of marker)
+      new google.maps.Size(17, 17) // scaled size (required for Retina display icon)
     );
 
     // Create a "highlighted location" marker color for when the user
@@ -415,6 +425,7 @@ class Map extends Component {
       var position = location;
       var title = this.ambits[i].name;
       var marker = new googleMaps.Marker({
+        optimized: false,
         map: map,
         position: position,
         title: title,
@@ -424,6 +435,13 @@ class Map extends Component {
         id: i
       });
       markers.push(marker);
+
+      // var overlay = new google.maps.OverlayView();
+      // overlay.draw = function() {
+      //   this.getPanes().markerLayer.id='markerLayer';
+      // };
+      // console.log(overlay);
+      // overlay.setMap(map);
 
       var ctx = this;
       marker.addListener('click', function() {
@@ -1072,7 +1090,7 @@ class Map extends Component {
               secondary={true}
             >
               <ContentAdd />
-            </FloatingActionButton>  
+            </FloatingActionButton>
 
         <div id="map"></div>
 
@@ -1116,11 +1134,13 @@ class Map extends Component {
                 icon={drawShapeIcon}
                 onTouchTap={() => this.selectBot(0)}
               />
+            <Link to='/schedule'>
               <BottomNavigationItem
                 label="Schedule Ambit"
                 icon={addLocationIcon}
                 onTouchTap={() => this.selectBot(1)}
-              />
+                />
+            </Link>
               <BottomNavigationItem
                 label="Hide Ambits"
                 icon={editLocationIcon}
