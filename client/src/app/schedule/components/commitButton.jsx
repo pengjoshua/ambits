@@ -14,6 +14,8 @@ const linkStyle = {
 const btnStyle = {
   width: '100%',
   alignItems: 'center',
+  position: 'fixed',
+  bottom: '40px'
 };
 
 const splitStyle = {

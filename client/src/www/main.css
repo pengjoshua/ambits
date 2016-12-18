@@ -15,6 +15,12 @@ html {
   border-left: 1px solid rgb(219, 219, 219);
 }
 
+.nextOccurrence {
+  padding: 0 16px;
+  color: rgba(0, 0, 0, 0.541176);
+  font-size: 14px
+}
+
 /*#map {
   height: 100%;
   width: 100%;

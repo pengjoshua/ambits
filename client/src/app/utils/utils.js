@@ -169,7 +169,7 @@ export const getAllAmbits = function(callback) {
 };
 
 
-export const checkinAmbit = function(ambit, successCb,errorCb) {
+export const checkinAmbit = function(ambit, successCb, errorCb) {
   //get current location
   if (navigator.geolocation) {
   /* geolocation is available */

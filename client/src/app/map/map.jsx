@@ -29,7 +29,7 @@ const drawShapeIcon = <i className="material-icons">check_box_outline_blank</i>;
 const editLocationIcon = <i className="material-icons">edit_location</i>;
 const addLocationIcon = <i className="material-icons">add_location</i>;
 const pinDropIcon = <i className="material-icons">pin_drop</i>;
-const personPinIcon = <i className="material-icons">person_pin</i>;
+const personPinIcon = <i className="material-icons">format_list_bulleted</i>;
 const placeIcon = <i className="material-icons">place</i>;
 
 

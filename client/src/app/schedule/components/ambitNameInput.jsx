@@ -21,7 +21,7 @@ const AmbitNameInput = (props) => (
       inputStyle={centerStyle}
       errorStyle={centerStyle}
       fullWidth={true}
-      errorText={(props.errorcheck) ? 'required' : ''}
+      errorText={(props.errorCheck) ? 'required' : ''}
       hintText= "Enter Ambit Name"
       floatingLabelText= "Ambit Name"
       onChange={props.onNameInput}

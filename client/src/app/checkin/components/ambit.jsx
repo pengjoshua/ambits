@@ -38,7 +38,8 @@ const deleteStyle = {
 };
 
 const cardStyle = {
-  'margin': '10px'
+  margin: '10px',
+  paddingTop: '-10px'
 };
 
 const editStyle = {
@@ -48,7 +49,7 @@ const editStyle = {
 
 const linkStyle = {
   color:'white',
-  'textDecoration':'none'
+  textDecoration:'none'
 };
 
 
@@ -82,10 +83,24 @@ class Ambit extends React.Component {
     this.setState({showStats: !this.state.showStats});
   }
 
+  decorateDate() {
+    console.log('ambit ',this.props.ambit)
+    let options= {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    };
+    let rawDate = nextOccurrence(this.props.ambit).toLocaleString(options);
+    console.log('Date ',rawDate)
+    let date = (<div>
+                  <span>{rawDate}</span>
+                </div>);
+    return date;
+  }
 
   render () {
     return (
-
       <Card style={cardStyle}>
         <CardHeader
           title = {this.props.ambit.name}
@@ -96,13 +111,13 @@ class Ambit extends React.Component {
             /* pull first letter */ this.props.ambit.name[0].toUpperCase()}
           subtitle = {this.props.ambit.frequency}
         />
+      <div className='nextOccurrence'>
+        <span>Next Occurance</span>
+      </div>
         <CardTitle
-          title = { nextOccurrence(this.props.ambit).toLocaleString()
-          }
-          subtitle = {
-
-          moment(nextOccurrence(this.props.ambit)).fromNow()
-          }
+          title = {this.decorateDate()}
+          subtitle = {moment(nextOccurrence(this.props.ambit)).fromNow()}
+          style={{paddingTop: '0'}}
         />
       {this.state.showStats ? <AttendanceStats ambit={this.props.ambit} /> : null}
         <CardActions>
@@ -158,27 +173,6 @@ class Ambit extends React.Component {
     );
   }
 };
-
-// <FlatButton
-//   label= {this.props.ambit.checkedIn ? "Checked In":"Check In"}
-//   onTouchTap={() => {this.props.handleCheckinAmbit(this.props.ambit)}}
-//   disabled={this.props.ambit.checkedIn}
-//   style={this.props.ambit.checkedIn ? checkedStyle : notCheckedStyle}
-// />
-// <FlatButton
-//   label={<Link to={{pathname: '/schedule', state: this.props.ambit}} style={linkStyle}>Edit</Link>}
-//   style={editStyle}
-// />
-// <FlatButton
-//   onClick = {this.statsClick.bind(this)}
-//   label='Stats'
-//   style={statsStyle}
-// />
-// <FlatButton
-//   label={'Delete'}
-//   onTouchTap={() => this.props.handleDeleteAmbit(this.props.ambit)}
-//   style={deleteStyle}
-// />
 
 Ambit.propTypes = {
   ambit: React.PropTypes.object.isRequired,

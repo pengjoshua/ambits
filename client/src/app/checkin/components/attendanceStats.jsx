@@ -50,7 +50,7 @@ class AttendanceStats extends React.Component {
     } else {
       return (
         <div className="noStats">
-          No stats yet, sorry!
+          No stats yet, get to it!
         </div>
       )
     }
