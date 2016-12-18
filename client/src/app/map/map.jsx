@@ -349,7 +349,11 @@ class Map extends Component {
             });
             // console.log('results', results[0].formatted_address);
             infowindow.setPosition(pos);
-            infowindow.setContent('Current location: \r' + results[0].formatted_address);
+            infowindow.setContent('<div> Current Location: </div><div>' +
+            results[0].formatted_address.split(',')[0] + '</div><div>' +
+            results[0].formatted_address.split(',')[1] + ', ' +
+            results[0].formatted_address.split(',')[2] + ', ' +
+            results[0].formatted_address.split(',')[3] + '</div>');
             infowindow.open(map, currentLocationMarker);
           } else {
             window.alert('No results found');
@@ -1094,7 +1098,7 @@ class Map extends Component {
               <ContentAdd />
             </FloatingActionButton>
 
-        
+
         <div id="map"></div>
 
           <Paper zDepth={1} className="bottomNav">
