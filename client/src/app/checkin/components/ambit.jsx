@@ -72,7 +72,7 @@ class Ambit extends React.Component {
     } else if (index === 2) {
       this.statsClick();
     } else if (index === 3) {
-      this.props.handleDeleteAmbit(this.props.ambit).bind(this);
+      this.props.handleDeleteAmbit(this.props.ambit);
     } else {
 
     }
