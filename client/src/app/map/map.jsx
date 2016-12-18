@@ -209,7 +209,6 @@ class Map extends Component {
   componentWillMount() {
     Utils.getAllAmbits((res) => {
       this.ambits = this.ambits.concat(res);
-      console.log('ambits', this.ambits);
     });
   }
 
@@ -349,7 +348,6 @@ class Map extends Component {
               icon: bluedot,
               id: 'currentLocation'
             });
-            // console.log('results', results[0].formatted_address);
             infowindow.setPosition(pos);
             infowindow.setContent('<div><strong> Current Location: </strong></div><div>' +
             results[0].formatted_address.split(',')[0] + '</div><div>' +
@@ -380,7 +378,6 @@ class Map extends Component {
 
         // infoWindow.setPosition(pos);
         // infoWindow.setContent('Location found.');
-        // console.log('position', pos);
 
         map.setCenter(pos);
         var setCenter = true;
@@ -480,7 +477,6 @@ class Map extends Component {
       // overlay.draw = function() {
       //   this.getPanes().markerLayer.id='markerLayer';
       // };
-      // console.log(overlay);
       // overlay.setMap(map);
 
       var ctx = this;
@@ -553,11 +549,10 @@ class Map extends Component {
   }
 
   getCoordinates() {
-    Coords = {
+    var Coords = {
       latitude: this.map.getCenter().lat(),
       longitude: this.map.getCenter().lng()
     };
-    // console.log(Coords);
   }
 
   populateInfoWindow(marker, infowindow) {
@@ -684,7 +679,6 @@ class Map extends Component {
     var distanceMatrixService = new google.maps.DistanceMatrixService;
     // var address = document.getElementById('search-within-time-text').value;
     var address = this.state.withinFieldValue;
-    console.log('address within time', address);
     // Check to make sure the place entered isn't blank.
     if (address == '') {
       window.alert('You must enter an address.');
@@ -699,8 +693,6 @@ class Map extends Component {
       }
       var destination = address;
       var mode = this.state.modeValue;
-      console.log('mode within time', mode);
-      console.log('mode within time radio', this.state.radio.mode);
       // var mode = document.getElementById('mode').value;
       // Now that both the origins and destination are defined, get all the
       // info for the distances between them.
@@ -725,11 +717,7 @@ class Map extends Component {
   // This function will go through each of the results, and,
   // if the distance is LESS than the value in the picker, show it on the map.
   displayMarkersWithinTime(response) {
-    console.log('displaymarkers durationValue', this.state.durationValue);
-    console.log('mode within time time', this.state.radio.time);
     var maxDuration = this.state.durationValue;
-    console.log('response', response);
-    console.log('maxDuration', maxDuration);
     // var maxDuration = document.getElementById('max-duration').value;
     var origins = response.originAddresses;
     var destinations = response.destinationAddresses;
@@ -937,12 +925,10 @@ class Map extends Component {
 
   handleModeChange(e, index, value) {
     this.setState({ modeValue: value });
-    console.log('handleModeChange', this.state.modeValue)
   }
 
   handleDurationChange(e, index, value) {
     this.setState({ durationValue: value });
-    console.log('handleDurationChange', this.state.durationValue)
   }
 
   handleSearchSubmit(e) {
@@ -980,7 +966,6 @@ class Map extends Component {
   }
 
   selectBot(index) {
-    console.log('selectBot', index);
     this.setState({ selectedIndex: index });
     if (index === 0) {
       this.toggleDrawing();
