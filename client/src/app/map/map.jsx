@@ -344,7 +344,6 @@ class Map extends Component {
               map: map,
               animation: googleMaps.Animation.DROP,
               icon: bluedot,
-              draggable: true,
               id: 'currentLocation'
             });
             // console.log('results', results[0].formatted_address);
@@ -1002,7 +1001,7 @@ class Map extends Component {
                       id="within-text"
                       value={this.state.withinFieldValue}
                       onChange={this.handleWithinFieldChange.bind(this)}
-                      floatingLabelText="destination"
+                      floatingLabelText="find ambits nearby"
                       floatingLabelStyle={floatingLabelStyle}
                       floatingLabelFocusStyle={floatingLabelFocusStyle}
                       hintStyle={zoomTextStyle}
