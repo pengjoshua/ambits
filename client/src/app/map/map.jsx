@@ -209,6 +209,7 @@ class Map extends Component {
   componentWillMount() {
     Utils.getAllAmbits((res) => {
       this.ambits = this.ambits.concat(res);
+      console.log('ambits', this.ambits);
     });
   }
 
@@ -350,7 +351,7 @@ class Map extends Component {
             });
             // console.log('results', results[0].formatted_address);
             infowindow.setPosition(pos);
-            infowindow.setContent('<div> Current Location: </div><div>' +
+            infowindow.setContent('<div><strong> Current Location: </strong></div><div>' +
             results[0].formatted_address.split(',')[0] + '</div><div>' +
             results[0].formatted_address.split(',')[1] + ', ' +
             results[0].formatted_address.split(',')[2] + ', ' +
@@ -379,7 +380,7 @@ class Map extends Component {
 
         // infoWindow.setPosition(pos);
         // infoWindow.setContent('Location found.');
-        console.log('position', pos);
+        // console.log('position', pos);
 
         map.setCenter(pos);
         var setCenter = true;
@@ -425,6 +426,37 @@ class Map extends Component {
     var largeInfowindow = new googleMaps.InfoWindow();
     var bounds = new googleMaps.LatLngBounds();
 
+    var convertMilitaryTime = function(militime) {
+      var result = '';
+      var hour = militime.split(':')[0];
+      var min = militime.split(':')[1];
+      if (Number(hour) > 12) {
+        hour = (Number(hour) - 12).toString();
+        result += hour + ':' + min + 'pm';
+      } else {
+        result += hour + ':' + min + 'am'
+      }
+      return result;  
+    }
+
+    var daysOfWeek = function(weekdays) {
+      let result = '';
+      let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      if (weekdays.every(day => day === true)) {
+        return 'Daily';
+      }       
+      for (let i = 0; i < weekdays.length; i++) {
+        if (weekdays[i] === true) {
+          if (i === weekdays.length - 1) {
+            result += days[i];
+          } else {
+            result += days[i] + ', ';
+          }
+        }
+      }
+      return 'Weekly - ' + result;
+    }
+
     for (var i = 0; i < this.ambits.length; i++) {
       var location = {};
       location.lat = this.ambits[i].coords.latitude;
@@ -438,8 +470,9 @@ class Map extends Component {
         title: title,
         animation: googleMaps.Animation.DROP,
         icon: defaultIcon,
-        draggable: true,
-        id: i
+        id: i,
+        days: daysOfWeek(this.ambits[i].weekdays),
+        time: convertMilitaryTime(this.ambits[i].startTime)
       });
       markers.push(marker);
 
@@ -539,6 +572,7 @@ class Map extends Component {
       });
       var streetViewService = new google.maps.StreetViewService();
       var radius = 50;
+
       // In case the status is OK, which means the pano was found, compute the
       // position of the streetview image, then calculate the heading, then get a
       // panorama from that and set the options
@@ -547,7 +581,8 @@ class Map extends Component {
           var nearStreetViewLocation = data.location.latLng;
           var heading = google.maps.geometry.spherical.computeHeading(
             nearStreetViewLocation, marker.position);
-            infowindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
+            infowindow.setContent('<div><strong>' + marker.title + '</strong></div><div>' + marker.days + 
+              '</div><div>' + marker.time + '</div><div id="pano"></div>');
             var panoramaOptions = {
               position: nearStreetViewLocation,
               pov: {
