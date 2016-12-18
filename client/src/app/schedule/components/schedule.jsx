@@ -114,7 +114,7 @@ export default class ScheduleContainer extends React.Component {
           browserHistory.replace('/')
         });
       }
-    })
+    }, false)
   }
 
   onUpdateAmbit() {
@@ -124,9 +124,9 @@ export default class ScheduleContainer extends React.Component {
         Utils.updateAmbit(ambitState, function(res) {
           console.log('Ambit updated!', res);
           browserHistory.replace('/')
-        }, true);
+        });
       }
-    })
+    }, true)
   }
 
   validateFields (cb, edit) {

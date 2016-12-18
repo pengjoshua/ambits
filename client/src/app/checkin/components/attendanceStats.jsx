@@ -36,13 +36,10 @@ class AttendanceStats extends React.Component {
       return data;
     }
 
-
-
-
     if(this.props.ambit.made.reduce((a,b) => a+b) ||
       this.props.ambit.missed.reduce((a,b) => a+b)) {
       return (
-        <div>
+        <div className='stats'>
           <Bar data = {statsBuild(this.props.ambit)} />
         </div>
       )
