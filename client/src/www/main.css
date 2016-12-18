@@ -66,6 +66,7 @@ body {
 
 .bottomNav {
   position: fixed;
+  display: table;
   width: 100%;
   top: 93%;
 }
@@ -133,8 +134,10 @@ body {
   margin: 0 0 -10px 0;
 }
 
-.searchbar {
-
+.set-ambit, .hide-ambits, .show-ambits, .list-ambits {
+  margin: 0 auto;
+  left: calc(50% - 40px);
+  position: relative;
 }
 
 /*#markerLayer img {

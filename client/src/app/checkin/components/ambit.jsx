@@ -5,6 +5,7 @@ import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'mat
 import FlatButton from 'material-ui/FlatButton';
 import Snackbar from 'material-ui/Snackbar';
 import {Link} from 'react-router';
+import AttendanceStats from './attendanceStats.jsx'
 import {nextOccurrence} from '../../utils/utils.js'
 import moment from 'moment'
 
@@ -43,22 +44,30 @@ const linkStyle = {
   'textDecoration':'none'
 };
 
+
 class Ambit extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       selectedIndex: null
+      ambit: this.props.ambit,
+      showStats: false,
     };
   }
+        
+  select (index) {
+    this.setState({selectedIndex: index})
+  };
+        
+  statsClick() {
+    this.setState({showStats: !this.state.showStats});
+  }
 
-select (index) {
-  this.setState({selectedIndex: index})
-  
-};
 
   render () {
     return (
+
       <Card style={cardStyle}>
         <CardHeader
           title = {this.props.ambit.name}
@@ -108,27 +117,29 @@ select (index) {
             }
             onTouchTap={() => {
               this.props.handleCheckinAmbit(this.props.ambit);
+
               }
-            }
-            disabled = {this.props.ambit.checkedIn}
-            style={this.props.ambit.checkedIn ? checkedStyle : notCheckedStyle}
-          />
-          <FlatButton
-            label={<Link to={{pathname: '/schedule', state: this.props.ambit}} style={linkStyle}>Edit</Link>}//send to the stats page of the ambit.
-            style={editStyle}
-          />
-          <FlatButton
-            label={<Link to='/display' style={linkStyle}>Stats</Link>}//send to the stats page of the ambit.
-            style={statsStyle}
-          />
-          <FlatButton
-            label={'Delete'}
-            onTouchTap={() =>
-              this.props.handleDeleteAmbit(this.props.ambit)}
-            style={deleteStyle}
-          />
-        </CardActions>
-      </Card>
+              disabled = {this.props.ambit.checkedIn}
+              style={this.props.ambit.checkedIn ? checkedStyle : notCheckedStyle}
+            />
+            <FlatButton
+              label={<Link to={{pathname: '/schedule', state: this.props.ambit}} style={linkStyle}>Edit</Link>}//send to the stats page of the ambit.
+              style={editStyle}
+            />
+            <FlatButton
+              onClick = {this.statsClick.bind(this)}
+              label='Stats'//send to the stats page of the ambit.
+              style={statsStyle}
+            />
+            <FlatButton
+              label={'Delete'}
+              onTouchTap={() =>
+                this.props.handleDeleteAmbit(this.props.ambit)}
+              style={deleteStyle}
+            />
+           {this.state.showStats ? <AttendanceStats ambit = {this.props.ambit}/> : null}
+          </CardActions>
+        </Card>
     );
   }
 };
