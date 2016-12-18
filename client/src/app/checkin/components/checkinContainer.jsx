@@ -25,8 +25,6 @@ const muiTheme = getMuiTheme({
   }
 });
 
-
-
 const createStyle = {
   color: 'white',
   backgroundColor:'orange',
@@ -60,7 +58,7 @@ export default class CheckinContainer extends React.Component {
       loading: false,
       feedback: {
         open: false,
-        autoHideDuration: 3000,
+        // autoHideDuration: 1000,
         message: userFeedback.default
       },
       filteredAmbitList: null
@@ -164,7 +162,7 @@ export default class CheckinContainer extends React.Component {
             <Snackbar
             open={this.state.feedback.open}
             message={this.state.feedback.message}
-            autoHideDuration={this.state.feedback.autoHideDuration}
+            autoHideDuration={1000}
             />
           </div>
         </MuiThemeProvider>

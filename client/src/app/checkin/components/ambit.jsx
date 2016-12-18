@@ -10,10 +10,11 @@ import {nextOccurrence} from '../../utils/utils.js'
 import moment from 'moment'
 import { BottomNavigation, BottomNavigationItem } from 'material-ui/BottomNavigation';
 
-const addLocationIcon = <i className="material-icons">add_location</i>;
-const pinDropIcon = <i className="material-icons">pin_drop</i>;
-const personPinIcon = <i className="material-icons">person_pin</i>;
-const placeIcon = <i className="material-icons">place</i>;
+const multilineChartIcon = <i className="material-icons">multiline_chart</i>;
+const editIcon = <i className="material-icons">edit</i>;
+const doneIcon = <i className="material-icons">done</i>;
+const touchAppIcon = <i className="material-icons">touch_app</i>;
+const clearIcon = <i className="material-icons">clear</i>;
 
 const notCheckedStyle = {
   color: 'white', //TODO: not working colors...
@@ -112,7 +113,7 @@ class Ambit extends React.Component {
               <BottomNavigationItem
                 className="nav"
                 label="Checked in"
-                icon={addLocationIcon}
+                icon={doneIcon}
                 onTouchTap={() => this.select(0)}
               />
             </Link>
@@ -121,7 +122,7 @@ class Ambit extends React.Component {
               <BottomNavigationItem
                 className="nav"
                 label="Check in"
-                icon={addLocationIcon}
+                icon={touchAppIcon}
                 onTouchTap={() => this.select(0)}
               />
             </Link>
@@ -130,7 +131,7 @@ class Ambit extends React.Component {
               <BottomNavigationItem
                 className="nav"
                 label="Edit"
-                icon={personPinIcon}
+                icon={editIcon}
                 onTouchTap={() => this.select(1)}
               />
             </Link>
@@ -138,7 +139,7 @@ class Ambit extends React.Component {
               <BottomNavigationItem
                 className="nav"
                 label="Stats"
-                icon={pinDropIcon}
+                icon={multilineChartIcon}
                 onTouchTap={() => this.select(2)}
               />
             </Link>
@@ -146,7 +147,7 @@ class Ambit extends React.Component {
               <BottomNavigationItem
                 className="nav"
                 label="Delete"
-                icon={pinDropIcon}
+                icon={clearIcon}
                 onTouchTap={() => this.select(3)}
               />
             </Link>
