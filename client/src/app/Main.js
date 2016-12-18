@@ -21,20 +21,16 @@ import { Link } from 'react-router'
 const styles = {
   container: {
     textAlign: 'center',
-    paddingTop: '200px',
+    paddingTop: 200,
   },
 };
 
-<<<<<<< HEAD
-const titleStyle = {
-=======
 const mainStyle = {
   textDecoration: 'none',
   color: 'white'
 };
 
 const linkStyle = {
->>>>>>> (test) set up basic Selenium test suite
   textDecoration: 'none',
   color: 'white'
 };
@@ -42,11 +38,6 @@ const linkStyle = {
 const appBarStyle = {
   position: 'fixed',
   top: '0',
-};
-
-const linkStyle = {
-  color: 'rgba(0, 0, 0, 0.870588)',
-  textDecoration: 'none'
 };
 
 const muiTheme = getMuiTheme({
@@ -92,7 +83,7 @@ class Main extends Component {
       <MuiThemeProvider muiTheme={muiTheme}>
         <div>
           <AppBar
-            title={<Link to="/" style={titleStyle}>Ambitually</Link>}
+            title={<Link to="/" style={linkStyle}>Ambitually</Link>}
             style={appBarStyle}
             iconClassNameLeft="hamburgerMenu"
             onLeftIconButtonTouchTap={this.handleDrawerToggle}
@@ -100,25 +91,16 @@ class Main extends Component {
           />
           <Drawer
             docked={false}
-            width={100}
             open={this.state.open}
             onRequestChange={(open) => this.setState({open})}
           >
-<<<<<<< HEAD
-            <Link to="/" style={linkStyle} onClick={this.handleDrawerToggle}><MenuItem>Home</MenuItem></Link>
-            <Link to='/display' style={linkStyle} onClick={this.handleDrawerToggle}><MenuItem>Statistics</MenuItem></Link>
-            <Link to='/map' style={linkStyle} onClick={this.handleDrawerToggle}><MenuItem>Map</MenuItem></Link>
-            <Link to='/' style={linkStyle} onClick={(e)=>{this.handleDrawerToggle();this.handleLogout.call(this)}}><MenuItem>Logout</MenuItem></Link>
-=======
             <Link to="/"
-              style={linkStyle}
                onClick={this.handleDrawerToggle}><MenuItem>Home</MenuItem></Link>
             <Link to='/display' onClick={this.handleDrawerToggle}><MenuItem>Statistics</MenuItem></Link>
             <Link to='/map' onClick={this.handleDrawerToggle}><MenuItem>Maps</MenuItem></Link>
             <Link to='/'
               className="signOut"
             onClick={(e)=>{this.handleDrawerToggle();this.handleLogout.call(this)}}><MenuItem>Logout</MenuItem></Link>
->>>>>>> (test) set up basic Selenium test suite
           </Drawer>
           {LoginModal}
           {this.props.children}

@@ -49,7 +49,6 @@ const userFeedback = {
 
 
 export default class CheckinContainer extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -58,10 +57,9 @@ export default class CheckinContainer extends React.Component {
       loading: false,
       feedback: {
         open: false,
-        // autoHideDuration: 1000,
+        autoHideDuration: 3000,
         message: userFeedback.default
-      },
-      filteredAmbitList: null
+      }
     };
     this.handleCheckinAmbit = this.handleCheckinAmbit.bind(this);
   }
@@ -97,7 +95,6 @@ export default class CheckinContainer extends React.Component {
         console.log('Ambit deleted', res);
       }
     });
-    this.getAmbits();
   }
 
   handleCheckinAmbit(ambit) {
@@ -123,50 +120,17 @@ export default class CheckinContainer extends React.Component {
     });
   }
 
-  filterAmbits(e) {
-    let filterText = e.target.value;
-    let filteredAmbits = this.state.ambits
-      .filter((ambit) => {
-
-      if (filterText === undefined || filterText === '') {
-        return true;
-      } else if (ambit) {
-        return ambit.name.toLowerCase().includes(filterText.toLowerCase());
-      }
-    });
-    this.setState({
-      filteredAmbitList: filteredAmbits
-    });
-  }
-
   handleShowStats(){}
 
   render() {
     if(!this.state.loading) {
       return (
         <MuiThemeProvider muiTheme={muiTheme}>
-<<<<<<< HEAD
           <div>
-            <AmbitList
-              filterText={this.state.filterText}
-              ambits={this.state.filteredAmbitList || this.state.ambits}
-=======
-          <div >
             <AmbitList ambits={this.state.ambits}
->>>>>>> (test) set up basic Selenium test suite
             handleCheckinAmbit={this.handleCheckinAmbit}
-            handleDeleteAmbit={this.handleDeleteAmbit.bind(this)}
-            filterAmbits={this.filterAmbits.bind(this)}/>
+            handleDeleteAmbit={this.handleDeleteAmbit.bind(this)}/>
 
-<<<<<<< HEAD
-            <RaisedButton
-            onTouchTap={this.handleCreateAmbit}
-            buttonStyle={createStyle}
-            containerElement={<Link to='/map'/>}
-            fullWidth = {true}
-            style={buttonStyle}
-            >Create Ambit</RaisedButton>
-=======
             <Link className='createAmbit' to='/map'>
               <RaisedButton
 
@@ -176,12 +140,11 @@ export default class CheckinContainer extends React.Component {
                 style={buttonStyle}
                 >Create Ambit</RaisedButton>
             </Link>
->>>>>>> (test) set up basic Selenium test suite
 
             <Snackbar
             open={this.state.feedback.open}
             message={this.state.feedback.message}
-            autoHideDuration={1000}
+            autoHideDuration={this.state.feedback.autoHideDuration}
             />
           </div>
         </MuiThemeProvider>
