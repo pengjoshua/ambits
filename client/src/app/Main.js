@@ -25,10 +25,19 @@ const styles = {
   },
 };
 
+<<<<<<< HEAD
 const titleStyle = {
+=======
+const mainStyle = {
   textDecoration: 'none',
   color: 'white'
-}
+};
+
+const linkStyle = {
+>>>>>>> (test) set up basic Selenium test suite
+  textDecoration: 'none',
+  color: 'white'
+};
 
 const appBarStyle = {
   position: 'fixed',
@@ -75,7 +84,7 @@ class Main extends Component {
 
   render() {
     const usernameIcon = this.state.isLoggedIn ?
-      (<FlatButton disabled={true} label={this.state.username} style={this.mainStyle}/>) : null;
+      (<FlatButton disabled={true} label={this.state.username || ' '} style={this.mainStyle}/>) : null;
     const LoginModal = !this.state.isLoggedIn ?
       (<Login main={this} style={this.mainStyle}/>) :
       null;
@@ -85,6 +94,7 @@ class Main extends Component {
           <AppBar
             title={<Link to="/" style={titleStyle}>Ambitually</Link>}
             style={appBarStyle}
+            iconClassNameLeft="hamburgerMenu"
             onLeftIconButtonTouchTap={this.handleDrawerToggle}
             iconElementRight={usernameIcon}
           />
@@ -94,10 +104,21 @@ class Main extends Component {
             open={this.state.open}
             onRequestChange={(open) => this.setState({open})}
           >
+<<<<<<< HEAD
             <Link to="/" style={linkStyle} onClick={this.handleDrawerToggle}><MenuItem>Home</MenuItem></Link>
             <Link to='/display' style={linkStyle} onClick={this.handleDrawerToggle}><MenuItem>Statistics</MenuItem></Link>
             <Link to='/map' style={linkStyle} onClick={this.handleDrawerToggle}><MenuItem>Map</MenuItem></Link>
             <Link to='/' style={linkStyle} onClick={(e)=>{this.handleDrawerToggle();this.handleLogout.call(this)}}><MenuItem>Logout</MenuItem></Link>
+=======
+            <Link to="/"
+              style={linkStyle}
+               onClick={this.handleDrawerToggle}><MenuItem>Home</MenuItem></Link>
+            <Link to='/display' onClick={this.handleDrawerToggle}><MenuItem>Statistics</MenuItem></Link>
+            <Link to='/map' onClick={this.handleDrawerToggle}><MenuItem>Maps</MenuItem></Link>
+            <Link to='/'
+              className="signOut"
+            onClick={(e)=>{this.handleDrawerToggle();this.handleLogout.call(this)}}><MenuItem>Logout</MenuItem></Link>
+>>>>>>> (test) set up basic Selenium test suite
           </Drawer>
           {LoginModal}
           {this.props.children}
