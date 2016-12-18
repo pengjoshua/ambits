@@ -18,6 +18,10 @@ class Login extends Component {
     };
   };
 
+  componentDidMount() {
+    document.title = "Login";
+  }
+
   handleLogin = () => {
     var returningUser = {
       email: this.state.email.toLowerCase(),
@@ -90,6 +94,7 @@ class Login extends Component {
     const signUp = this.state.isSigningUp;
     const signUpField = signUp ?
       (<TextField
+        className='signUpUsername'
         onChange={this.handleChange.bind(this,'username')}
         fullWidth={true}
         hintText='username' />) :
@@ -97,6 +102,7 @@ class Login extends Component {
 
     const standardActions = [
       <RaisedButton
+        className='login'
         label='Login'
         primary={!this.state.isSigningUp}
         onTouchTap={(!signUp) ?
@@ -105,6 +111,7 @@ class Login extends Component {
         }
       />,
       <RaisedButton
+        className='signup'
         label='Signup'
         primary={this.state.isSigningUp}
         onTouchTap={(signUp) ?
@@ -127,11 +134,13 @@ class Login extends Component {
             actionsContainerStyle={{textAlign: 'center'}}
           >
             <TextField
+              className='signUpEmail'
               onChange={this.handleChange.bind(this,'email')}
               fullWidth={true}
               hintText='email' />
             {signUpField}
             <TextField
+              className='signUpPassword'
               onChange={this.handleChange.bind(this,'password')}
               fullWidth={true}
               hintText='password'

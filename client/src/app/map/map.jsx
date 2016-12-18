@@ -212,7 +212,9 @@ class Map extends Component {
     });
   }
 
+
   componentDidMount() {
+    document.title = 'Location';
     loadGoogleMapsAPI({
       // key: "AIzaSyAHJfNJp8pbRxf_05L1TIm5ru-Dvcla-Nw",
       key: 'AIzaSyCwsH_IC4bKctVzu1KGpK4KBO9yPnxSjbc',
@@ -1138,7 +1140,6 @@ class Map extends Component {
 
             </BottomNavigation>
           </Paper>
-
       </div>
     )
   }

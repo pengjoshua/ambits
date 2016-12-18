@@ -65,6 +65,7 @@ export default class CheckinContainer extends React.Component {
     };
     this.handleCheckinAmbit = this.handleCheckinAmbit.bind(this);
   }
+
   componentDidMount() {
     Utils.getAllAmbits((data, error) => {
       if(error) {
@@ -73,6 +74,7 @@ export default class CheckinContainer extends React.Component {
         this.setState({ambits: data});
       }
     });
+    document.title = 'Ambitually';
   }
 
   componentWillReceiveProps() {
@@ -143,14 +145,20 @@ export default class CheckinContainer extends React.Component {
     if(!this.state.loading) {
       return (
         <MuiThemeProvider muiTheme={muiTheme}>
+<<<<<<< HEAD
           <div>
             <AmbitList
               filterText={this.state.filterText}
               ambits={this.state.filteredAmbitList || this.state.ambits}
+=======
+          <div >
+            <AmbitList ambits={this.state.ambits}
+>>>>>>> (test) set up basic Selenium test suite
             handleCheckinAmbit={this.handleCheckinAmbit}
             handleDeleteAmbit={this.handleDeleteAmbit.bind(this)}
             filterAmbits={this.filterAmbits.bind(this)}/>
 
+<<<<<<< HEAD
             <RaisedButton
             onTouchTap={this.handleCreateAmbit}
             buttonStyle={createStyle}
@@ -158,6 +166,17 @@ export default class CheckinContainer extends React.Component {
             fullWidth = {true}
             style={buttonStyle}
             >Create Ambit</RaisedButton>
+=======
+            <Link className='createAmbit' to='/map'>
+              <RaisedButton
+
+                onTouchTap={this.handleCreateAmbit}
+                buttonStyle={createStyle}
+                fullWidth = {true}
+                style={buttonStyle}
+                >Create Ambit</RaisedButton>
+            </Link>
+>>>>>>> (test) set up basic Selenium test suite
 
             <Snackbar
             open={this.state.feedback.open}
