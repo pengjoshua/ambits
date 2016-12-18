@@ -21,7 +21,7 @@ import { Link } from 'react-router'
 const styles = {
   container: {
     textAlign: 'center',
-    paddingTop: 200,
+    paddingTop: '200px',
   },
 };
 
@@ -90,12 +90,13 @@ class Main extends Component {
           />
           <Drawer
             docked={false}
+            width={100}
             open={this.state.open}
             onRequestChange={(open) => this.setState({open})}
           >
             <Link to="/" style={linkStyle} onClick={this.handleDrawerToggle}><MenuItem>Home</MenuItem></Link>
             <Link to='/display' style={linkStyle} onClick={this.handleDrawerToggle}><MenuItem>Statistics</MenuItem></Link>
-            <Link to='/map' style={linkStyle} onClick={this.handleDrawerToggle}><MenuItem>Maps</MenuItem></Link>
+            <Link to='/map' style={linkStyle} onClick={this.handleDrawerToggle}><MenuItem>Map</MenuItem></Link>
             <Link to='/' style={linkStyle} onClick={(e)=>{this.handleDrawerToggle();this.handleLogout.call(this)}}><MenuItem>Logout</MenuItem></Link>
           </Drawer>
           {LoginModal}

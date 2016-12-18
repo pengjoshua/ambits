@@ -50,11 +50,16 @@ class Ambit extends React.Component {
     super(props);
 
     this.state = {
+      selectedIndex: null
       ambit: this.props.ambit,
       showStats: false,
     };
   }
-
+        
+  select (index) {
+    this.setState({selectedIndex: index})
+  };
+        
   statsClick() {
     this.setState({showStats: !this.state.showStats});
   }
@@ -66,7 +71,11 @@ class Ambit extends React.Component {
       <Card style={cardStyle}>
         <CardHeader
           title = {this.props.ambit.name}
-          avatar ={'https://dummyimage.com/100x100/000/fff&text=' + this.props.ambit.name[0].toUpperCase()}
+          avatar ={'https://dummyimage.com/100x100/' +
+            /* background color */ '#000'.slice(1) + '/' +
+            /* text color */ '#ffffff'.slice(1) +
+            '&text=' +
+            /* pull first letter */ this.props.ambit.name[0].toUpperCase()}
           subtitle = {this.props.ambit.frequency}
         />
         <CardTitle
@@ -77,15 +86,38 @@ class Ambit extends React.Component {
           moment(nextOccurrence(this.props.ambit)).fromNow()
           }
         />
+        <CardActions>
+          <Paper zDepth={1}>
+            <BottomNavigation selectedIndex={this.state.selectedIndex}>
+              <BottomNavigationItem
+                label="Recents"
+                icon={recentsIcon}
+                onTouchTap={() => this.select(0)}
+              />
+              <BottomNavigationItem
+                label="Favorites"
+                icon={favoritesIcon}
+                onTouchTap={() => this.select(1)}
+              />
+              <BottomNavigationItem
+                label="Nearby"
+                icon={nearbyIcon}
+                onTouchTap={() => this.select(2)}
+              />
+              <BottomNavigationItem
+                label="Nearby"
+                icon={nearbyIcon}
+                onTouchTap={() => this.select(3)}
+              />
+            </BottomNavigation>
+          </Paper>
+          <FlatButton
+            label= {
+              this.props.ambit.checkedIn ? "Checked In":"Check In"
+            }
+            onTouchTap={() => {
+              this.props.handleCheckinAmbit(this.props.ambit);
 
-          <CardActions>
-            <FlatButton
-              label= {
-                this.props.ambit.checkedIn ? "Checked In":"Check In!"
-              }
-              onTouchTap={() => {
-                this.props.handleCheckinAmbit(this.props.ambit);
-                }
               }
               disabled = {this.props.ambit.checkedIn}
               style={this.props.ambit.checkedIn ? checkedStyle : notCheckedStyle}

@@ -97,6 +97,7 @@ export default class CheckinContainer extends React.Component {
         console.log('Ambit deleted', res);
       }
     });
+    this.getAmbits();
   }
 
   handleCheckinAmbit(ambit) {
