@@ -76,7 +76,7 @@ class Ambit extends React.Component {
         <CardActions>
           <FlatButton
             label= {
-              this.props.ambit.checkedIn ? "Checked In":"Check In!"
+              this.props.ambit.checkedIn ? "Checked In":"Check In"
             }
             onTouchTap={() => {
               this.props.handleCheckinAmbit(this.props.ambit);

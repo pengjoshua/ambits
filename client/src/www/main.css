@@ -21,7 +21,8 @@ html {
 }*/
 
 #searchFilter {
-  width: 250px;
+  width: 100%;
+  text-align: center;
   border: none;
   border-bottom: 1px solid rgb(219, 219, 219);
   font-size: 13px;
@@ -81,7 +82,7 @@ body {
   display: block;
   content: ' ';
   position: absolute;
-  top: calc(50% - 15px); 
+  top: calc(50% - 15px);
   left: calc(50% - 15px);
 /*  margin: -40px 0 0 -11px;*/
   background: url('http://icon-icons.com/icons2/864/PNG/512/Add_Circle_Plus_Download_icon-icons.com_67898.png');
