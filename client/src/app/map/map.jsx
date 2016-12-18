@@ -430,11 +430,15 @@ class Map extends Component {
       if (Number(hour) > 12) {
         hour = (Number(hour) - 12).toString();
         result += hour + ':' + min + 'pm';
+      } else if (Number(hour) === 12) {
+        result += '12:' + min + 'pm';
+      } else if (Number(hour) < 1) {
+        result += '12:' + min + 'am';
       } else {
         result += hour + ':' + min + 'am'
       }
       return result;  
-    }
+    };
 
     var daysOfWeek = function(weekdays) {
       let result = '';
@@ -452,7 +456,7 @@ class Map extends Component {
         }
       }
       return 'Weekly - ' + result;
-    }
+    };
 
     for (var i = 0; i < this.ambits.length; i++) {
       var location = {};
