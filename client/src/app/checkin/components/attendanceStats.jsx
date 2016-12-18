@@ -46,10 +46,10 @@ class AttendanceStats extends React.Component {
           <Bar data = {statsBuild(this.props.ambit)} />
         </div>
       )
-      
+
     } else {
       return (
-        <div>
+        <div className="noStats">
           No stats yet, sorry!
         </div>
       )

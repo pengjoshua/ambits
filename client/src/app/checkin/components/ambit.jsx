@@ -8,6 +8,12 @@ import {Link} from 'react-router';
 import AttendanceStats from './attendanceStats.jsx'
 import {nextOccurrence} from '../../utils/utils.js'
 import moment from 'moment'
+import { BottomNavigation, BottomNavigationItem } from 'material-ui/BottomNavigation';
+
+const addLocationIcon = <i className="material-icons">add_location</i>;
+const pinDropIcon = <i className="material-icons">pin_drop</i>;
+const personPinIcon = <i className="material-icons">person_pin</i>;
+const placeIcon = <i className="material-icons">place</i>;
 
 const notCheckedStyle = {
   color: 'white', //TODO: not working colors...
@@ -50,16 +56,27 @@ class Ambit extends React.Component {
     super(props);
 
     this.state = {
-      selectedIndex: null
+      selectedIndex: null,
       ambit: this.props.ambit,
       showStats: false,
     };
   }
-        
+
   select (index) {
-    this.setState({selectedIndex: index})
+    this.setState({selectedIndex: index});
+    if (index === 0) {
+      this.props.handleCheckinAmbit(this.props.ambit);
+    } else if (index === 1) {
+
+    } else if (index === 2) {
+      this.statsClick();
+    } else if (index === 3) {
+      this.props.handleDeleteAmbit(this.props.ambit).bind(this);
+    } else {
+
+    }
   };
-        
+
   statsClick() {
     this.setState({showStats: !this.state.showStats});
   }
@@ -86,64 +103,81 @@ class Ambit extends React.Component {
           moment(nextOccurrence(this.props.ambit)).fromNow()
           }
         />
+      {this.state.showStats ? <AttendanceStats ambit={this.props.ambit} /> : null}
         <CardActions>
           <Paper zDepth={1}>
             <BottomNavigation selectedIndex={this.state.selectedIndex}>
+              {this.props.ambit.checkedIn ? (
+            <Link>
               <BottomNavigationItem
-                label="Recents"
-                icon={recentsIcon}
+                className="nav"
+                label="Checked in"
+                icon={addLocationIcon}
                 onTouchTap={() => this.select(0)}
               />
+            </Link>
+          ) : (
+            <Link>
               <BottomNavigationItem
-                label="Favorites"
-                icon={favoritesIcon}
+                className="nav"
+                label="Check in"
+                icon={addLocationIcon}
+                onTouchTap={() => this.select(0)}
+              />
+            </Link>
+          )}
+            <Link to={{pathname: '/schedule', state: this.props.ambit}} style={linkStyle}>
+              <BottomNavigationItem
+                className="nav"
+                label="Edit"
+                icon={personPinIcon}
                 onTouchTap={() => this.select(1)}
               />
+            </Link>
+            <Link>
               <BottomNavigationItem
-                label="Nearby"
-                icon={nearbyIcon}
+                className="nav"
+                label="Stats"
+                icon={pinDropIcon}
                 onTouchTap={() => this.select(2)}
               />
+            </Link>
+            <Link>
               <BottomNavigationItem
-                label="Nearby"
-                icon={nearbyIcon}
+                className="nav"
+                label="Delete"
+                icon={pinDropIcon}
                 onTouchTap={() => this.select(3)}
               />
+            </Link>
             </BottomNavigation>
           </Paper>
-          <FlatButton
-            label= {
-              this.props.ambit.checkedIn ? "Checked In":"Check In"
-            }
-            onTouchTap={() => {
-              this.props.handleCheckinAmbit(this.props.ambit);
-
-              }
-              disabled = {this.props.ambit.checkedIn}
-              style={this.props.ambit.checkedIn ? checkedStyle : notCheckedStyle}
-            />
-            <FlatButton
-              label={<Link to={{pathname: '/schedule', state: this.props.ambit}} style={linkStyle}>Edit</Link>}//send to the stats page of the ambit.
-              style={editStyle}
-            />
-            <FlatButton
-              onClick = {this.statsClick.bind(this)}
-              label='Stats'//send to the stats page of the ambit.
-              style={statsStyle}
-            />
-            <FlatButton
-              label={'Delete'}
-              onTouchTap={() =>
-                this.props.handleDeleteAmbit(this.props.ambit)}
-              style={deleteStyle}
-            />
-           {this.state.showStats ? <AttendanceStats ambit = {this.props.ambit}/> : null}
           </CardActions>
         </Card>
     );
   }
 };
 
+// <FlatButton
+//   label= {this.props.ambit.checkedIn ? "Checked In":"Check In"}
+//   onTouchTap={() => {this.props.handleCheckinAmbit(this.props.ambit)}}
+//   disabled={this.props.ambit.checkedIn}
+//   style={this.props.ambit.checkedIn ? checkedStyle : notCheckedStyle}
+// />
+// <FlatButton
+//   label={<Link to={{pathname: '/schedule', state: this.props.ambit}} style={linkStyle}>Edit</Link>}
+//   style={editStyle}
+// />
+// <FlatButton
+//   onClick = {this.statsClick.bind(this)}
+//   label='Stats'
+//   style={statsStyle}
+// />
+// <FlatButton
+//   label={'Delete'}
+//   onTouchTap={() => this.props.handleDeleteAmbit(this.props.ambit)}
+//   style={deleteStyle}
+// />
 
 Ambit.propTypes = {
   ambit: React.PropTypes.object.isRequired,
