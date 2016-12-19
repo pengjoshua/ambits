@@ -130,7 +130,7 @@ class Ambit extends React.Component {
           subtitle = {this.props.ambit.frequency}
         />
       <div className='nextOccurrence'>
-        <span>Next Occurance</span>
+        <span>Next Occurrence</span>
       </div>
         <CardTitle
           title = {this.decorateDate()}

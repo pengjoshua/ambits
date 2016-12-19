@@ -8,6 +8,7 @@
     "client-start": "webpack -d --watch",
     "start:db": "mongod --dbpath server/data/db",
     "start:server": "nodemon server/server.js",
+    "start": "nodemon server/server.js",
     "//test": "node server/server.js & mocha server/specs/; pkill -n node",
     "test": "mocha client/specs/",
     "build": "webpack --config webpack-production.config.js --progress --colors",

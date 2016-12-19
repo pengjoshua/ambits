@@ -140,7 +140,7 @@ body {
   margin: 0 0 -10px 0;
 }
 
-.set-ambit, .hide-ambits, .show-ambits, .list-ambits {
+.set-ambit, .hide-ambits, .show-ambits, .list-ambits, .nav {
   margin: 0 auto;
   left: calc(50% - 40px);
   position: relative;
