@@ -440,7 +440,7 @@ class Map extends Component {
       return result;  
     };
 
-    var daysOfWeek = function(weekdays) {
+    var daysInWeek = function(weekdays) {
       let result = '';
       let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       if (weekdays.every(day => day === true)) {
@@ -448,14 +448,13 @@ class Map extends Component {
       }       
       for (let i = 0; i < weekdays.length; i++) {
         if (weekdays[i] === true) {
-          if (i === weekdays.length - 1) {
-            result += days[i];
-          } else {
-            result += days[i] + ', ';
-          }
+          result += days[i] + ', ';
         }
       }
-      return 'Weekly - ' + result;
+      if (result.charAt(result.length - 2) === ',') {
+        result = result.slice(0, -2);
+      }
+      return 'Weekly - ' + result.trim();
     };
 
     for (var i = 0; i < this.ambits.length; i++) {
@@ -472,7 +471,7 @@ class Map extends Component {
         animation: googleMaps.Animation.DROP,
         icon: defaultIcon,
         id: i,
-        days: daysOfWeek(this.ambits[i].weekdays),
+        days: daysInWeek(this.ambits[i].weekdays),
         time: convertMilitaryTime(this.ambits[i].startTime)
       });
       markers.push(marker);
