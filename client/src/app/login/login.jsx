@@ -4,12 +4,12 @@ import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import * as loginCtrl from './loginCtrl';
+import axios from 'axios';
 
 class Login extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      username: '',
       email: '',
       password: '',
       loginIsOpen: true,
@@ -20,7 +20,7 @@ class Login extends Component {
 
   handleLogin = () => {
     var returningUser = {
-      email: this.state.email,
+      email: this.state.email.toLowerCase(),
       password: this.state.password
     };
     loginCtrl.login(returningUser)
@@ -29,7 +29,8 @@ class Login extends Component {
         loginIsOpen: false
       })
       this.props.main.setState({
-        isLoggedIn: true
+        isLoggedIn: true,
+        username: res.data.username
       });
     })
     .catch(err => {
@@ -42,7 +43,7 @@ class Login extends Component {
 
   handleSignUp = () => {
     var newUser = {
-      email: this.state.email,
+      email: this.state.email.toLowerCase(),
       username: this.state.username,
       password: this.state.password
     };
@@ -52,7 +53,8 @@ class Login extends Component {
         loginIsOpen: false
       });
       this.props.main.setState({
-        isLoggedIn: true
+        isLoggedIn: true,
+        username: res.data.username
       });
     })
     .catch(err => {
@@ -63,13 +65,19 @@ class Login extends Component {
     })
   };
 
-  handleChange = (name,e) => {
+  handleChange = (name, e) => {
     if (this.state.submitError) {
       this.setState({ submitError: '' });
     }
-    this.setState({
-      [name]: e.target.value
-    });
+    if (name === 'email') {
+      this.setState({
+        [name]: e.target.value.toUpperCase()
+      });
+    } else {
+      this.setState({
+        [name]: e.target.value
+      });
+    }
   };
 
   toggleSignUp = () => {
@@ -80,8 +88,8 @@ class Login extends Component {
 
   render() {
     const signUp = this.state.isSigningUp;
-    const signUpField = signUp ? 
-      (<TextField 
+    const signUpField = signUp ?
+      (<TextField
         onChange={this.handleChange.bind(this,'username')}
         fullWidth={true}
         hintText='username' />) :
@@ -91,15 +99,15 @@ class Login extends Component {
       <RaisedButton
         label='Login'
         primary={!this.state.isSigningUp}
-        onTouchTap={(!signUp) ? 
-          this.handleLogin : 
+        onTouchTap={(!signUp) ?
+          this.handleLogin :
           this.toggleSignUp.bind(this)
         }
       />,
       <RaisedButton
         label='Signup'
         primary={this.state.isSigningUp}
-        onTouchTap={(signUp) ? 
+        onTouchTap={(signUp) ?
           this.handleSignUp :
           this.toggleSignUp.bind(this)
         }
@@ -110,12 +118,15 @@ class Login extends Component {
           <Dialog
             autoDetectWindowHeight={false}
             overlayClassName='hidden'
+            overlayStyle={{backgroundColor: '#fff'}}
             open={this.state.loginIsOpen}
-            title='Welcome!'
+            title={'Welcome to Ambitually!'}
+            titleStyle={{textAlign: 'center'}}
             actions={standardActions}
             modal={true}
+            actionsContainerStyle={{textAlign: 'center'}}
           >
-            <TextField 
+            <TextField
               onChange={this.handleChange.bind(this,'email')}
               fullWidth={true}
               hintText='email' />

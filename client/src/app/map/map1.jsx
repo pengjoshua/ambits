@@ -28,9 +28,7 @@ import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
 const drawShapeIcon = <i className="material-icons">check_box_outline_blank</i>;
 const editLocationIcon = <i className="material-icons">edit_location</i>;
 const addLocationIcon = <i className="material-icons">add_location</i>;
-const pinDropIcon = <i className="material-icons">pin_drop</i>;
-const personPinIcon = <i className="material-icons">format_list_bulleted</i>;
-const placeIcon = <i className="material-icons">place</i>;
+const nearbyIcon = <IconLocationOn />;
 
 
 const modeMenu = [
@@ -169,8 +167,8 @@ const radio = {
 };
 
 const linkStyle = {
-  color: 'white',
-  textDecoration: 'none'
+  color:'white',
+  'textDecoration':'none'
 };
 
 var Coords = {
@@ -344,15 +342,12 @@ class Map extends Component {
               map: map,
               animation: googleMaps.Animation.DROP,
               icon: bluedot,
+              draggable: true,
               id: 'currentLocation'
             });
             // console.log('results', results[0].formatted_address);
             infowindow.setPosition(pos);
-            infowindow.setContent('<div> Current Location: </div><div>' +
-            results[0].formatted_address.split(',')[0] + '</div><div>' +
-            results[0].formatted_address.split(',')[1] + ', ' +
-            results[0].formatted_address.split(',')[2] + ', ' +
-            results[0].formatted_address.split(',')[3] + '</div>');
+            infowindow.setContent('Current location: \r' + results[0].formatted_address);
             infowindow.open(map, currentLocationMarker);
           } else {
             window.alert('No results found');
@@ -522,7 +517,7 @@ class Map extends Component {
       latitude: this.map.getCenter().lat(),
       longitude: this.map.getCenter().lng()
     };
-    // console.log(Coords);
+    console.log(Coords);
   }
 
   populateInfoWindow(marker, infowindow) {
@@ -1001,7 +996,7 @@ class Map extends Component {
                       id="within-text"
                       value={this.state.withinFieldValue}
                       onChange={this.handleWithinFieldChange.bind(this)}
-                      floatingLabelText="find ambits nearby"
+                      floatingLabelText="destination"
                       floatingLabelStyle={floatingLabelStyle}
                       floatingLabelFocusStyle={floatingLabelFocusStyle}
                       hintStyle={zoomTextStyle}
@@ -1097,45 +1092,65 @@ class Map extends Component {
               <ContentAdd />
             </FloatingActionButton>
 
-
         <div id="map"></div>
+
+          <RaisedButton
+            onTouchTap={this.getCoordinates.bind(this)}
+            label={<Link to='/schedule' style={linkStyle}>Schedule Ambit</Link> }
+            buttonStyle={actionStyle}
+            primary = {true}
+            // containerElement={<Link to='/schedule'/>}
+            fullWidth={false}
+          ></RaisedButton>
+          <RaisedButton
+            id="show-markers"
+            onTouchTap={this.showMarkers.bind(this)}
+            label="Show markers"
+            buttonStyle={showMarkersStyle}
+            primary = {true}
+            fullWidth={false}
+          ></RaisedButton>
+          <RaisedButton
+            id="hide-markers"
+            onTouchTap={this.hideMarkers.bind(this)}
+            label="Hide markers"
+            buttonStyle={hideMarkersStyle}
+            primary = {true}
+            fullWidth={false}
+          ></RaisedButton>
+          <RaisedButton
+            id="toggle-drawing"
+            onTouchTap={this.toggleDrawing.bind(this)}
+            label="Drawing tools"
+            buttonStyle={drawingStyle}
+            primary = {true}
+            fullWidth={false}
+          ></RaisedButton>
 
           <Paper zDepth={1} className="bottomNav">
             <BottomNavigation selectedIndex={this.state.selectedIndex}>
-
-              <Link to='/schedule'>
-                <BottomNavigationItem
-                  className="set-ambit"
-                  label="Set Ambit"
-                  icon={addLocationIcon}
-                  onTouchTap={() => this.selectBot(1)}
-                  />
-              </Link>
-              <Link>
               <BottomNavigationItem
-                className="hide-ambits"
+                label="Draw Shape"
+                icon={drawShapeIcon}
+                onTouchTap={() => this.selectBot(0)}
+              />
+            <Link to='/schedule'>
+              <BottomNavigationItem
+                label="Schedule Ambit"
+                icon={addLocationIcon}
+                onTouchTap={() => this.selectBot(1)}
+                />
+            </Link>
+              <BottomNavigationItem
                 label="Hide Ambits"
                 icon={editLocationIcon}
                 onTouchTap={() => this.selectBot(2)}
               />
-              </Link>
-              <Link>
               <BottomNavigationItem
-                className="show-ambits"
                 label="Show Ambits"
-                icon={placeIcon}
+                icon={nearbyIcon}
                 onTouchTap={() => this.selectBot(3)}
               />
-              </Link>
-              <Link to='/'>
-                <BottomNavigationItem
-                  className="list-ambits"
-                  label="List Ambits"
-                  icon={personPinIcon}
-                  onTouchTap={() => this.selectBot(4)}
-                  />
-              </Link>
-
             </BottomNavigation>
           </Paper>
 

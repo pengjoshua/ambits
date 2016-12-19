@@ -3,58 +3,106 @@ import Checkbox from 'material-ui/Checkbox';
 
 const styles = {
   block: {
-    maxWidth: 250,
+    display: 'inline-block',
+    minWidth: '50%',
+    marginTop: '15px',
+    textAlign: 'center',
+    verticalAlign: 'middle',
+    alignItems: 'center'
   },
   checkbox: {
-    marginBottom: 16,
+    width: '80%',
+    marginBottom: '16px',
   },
 };
 const SelectDays = (props) => (
-  <div style={styles.block}>
-    <Checkbox
-      label="Sunday"
-      style={styles.checkbox}
-      onCheck={props.onSelectDays.onSelectDaysInputSunday}
-    />
+  <div>
+    <div style={styles.block}>
+      <Checkbox
+        defaultChecked={props.weekdays[0]}
+        label="Sunday"
+        style={styles.checkbox}
+        onCheck={props.onSelectDays.onSelectDaysInputSunday}
+      />
 
-    <Checkbox
-      label="Monday"
-      style={styles.checkbox}
-      onCheck={props.onSelectDays.onSelectDaysInputMonday}
-    />
+      <Checkbox
+        defaultChecked={props.weekdays[1]}
+        label="Monday"
+        style={styles.checkbox}
+        onCheck={props.onSelectDays.onSelectDaysInputMonday}
+      />
 
-    <Checkbox
-      label="Tuesday"
-      style={styles.checkbox}
-      onCheck={props.onSelectDays.onSelectDaysInputTuesday}
-    />
+      <Checkbox
+        defaultChecked={props.weekdays[2]}
+        label="Tuesday"
+        style={styles.checkbox}
+        onCheck={props.onSelectDays.onSelectDaysInputTuesday}
+      />
 
-    <Checkbox
-      label="Wednesday"
-      style={styles.checkbox}
-      onCheck={props.onSelectDays.onSelectDaysInputWednesday}
-    />
+      <Checkbox
+        defaultChecked={props.weekdays[3]}
+        label="Wednesday"
+        style={styles.checkbox}
+        onCheck={props.onSelectDays.onSelectDaysInputWednesday}
+      />
 
-    <Checkbox
-      label="Thursday"
-      style={styles.checkbox}
-      onCheck={props.onSelectDays.onSelectDaysInputThursday}
-    />
+      <Checkbox
+        defaultChecked={props.weekdays[4]}
+        label="Thursday"
+        style={styles.checkbox}
+        onCheck={props.onSelectDays.onSelectDaysInputThursday}
+      />
 
-    <Checkbox
-      label="Friday"
-      style={styles.checkbox}
-      onCheck={props.onSelectDays.onSelectDaysInputFriday}
-    />
+      <Checkbox
+        defaultChecked={props.weekdays[5]}
+        label="Friday"
+        style={styles.checkbox}
+        onCheck={props.onSelectDays.onSelectDaysInputFriday}
+      />
 
-    <Checkbox
-      label="Saturday"
-      style={styles.checkbox}
-      onCheck={props.onSelectDays.onSelectDaysInputSaturday}
-    />
+      <Checkbox
+        defaultChecked={props.weekdays[6]}
+        label="Saturday"
+        style={styles.checkbox}
+        onCheck={props.onSelectDays.onSelectDaysInputSaturday}
+      />
+    </div>
+    <div style={styles.block}>
+      <Checkbox
+        defaultChecked={props.weekdays[0] && props.weekdays[1] && props.weekdays[2] && props.weekdays[3] && props.weekdays[4] && props.weekdays[5] && props.weekdays[6]}
+        label="Select All"
+        style={styles.checkbox}
+        onCheck={props.onSelectDays.onSelectDaysInputSelectAll}
+      />
 
+      <Checkbox
+        defaultChecked={props.weekdays[1] && props.weekdays[2] && props.weekdays[3] && props.weekdays[4] && props.weekdays[5]}
+        label="Weekdays"
+        style={styles.checkbox}
+        onCheck={props.onSelectDays.onSelectDaysInputWeekdays}
+      />
 
+      <Checkbox
+        defaultChecked={props.weekdays[0] && props.weekdays[6]}
+        label="Weekends"
+        style={styles.checkbox}
+        onCheck={props.onSelectDays.onSelectDaysInputWeekends}
+      />
 
+      <Checkbox
+        defaultChecked={props.weekdays[1] && props.weekdays[3] && props.weekdays[5]}
+        label="Mon-Wed-Fri"
+        style={styles.checkbox}
+        onCheck={props.onSelectDays.onSelectDaysInputMWF}
+      />
+
+      <Checkbox
+        defaultChecked={props.weekdays[2] && props.weekdays[4]}
+        label="Tue-Thur"
+        style={styles.checkbox}
+        onCheck={props.onSelectDays.onSelectDaysInputTR}
+      />
+    </div>
   </div>
 );
 

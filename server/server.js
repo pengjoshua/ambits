@@ -8,7 +8,7 @@ var passport = require('passport');
 
 // To use on Heroku, set the environment variable:
 // $ heroku set:config MONGOLAB_URL=mongodb://user:password@mongolabstuff
-var db = (process.env.MONGOLAB_URL || 'mongodb://localhost/ambits');
+var db = (process.env.MONGOLAB_URL || 'mongodb://localhost/server/data/db');
 mongoose.connect(db);
 
 var Ambit = require('./ambitData/ambitSchema');
@@ -60,8 +60,12 @@ app.set('view engine', 'html');
 
 // Should be refactored to go under /api
 // Also, probably, to be rehandled in an external routehandler/ctrlrs
+
 app.get('/ambits', ambitHelper.getAmbits);
 app.post('/ambits', ambitHelper.addAmbit);
+app.put('/ambits', ambitHelper.updateAmbit);
+app.delete('/ambits', ambitHelper.deleteAmbit);
+
 
 app.post('/ambits/:id', ambitHelper.saveCheckIn);
 
@@ -100,5 +104,6 @@ app.get('/db', function(req, res, next) {
 
 // To use on Heroku, must use port provided by process.env:
 var port = (process.env.PORT || 3000);
-app.listen(port);
-console.log('Server is now listening at port ' + port);
+app.listen(port, function() {
+  console.log('Server is now listening at port ' + port)
+});
