@@ -67,13 +67,13 @@ class Ambit extends React.Component {
   select (index) {
     this.setState({selectedIndex: index});
     if (index === 0) {
-      this.props.handleCheckinAmbit(this.props.ambit);
+      this.props.handleCheckinAmbit(this.props.ambit, this.props.ambit.checkedIn);
     } else if (index === 1) {
 
     } else if (index === 2) {
       this.statsClick();
     } else if (index === 3) {
-      this.props.handleDeleteAmbit(this.props.ambit).bind(this);
+      this.props.handleDeleteAmbit(this.props.ambit);
     } else {
 
     }
@@ -140,7 +140,7 @@ class Ambit extends React.Component {
       {this.state.showStats ? <AttendanceStats ambit={this.props.ambit} /> : null}
         <CardActions>
           <Paper zDepth={1}>
-            <BottomNavigation selectedIndex={this.state.selectedIndex}>
+            <BottomNavigation className='navBar' selectedIndex={this.state.selectedIndex}>
               {this.props.ambit.checkedIn ? (
             <Link>
               <BottomNavigationItem
