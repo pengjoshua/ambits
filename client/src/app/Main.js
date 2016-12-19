@@ -75,7 +75,7 @@ class Main extends Component {
 
   render() {
     const usernameIcon = this.state.isLoggedIn ?
-      (<FlatButton disabled={true} label={this.state.username} style={this.mainStyle}/>) : null;
+      (<FlatButton disabled={true} label={this.state.username || ' '} style={this.mainStyle}/>) : null;
     const LoginModal = !this.state.isLoggedIn ?
       (<Login main={this} style={this.mainStyle}/>) :
       null;

@@ -32,28 +32,42 @@ var validateLocation = function (current, checkin) {
 };
 
 //calculate ambit frequency and process for display
-const daysOftheWeek = function(boolArr) {
-  var days = {
-    0:'Su',
-    1:'M',
-    2:'Tu',
-    3:'W',
-    4:'Thu',
-    5:'Fri',
-    6:'Sa'
-  };
-  var result ='';
-  var displayDays = boolArr.map((b, i) => {
-    b ? days.i : b;
-  }).filter(d => (!!d)).forEach((day, i, a) => {
-    if(i === a.length) {
-      result += day;
-    } else {
-      result += day + '/';
+// const daysOftheWeek = function(boolArr) {
+//   var days = {
+//     0:'Su',
+//     1:'M',
+//     2:'Tu',
+//     3:'W',
+//     4:'Thu',
+//     5:'Fri',
+//     6:'Sa'
+//   };
+//   var result ='';
+//   var displayDays = boolArr.map((b, i) => {
+//     b ? days.i : b;
+//   }).filter(d => (!!d)).forEach((day, i, a) => {
+//     if(i === a.length) {
+//       result += day;
+//     } else {
+//       result += day + '/';
+//     }
+//   });
+//   return result;
+// };
+
+const daysOfWeek = function(weekdays) {
+  let result = '';
+  let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  for (let i = 0; i < weekdays.length; i++) {
+    if (weekdays[i] === true) {
+      result += days[i] + ', '; 
     }
-  });
-  return result;
-};
+  }
+  if (result.charAt(result.length - 2) === ',') {
+    result = result.slice(0, -2);
+  }
+  return result.trim();
+}
 
 //Decorate ambits for client side
 const decorateAmbits = function(ambits) {
@@ -61,7 +75,7 @@ const decorateAmbits = function(ambits) {
     if(ambit.weekdays.every(day => day === true)) {
       ambit.frequency = 'Daily';
     } else {
-      ambit.frequency = 'Weekly - '+ daysOftheWeek(ambit.weekdays);
+      ambit.frequency = 'Weekly - '+ daysOfWeek(ambit.weekdays);
     }
     //TODO: clean the server side check.
     //check if the user is already checked in for the day:

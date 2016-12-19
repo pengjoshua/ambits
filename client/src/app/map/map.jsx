@@ -29,7 +29,7 @@ const drawShapeIcon = <i className="material-icons">check_box_outline_blank</i>;
 const editLocationIcon = <i className="material-icons">edit_location</i>;
 const addLocationIcon = <i className="material-icons">add_location</i>;
 const pinDropIcon = <i className="material-icons">pin_drop</i>;
-const personPinIcon = <i className="material-icons">format_list_bulleted</i>;
+const personPinIcon = <i className="material-icons">person_pin</i>;
 const placeIcon = <i className="material-icons">place</i>;
 
 
@@ -212,7 +212,9 @@ class Map extends Component {
     });
   }
 
+
   componentDidMount() {
+    document.title = 'Location';
     loadGoogleMapsAPI({
       // key: "AIzaSyAHJfNJp8pbRxf_05L1TIm5ru-Dvcla-Nw",
       key: 'AIzaSyCwsH_IC4bKctVzu1KGpK4KBO9yPnxSjbc',
@@ -346,9 +348,8 @@ class Map extends Component {
               icon: bluedot,
               id: 'currentLocation'
             });
-            // console.log('results', results[0].formatted_address);
             infowindow.setPosition(pos);
-            infowindow.setContent('<div> Current Location: </div><div>' +
+            infowindow.setContent('<div><strong> Current Location: </strong></div><div>' +
             results[0].formatted_address.split(',')[0] + '</div><div>' +
             results[0].formatted_address.split(',')[1] + ', ' +
             results[0].formatted_address.split(',')[2] + ', ' +
@@ -377,7 +378,6 @@ class Map extends Component {
 
         // infoWindow.setPosition(pos);
         // infoWindow.setContent('Location found.');
-        console.log('position', pos);
 
         map.setCenter(pos);
         var setCenter = true;
@@ -423,6 +423,41 @@ class Map extends Component {
     var largeInfowindow = new googleMaps.InfoWindow();
     var bounds = new googleMaps.LatLngBounds();
 
+    var convertMilitaryTime = function(militime) {
+      var result = '';
+      var hour = militime.split(':')[0];
+      var min = militime.split(':')[1];
+      if (Number(hour) > 12) {
+        hour = (Number(hour) - 12).toString();
+        result += hour + ':' + min + 'pm';
+      } else if (Number(hour) === 12) {
+        result += '12:' + min + 'pm';
+      } else if (Number(hour) < 1) {
+        result += '12:' + min + 'am';
+      } else {
+        result += hour + ':' + min + 'am'
+      }
+      return result;  
+    };
+
+    var daysOfWeek = function(weekdays) {
+      let result = '';
+      let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      if (weekdays.every(day => day === true)) {
+        return 'Daily';
+      }       
+      for (let i = 0; i < weekdays.length; i++) {
+        if (weekdays[i] === true) {
+          if (i === weekdays.length - 1) {
+            result += days[i];
+          } else {
+            result += days[i] + ', ';
+          }
+        }
+      }
+      return 'Weekly - ' + result;
+    };
+
     for (var i = 0; i < this.ambits.length; i++) {
       var location = {};
       location.lat = this.ambits[i].coords.latitude;
@@ -436,8 +471,9 @@ class Map extends Component {
         title: title,
         animation: googleMaps.Animation.DROP,
         icon: defaultIcon,
-        draggable: true,
-        id: i
+        id: i,
+        days: daysOfWeek(this.ambits[i].weekdays),
+        time: convertMilitaryTime(this.ambits[i].startTime)
       });
       markers.push(marker);
 
@@ -445,7 +481,6 @@ class Map extends Component {
       // overlay.draw = function() {
       //   this.getPanes().markerLayer.id='markerLayer';
       // };
-      // console.log(overlay);
       // overlay.setMap(map);
 
       var ctx = this;
@@ -518,11 +553,10 @@ class Map extends Component {
   }
 
   getCoordinates() {
-    Coords = {
+    var Coords = {
       latitude: this.map.getCenter().lat(),
       longitude: this.map.getCenter().lng()
     };
-    // console.log(Coords);
   }
 
   populateInfoWindow(marker, infowindow) {
@@ -537,6 +571,7 @@ class Map extends Component {
       });
       var streetViewService = new google.maps.StreetViewService();
       var radius = 50;
+
       // In case the status is OK, which means the pano was found, compute the
       // position of the streetview image, then calculate the heading, then get a
       // panorama from that and set the options
@@ -545,7 +580,8 @@ class Map extends Component {
           var nearStreetViewLocation = data.location.latLng;
           var heading = google.maps.geometry.spherical.computeHeading(
             nearStreetViewLocation, marker.position);
-            infowindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
+            infowindow.setContent('<div><strong>' + marker.title + '</strong></div><div>' + marker.days + 
+              '</div><div>' + marker.time + '</div><div id="pano"></div>');
             var panoramaOptions = {
               position: nearStreetViewLocation,
               pov: {
@@ -647,7 +683,6 @@ class Map extends Component {
     var distanceMatrixService = new google.maps.DistanceMatrixService;
     // var address = document.getElementById('search-within-time-text').value;
     var address = this.state.withinFieldValue;
-    console.log('address within time', address);
     // Check to make sure the place entered isn't blank.
     if (address == '') {
       window.alert('You must enter an address.');
@@ -662,8 +697,6 @@ class Map extends Component {
       }
       var destination = address;
       var mode = this.state.modeValue;
-      console.log('mode within time', mode);
-      console.log('mode within time radio', this.state.radio.mode);
       // var mode = document.getElementById('mode').value;
       // Now that both the origins and destination are defined, get all the
       // info for the distances between them.
@@ -688,11 +721,7 @@ class Map extends Component {
   // This function will go through each of the results, and,
   // if the distance is LESS than the value in the picker, show it on the map.
   displayMarkersWithinTime(response) {
-    console.log('displaymarkers durationValue', this.state.durationValue);
-    console.log('mode within time time', this.state.radio.time);
     var maxDuration = this.state.durationValue;
-    console.log('response', response);
-    console.log('maxDuration', maxDuration);
     // var maxDuration = document.getElementById('max-duration').value;
     var origins = response.originAddresses;
     var destinations = response.destinationAddresses;
@@ -900,12 +929,10 @@ class Map extends Component {
 
   handleModeChange(e, index, value) {
     this.setState({ modeValue: value });
-    console.log('handleModeChange', this.state.modeValue)
   }
 
   handleDurationChange(e, index, value) {
     this.setState({ durationValue: value });
-    console.log('handleDurationChange', this.state.durationValue)
   }
 
   handleSearchSubmit(e) {
@@ -943,7 +970,6 @@ class Map extends Component {
   }
 
   selectBot(index) {
-    console.log('selectBot', index);
     this.setState({ selectedIndex: index });
     if (index === 0) {
       this.toggleDrawing();
@@ -1138,7 +1164,6 @@ class Map extends Component {
 
             </BottomNavigation>
           </Paper>
-
       </div>
     )
   }
