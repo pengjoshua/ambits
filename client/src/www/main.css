@@ -152,6 +152,7 @@ body {
 
 .stats {
   padding: 15px;
+  text-align: center;
 }
 
 /*#markerLayer img {
