@@ -998,7 +998,7 @@ class Map extends Component {
                   <SelectField
                     value={this.state.durationValue}
                     onChange={this.handleDurationChange.bind(this)}
-                    floatingLabelText="time"
+                    floatingLabelText="within time bounds"
                     floatingLabelStyle={{ color: Colors.lime600.slice(1) }}
                     style={selectTimeStyle}
                   >{durationMenu}
@@ -1008,7 +1008,7 @@ class Map extends Component {
                   <SelectField
                     value={this.state.modeValue}
                     onChange={this.handleModeChange.bind(this)}
-                    floatingLabelText="mode"
+                    floatingLabelText="mode of travel"
                     floatingLabelStyle={{ color: Colors.lime600.slice(1) }}
                     style={selectModeStyle}
                   >{modeMenu}
@@ -1027,7 +1027,7 @@ class Map extends Component {
                       id="within-text"
                       value={this.state.withinFieldValue}
                       onChange={this.handleWithinFieldChange.bind(this)}
-                      floatingLabelText="find ambits nearby"
+                      floatingLabelText="find ambits nearby area or address"
                       floatingLabelStyle={floatingLabelStyle}
                       floatingLabelFocusStyle={floatingLabelFocusStyle}
                       hintStyle={zoomTextStyle}
@@ -1059,7 +1059,7 @@ class Map extends Component {
                     id="zoom-to-area-text"
                     value={this.state.zoomFieldValue}
                     onChange={this.handleZoomFieldChange.bind(this)}
-                    floatingLabelText="Zoom in on area or address"
+                    floatingLabelText="zoom in on area or address"
                     floatingLabelStyle={floatingLabelStyle}
                     floatingLabelFocusStyle={floatingLabelFocusStyle}
                     hintStyle={zoomTextStyle}
@@ -1085,7 +1085,7 @@ class Map extends Component {
             <tbody>
               <tr>
                 <td>
-                  <span className="searchText">Search for nearby places</span>
+                  <span className="searchText">search for nearby places</span>
                   <form id="search-field" onSubmit={this.handleSearchSubmit.bind(this)}>
                     <input
                       id="places-search"
