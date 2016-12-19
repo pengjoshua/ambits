@@ -22,9 +22,9 @@ const StartDate = (props) => (
       errorStyle={centerStyle}
       hintText="Select Ambit Start Date"
       floatingLabelText="Ambit Start Date"
-      onChange= {props.onStartDateSet}
-      autoOk= {true}
-      errorText={(props.errorcheck) ? 'required' : ''}
+      onChange={props.onStartDateSet}
+      autoOk={true}
+      errorText={(props.errorCheck) ? 'required' : ((props.errorCheckFuture) ? 'select a present or future date' : '')}
       locale="en-US"
       firstDayOfWeek={0}
       />

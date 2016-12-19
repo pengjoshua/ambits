@@ -55,19 +55,18 @@ var validateLocation = function (current, checkin) {
 //   return result;
 // };
 
-const daysOfWeek = function(weekdays) {
+const daysInWeek = function(weekdays) {
   let result = '';
   let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   for (let i = 0; i < weekdays.length; i++) {
     if (weekdays[i] === true) {
-      if (i === weekdays.length - 1) {
-        result += days[i];
-      } else {
-        result += days[i] + ', ';
-      }
+      result += days[i] + ', '; 
     }
   }
-  return result;
+  if (result.charAt(result.length - 2) === ',') {
+    result = result.slice(0, -2);
+  }
+  return result.trim();
 }
 
 //Decorate ambits for client side
@@ -76,7 +75,7 @@ const decorateAmbits = function(ambits) {
     if(ambit.weekdays.every(day => day === true)) {
       ambit.frequency = 'Daily';
     } else {
-      ambit.frequency = 'Weekly - ' + daysOfWeek(ambit.weekdays);
+      ambit.frequency = 'Weekly - ' + daysInWeek(ambit.weekdays);
     }
     //TODO: clean the server side check.
     //check if the user is already checked in for the day:
@@ -184,7 +183,7 @@ export const getAllAmbits = function(callback) {
 };
 
 
-export const checkinAmbit = function(ambit, successCb,errorCb) {
+export const checkinAmbit = function(ambit, successCb, errorCb) {
   //get current location
   if (navigator.geolocation) {
   /* geolocation is available */

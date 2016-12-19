@@ -38,7 +38,8 @@ export default class ScheduleContainer extends React.Component {
           name: false,
           date: false,
           time: false,
-          freq: false
+          freq: false,
+          dateFuture: false
         }
       };
     } else {
@@ -50,7 +51,8 @@ export default class ScheduleContainer extends React.Component {
         name: false,
         date: false,
         time: false,
-        freq: false
+        freq: false,
+        dateFuture: false
       };
     }
 
@@ -112,7 +114,7 @@ export default class ScheduleContainer extends React.Component {
           browserHistory.replace('/')
         });
       }
-    })
+    }, false)
   }
 
   onUpdateAmbit() {
@@ -124,23 +126,30 @@ export default class ScheduleContainer extends React.Component {
           browserHistory.replace('/')
         });
       }
-    })
+    }, true)
   }
 
-  validateFields (cb) {
+  validateFields (cb, edit) {
+    let d = new Date();
     let isValid = [
       this.state.name !== '',
       this.state.weekdays.includes(true),
       this.state.startDate !== null,
-      this.state.startTime !== null
+      this.state.startTime !== null,
+      this.state.startDate >= d.setDate(d.getDate() - 1)
     ]
+
+    if (edit) {
+      isValid[4] = true;
+    }
+
     if (isValid.includes(false)) {
       let _errorMsg = [];
       isValid[0] ? null : _errorMsg.push('Ambit Name');
       isValid[2] ? null : _errorMsg.push('Ambit Start Date');
       isValid[3] ? null : _errorMsg.push('Ambit Time');
       isValid[1] ? null : _errorMsg.push('Ambit Frequency');
-      // debugger
+      isValid[4] ? null : _errorMsg.push('Start date should be a present or future date');
 
       this.setState({
         errorMsg: _errorMsg,
@@ -149,7 +158,8 @@ export default class ScheduleContainer extends React.Component {
           name: !isValid[0],
           date: !isValid[2],
           time: !isValid[3],
-          freq: !isValid[1]
+          freq: !isValid[1],
+          dateFuture: !isValid[4]
         }
       }, cb);
 
@@ -161,7 +171,8 @@ export default class ScheduleContainer extends React.Component {
           name: false,
           date: false,
           time: false,
-          freq: false
+          freq: false,
+          dateFuture: false
         }
       }, cb);
     }
@@ -307,7 +318,8 @@ handleClose () {
     const inputStyle = {
       width: '80%',
       marginLeft: '10%',
-      textAlign: 'center'
+      textAlign: 'center',
+      marginTop: '-15px'
     };
 
     const errorStyleLeft = {
@@ -358,31 +370,31 @@ return (
         </div>
         <div style={inputStyle}>
           <AmbitNameInput
-            errorcheck={this.state.errors.name}
+            errorCheck={this.state.errors.name}
             onNameInput={this.onNameInput}
             name={this.state.name}
             />
         </div>
         <div style={inputStyle}>
           <StartDate
-            errorcheck={this.state.errors.date}
+            errorCheck={this.state.errors.date}
+            errorCheckFuture={this.state.errors.dateFuture}
             onStartDateSet={this.onStartDateSet}
             startDate={this.state.startDate}/>
         </div>
         <div style={inputStyle}>
           <SelectTime
-            errorcheck={this.state.errors.time}
+            errorCheck={this.state.errors.time}
             onSelectTime={this.onSelectTime}
             startTime={this.state.startTime}
           />
         </div>
-        <Divider />
+        <Divider style={{margin: '10px 0'}} />
         <div style={frequencyStyle}>
         {this.state.errors.freq ? <span style={errorStyleLeft}>required</span> : null}
         <span style={{fontSize:'18px'}}>Ambit Frequency</span>
         {this.state.errors.freq ? <span style={errorStyleRight}>required</span> : null}
           <SelectDays
-          errorcheck={this.state.errors.freq}
             onSelectDays={this.onSelectDays}
             weekdays={this.state.weekdays}/>
         </div>

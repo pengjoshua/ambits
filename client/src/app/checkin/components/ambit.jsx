@@ -38,7 +38,8 @@ const deleteStyle = {
 };
 
 const cardStyle = {
-  'margin': '10px'
+  margin: '10px',
+  paddingTop: '-10px'
 };
 
 const editStyle = {
@@ -48,7 +49,7 @@ const editStyle = {
 
 const linkStyle = {
   color:'white',
-  'textDecoration':'none'
+  textDecoration:'none'
 };
 
 
@@ -66,7 +67,7 @@ class Ambit extends React.Component {
   select (index) {
     this.setState({selectedIndex: index});
     if (index === 0) {
-      this.props.handleCheckinAmbit(this.props.ambit);
+      this.props.handleCheckinAmbit(this.props.ambit, this.props.ambit.checkedIn);
     } else if (index === 1) {
 
     } else if (index === 2) {
@@ -82,10 +83,42 @@ class Ambit extends React.Component {
     this.setState({showStats: !this.state.showStats});
   }
 
+  decorateDate() {
+    let dateOptions = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    };
+    let timeOptions = {
+      hour12: true,
+      hour: 'numeric',
+      minute: 'numeric'
+    };
+    let rawDate = new Date(nextOccurrence(this.props.ambit).toLocaleString());
+    let tomorrow = new Date();
+    tomorrow.setDate(((new Date()).getDate() + 1));
+    let today = new Date().toLocaleDateString();
+    tomorrow = tomorrow.toLocaleDateString();
+    let ambitDate = rawDate.toLocaleDateString();
+
+    let soonText = '';
+    if (ambitDate === today) {
+      soonText = 'today';
+    } else if (ambitDate === tomorrow) {
+      soonText = 'tomorrow';
+    } else {
+      soonText = '';
+    }
+
+    return (<div>
+              <span>{rawDate.toLocaleDateString('en-US', dateOptions)}</span><br></br>
+              <span>{'@ ' + rawDate.toLocaleTimeString('en-US', timeOptions)}</span><small className='soonText'>{soonText}</small>
+            </div>);
+  }
 
   render () {
     return (
-
       <Card style={cardStyle}>
         <CardHeader
           title = {this.props.ambit.name}
@@ -96,18 +129,18 @@ class Ambit extends React.Component {
             /* pull first letter */ this.props.ambit.name[0].toUpperCase()}
           subtitle = {this.props.ambit.frequency}
         />
+      <div className='nextOccurrence'>
+        <span>Next Occurrence</span>
+      </div>
         <CardTitle
-          title = { nextOccurrence(this.props.ambit).toLocaleString()
-          }
-          subtitle = {
-
-          moment(nextOccurrence(this.props.ambit)).fromNow()
-          }
+          title = {this.decorateDate()}
+          subtitle = {moment(nextOccurrence(this.props.ambit)).fromNow()}
+          style={{paddingTop: '0'}}
         />
       {this.state.showStats ? <AttendanceStats ambit={this.props.ambit} /> : null}
         <CardActions>
           <Paper zDepth={1}>
-            <BottomNavigation selectedIndex={this.state.selectedIndex}>
+            <BottomNavigation className='navBar' selectedIndex={this.state.selectedIndex}>
               {this.props.ambit.checkedIn ? (
             <Link>
               <BottomNavigationItem
@@ -158,27 +191,6 @@ class Ambit extends React.Component {
     );
   }
 };
-
-// <FlatButton
-//   label= {this.props.ambit.checkedIn ? "Checked In":"Check In"}
-//   onTouchTap={() => {this.props.handleCheckinAmbit(this.props.ambit)}}
-//   disabled={this.props.ambit.checkedIn}
-//   style={this.props.ambit.checkedIn ? checkedStyle : notCheckedStyle}
-// />
-// <FlatButton
-//   label={<Link to={{pathname: '/schedule', state: this.props.ambit}} style={linkStyle}>Edit</Link>}
-//   style={editStyle}
-// />
-// <FlatButton
-//   onClick = {this.statsClick.bind(this)}
-//   label='Stats'
-//   style={statsStyle}
-// />
-// <FlatButton
-//   label={'Delete'}
-//   onTouchTap={() => this.props.handleDeleteAmbit(this.props.ambit)}
-//   style={deleteStyle}
-// />
 
 Ambit.propTypes = {
   ambit: React.PropTypes.object.isRequired,

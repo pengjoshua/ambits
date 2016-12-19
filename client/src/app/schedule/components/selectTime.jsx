@@ -32,7 +32,7 @@ const SelectTime = (props) => {
         errorStyle={centerStyle}
         hintText="Select Ambit Time"
         floatingLabelText="Ambit Time"
-        errorText={(props.errorcheck) ? 'required' : ''}
+        errorText={(props.errorCheck) ? 'required' : ''}
         autoOk={true}
         onChange= {props.onSelectTime}
       />
